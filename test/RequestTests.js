@@ -1,7 +1,3 @@
-/**
-This tests needs jsonplaceholder (Fake json node.js server) to be installed
-*/
-
 
 asyncTest("Spectrum4Leaflet.Request.get function", function() {
     expect(1);
@@ -12,14 +8,14 @@ asyncTest("Spectrum4Leaflet.Request.get function", function() {
 	    returnJsonData = response;
     };
 
-    var request = Spectrum4Leaflet.Request.get("http://localhost:3000/posts/1", callback, {});
+    var request = Spectrum4Leaflet.Request.get("http://requesttest", callback, {});
 
     function theTest() {         
-        equal(returnJsonData.id, 1 , "http://localhost:3000/posts/1  {\"id\": 1}");
+        equal(returnJsonData.test, "success" , "Server should return {\"test\": \"success\"}");
         start();
     }
 
-    setTimeout(theTest, 2000); 
+    setTimeout(theTest, 1000); 
 });
 
 asyncTest("Spectrum4Leaflet.Request.post function", function() {
@@ -33,12 +29,12 @@ asyncTest("Spectrum4Leaflet.Request.post function", function() {
     
     var postData = { test : "success" };
 
-    var request = Spectrum4Leaflet.Request.post("http://localhost:3000/posts", JSON.stringify(postData), callback, {});
+    var request = Spectrum4Leaflet.Request.post("http://requesttest", JSON.stringify(postData), callback, {});
 
     function theTest() {         
-        equal(returnJsonData.test, "success" , "http://localhost:3000/posts returns  {\"test\": \"success\"}");
+        equal(returnJsonData.test, "success" , "Server should return returns  {\"test\": \"success\"}");
         start();
     }
 
-    setTimeout(theTest, 2000); 
+    setTimeout(theTest, 1000); 
 });

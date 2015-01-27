@@ -3,7 +3,8 @@
  * @namespace
  */
 var Spectrum4Leaflet = {
-  Version: '0.1'
+  Version: '0.1',
+  Services: {}
 };
 
 if(typeof window !== 'undefined' && window.L){
