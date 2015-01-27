@@ -1,0 +1,7 @@
+{
+  "name": "Spectrum4LeafletTests",
+  "version": "0.1.0",
+  "devDependencies": {
+    "qunitjs": "^1.17.1"
+  }
+}

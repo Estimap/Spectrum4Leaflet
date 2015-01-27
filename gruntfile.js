@@ -1,36 +1,67 @@
+
 module.exports = function(grunt) {
 
-    // 1. All configuration goes here 
-    grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+  grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
+    concat: {
+      options: {
+        separator: ';'
+      },
+      dist: {
+        src:  [
+		     'src/Spectrum4Leaflet.js',
+		     'src/Request.js',
+		],
+        dest: 'build/<%= pkg.name %>.js'
+      }
+    },
+    uglify: {
+      options: {
+        banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+      },
+      dist: {
+        files: {
+          'build/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+        }
+      }
+    },
+    qunit: {
+      files: ['test/**/*.html']
+    },
+    jshint: {
+      files: ['Gruntfile.js', 'src/**/*.js'],
+      options: {
+        // options here to override JSHint defaults
+        globals: {
+          console: true,
+          module: true,
+          document: true
+        }
+      }
+    },
+	jsdoc : {
+	        dist : {
+	            src: ['src/*.js'], 
+	            options: {
+	                destination: 'doc'
+	            }
+	        }
+    },
+    watch: {
+      files: ['<%= jshint.files %>'],
+      tasks: ['jshint', 'qunit']
+    }
+  });
+  
+  grunt.loadNpmTasks('grunt-jsdoc');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-qunit');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-concat');
 
-		concat: {   
-		    dist: {
-		        src: [
-		            'src/Spectrum4Leaflet.js',
-		            'src/Request.js',
-		        ],
-		        dest: 'build/spectrum4leaflet-dev.js',
-		    }
-		},
-		qunit: {
-		    all: ['tests/**/*.html']
-		},
-		jsdoc : {
-		        dist : {
-		            src: ['src/*.js'], 
-		            options: {
-		                destination: 'doc'
-		            }
-		        }
-	    }
-    });
-		
-		    // 3. Where we tell Grunt we plan to use this plug-in.
-	grunt.loadNpmTasks('grunt-jsdoc');
-	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-contrib-qunit');
-		    
-	// 4. Where we tell Grunt what to do when we type "grunt" into the terminal.
-	grunt.registerTask('default', ['jsdoc','concat','qunit']);
+  grunt.registerTask('test', ['jshint', 'qunit']);
+
+  grunt.registerTask('default', ['jshint', 'qunit', 'concat', 'uglify', 'jsdoc']);
+
 };

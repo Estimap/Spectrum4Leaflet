@@ -63,7 +63,7 @@ Spectrum4Leaflet.Request = {
     @param {object} context Context for callback
     */
     get: function(url, callback, context){
-	    var httpRequest = this._createRequest(callback,context);
+        var httpRequest = this._createRequest(callback,context);
 	    httpRequest.open('GET', url , true);
         httpRequest.send(null);
         return httpRequest;
@@ -77,9 +77,10 @@ Spectrum4Leaflet.Request = {
     @param {object} context Context for callback
     */
     post: function(url, postdata, callback,context){
-	    httpRequest.open('POST', url);
-        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        var httpRequest = this._createRequest(callback,context);
+        httpRequest.open('POST', url, true);
+        httpRequest.setRequestHeader('Content-Type', 'application/json');
         httpRequest.send(postdata);
         return httpRequest;
     }
-}
+};

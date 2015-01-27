@@ -1,3 +1,7 @@
+/**
+ * Spectrum for leaftlet namespace
+ * @namespace
+ */
 var Spectrum4Leaflet = {
   Version: '0.1'
 };
