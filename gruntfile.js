@@ -10,7 +10,11 @@ module.exports = function(grunt) {
       dist: {
         src:  [
 		     'src/Spectrum4Leaflet.js',
+		     'src/Util.js',
 		     'src/Request.js',
+		     'src/Services/Operation.js',
+		     'src/Services/Service.js',
+		     'src/Services/MapService.js'
 		],
         dest: 'build/<%= pkg.name %>.js'
       }
@@ -41,7 +45,7 @@ module.exports = function(grunt) {
     },
 	jsdoc : {
 	        dist : {
-	            src: ['src/*.js'], 
+	            src: ['src/**/*.js'], 
 	            options: {
 	                destination: 'doc'
 	            }

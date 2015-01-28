@@ -7,15 +7,16 @@ Spectrum4Leaflet.Request = {
     /**
 	 * Callback function for {Spectrum4Leaflet.Request}
 	 *
-	 * @callback requestCallback
-	 * @param {object} error Error object, with fieds code and message
-	 * @param {object} response Response
+	 * @callback Request.Callback
+	 * @param {Object} error Error object, with fieds code and message
+	 * @param {Object} response Response
 	 */
 
 
     /**
     Creates XMLHttpRequest and binds callbacks
     @private
+    @returns {XMLHttpRequest}
     */
 	_createRequest: function (callback, context){
 	    var httpRequest = new XMLHttpRequest();
@@ -59,8 +60,9 @@ Spectrum4Leaflet.Request = {
     /**
     Runs get request
     @param {string} url Url for request
-    @param {requestCallback} Callback function, when request is done
-    @param {object} context Context for callback
+    @param {Request.Callback} Callback function, when request is done
+    @param {Object} context Context for callback
+    @returns {XMLHttpRequest}
     */
     get: function(url, callback, context){
         var httpRequest = this._createRequest(callback,context);
@@ -73,8 +75,9 @@ Spectrum4Leaflet.Request = {
     Runs post request
     @param {string} url Url for request
     @param {object} postdata Data to send in request body
-    @param {requestCallback} Callback function, when request is done
+    @param {Request.Callback} Callback function, when request is done
     @param {object} context Context for callback
+    @returns {XMLHttpRequest}
     */
     post: function(url, postdata, callback,context){
         var httpRequest = this._createRequest(callback,context);

@@ -1,2 +1,2 @@
 # Spectrum4Leaflet
-Spectrum javascript toolkit for Leafleft
+Spectrum Spatial javascript toolkit for Leafleft

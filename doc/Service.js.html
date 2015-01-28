@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: Spectrum4Leaflet.js</title>
+    <title>JSDoc: Source: Services/Service.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Source: Spectrum4Leaflet.js</h1>
+    <h1 class="page-title">Source: Services/Service.js</h1>
     
     
 
@@ -25,18 +25,51 @@
     
     <section>
         <article>
-            <pre class="prettyprint source"><code>/**
- * Spectrum for leaftlet namespace
- * @namespace
- */
-var Spectrum4Leaflet = {
-  Version: '0.1',
-  Services: {}
-};
+            <pre class="prettyprint source"><code>Spectrum4Leaflet.Services.Service = L.Class.extend(
+/** @lends Spectrum4Leaflet.Services.Service.prototype */
+{ 
 
-if(typeof window !== 'undefined' && window.L){
-  window.L.spectrum4L = Spectrum4Leaflet;
-}</code></pre>
+  /**
+  * Service's options class
+  * @typedef {Object} Services.Service.Options
+  * @property {string} url - Url of service
+  */
+
+  /**
+  @property {Options}  options 
+  */
+  options: {
+  
+  },
+
+  /**
+  @classdesc Base service class
+  @constructs
+  @param {string} url Url of service
+  @param {Options} options Additional options of service
+  */
+  initialize: function (url, options) {
+      options = options || {};
+      options.url = url;
+      L.Util.setOptions(this, options);
+  },
+  
+  /**
+  Starts request to service
+  @returns {XMLHttpRequest}
+  */
+  startRequest: function(operation, callback,context){
+      var separator = (this.options.url.slice(-1) === "/") ? "" : "/";
+      var urlWithQuery = this.options.url + separator +  operation.getUrlQuery();
+	  if (operation.isPostOperation()){
+		  return Spectrum4Leaflet.Request.post(urlWithQuery, operation.getPostData(), callback, context);
+	  }
+	  else{
+		  return Spectrum4Leaflet.Request.get(urlWithQuery, callback, context);
+	  }
+  }
+  
+});</code></pre>
         </article>
     </section>
 
