@@ -36,7 +36,13 @@ Spectrum4Leaflet.Request = {
 	
 	      if (httpRequest.readyState === 4) {
 	        try {
-	          response = JSON.parse(httpRequest.responseText);
+	          var contentType = this.getResponseHeader('content-type');
+	          if (contentType == 'application/json'){
+		          response = JSON.parse(httpRequest.responseText);
+	          }
+	          else{
+		          response = httpRequest.responseText;
+	          }   
 	        } catch(e) {
 	          response = null;
 	          error = {

@@ -4,7 +4,8 @@
  */
 var Spectrum4Leaflet = {
   Version: '0.1',
-  Services: {}
+  Services: {},
+  Layers:{}
 };
 
 if(typeof window !== 'undefined' && window.L){

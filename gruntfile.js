@@ -14,7 +14,8 @@ module.exports = function(grunt) {
 		     'src/Request.js',
 		     'src/Services/Operation.js',
 		     'src/Services/Service.js',
-		     'src/Services/MapService.js'
+		     'src/Services/MapService.js',
+		     'src/Layers/MapServiceLayer.js'
 		],
         dest: 'build/<%= pkg.name %>.js'
       }

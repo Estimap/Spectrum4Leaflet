@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MapServiceLayer example</title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+</head>
+<body>
+	<div id="map" style="width: 600px; height: 400px"></div>
+	<br/>
+	<label for="ssurl">Spectrum Spatial map service url</label>
+	<input type="text" id="ssurl"></input>
+	<br/>
+	<label for="ssurl">Spectrum Spatial map name</label>
+	<input type="text" id="mapname"></input>
+	<input type="button" onclick="addMapServiceLayer()" value="Add" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="../build/Spectrum4Leaflet.js"></script>
+	<script>
+
+		var map = L.map('map').setView([51.505, -0.09], 13);
+        
+		L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+			maxZoom: 18,
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+				'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+			id: 'examples.map-i875mjb7'
+		}).addTo(map);
+		
+		
+		function addMapServiceLayer(){
+			var layer = new Spectrum4Leaflet.Layers.MapServiceLayer(document.getElementById("ssurl").value, document.getElementById("mapname").value, { opacity:0.5 } );
+			layer.addTo(map);
+		}
+
+	</script>
+</body>
+</html>
+

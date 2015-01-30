@@ -32,14 +32,18 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   @returns {XMLHttpRequest}
   */
   startRequest: function(operation, callback,context){
-      var separator = (this.options.url.slice(-1) === "/") ? "" : "/";
-      var urlWithQuery = this.options.url + separator +  operation.getUrlQuery();
+      var urlWithQuery = this.getUrl(operation);
 	  if (operation.isPostOperation()){
 		  return Spectrum4Leaflet.Request.post(urlWithQuery, operation.getPostData(), callback, context);
 	  }
 	  else{
 		  return Spectrum4Leaflet.Request.get(urlWithQuery, callback, context);
 	  }
+  },
+  
+  getUrl: function(operation){
+	  var separator = (this.options.url.slice(-1) === "/") ? "" : "/";
+      return this.options.url + separator +  operation.getUrlQuery();
   }
   
 });
