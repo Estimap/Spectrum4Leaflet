@@ -47,8 +47,23 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   @returns {string}
   */
   getUrl: function(operation){
+      var urlQuery = this.clearParam(operation.getUrlQuery()); 
+      
 	  var separator = (this.options.url.slice(-1) === "/") ? "" : "/";
-      return this.options.url + separator +  operation.getUrlQuery();
+	  
+      return this.options.url + separator +  urlQuery;
+  },
+  
+  /**
+  Clears parameter from "/" at first letter
+  @param {string}
+  @returns {string}
+  */
+  clearParam: function(param){
+	  if (param[0]==="/"){
+	      return param.substring(1);
+      }
+      return param;
   }
   
 });

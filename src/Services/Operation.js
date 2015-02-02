@@ -16,9 +16,6 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
   @property {Options}  options 
   */
   options: {
-      name : "",
-      getParams :{},
-      postParams :{},
       forcePost :false,
       paramsSeparator: ";",
       queryStartCharacter:";"
@@ -31,9 +28,11 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
   @param {Options} options Additional options of operation
   */
   initialize: function(name,options) {
+      this.options.getParams = {};
+      this.options.postParams = {};
       options = options || {};
       options.name=name;
-      L.Util.setOptions(this, options);
+      L.setOptions(this, options);
   },
   
   /**
@@ -50,7 +49,7 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
           if(params.hasOwnProperty(key)){
              var param = params[key];
              
-             keyValueArray.push(key + "=" + param);
+             keyValueArray.push(key + "=" + encodeURIComponent(param));
           }
       }
       var query = this.options.name;

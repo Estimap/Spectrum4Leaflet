@@ -26,7 +26,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     @param {Object} context Context for callback
     */
     describeNamedLayer : function(layerName, locale, callback, context){  
-        var operation = new Spectrum4Leaflet.Services.Operation("layers/"+ layerName);
+        var operation = new Spectrum4Leaflet.Services.Operation("layers/"+ this.clearParam(layerName) + ".json");
         this._addResolutionAndLocale(operation,null,locale);
 	    this.startRequest(operation, callback, context);
     },
@@ -38,7 +38,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     @param {Object} context Context for callback
     */
     describeNamedLayers : function(layerNames, callback, context){  
-        var operation = new Spectrum4Leaflet.Services.Operation("layers.json", { paramsSeparator : "&", queryStartCharacter : "?" } );
+        var operation = new Spectrum4Leaflet.Services.Operation("layers.json", {  paramsSeparator : "&", queryStartCharacter : "?" } );
         
         var layersString = layerNames.join(",");
         if (layersString.length<1000){
@@ -72,7 +72,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     @param {Object} context Context for callback
     */
     describeNamedMap : function(mapName, locale, callback, context){  
-        var operation = new Spectrum4Leaflet.Services.Operation("maps/"+ mapName);
+        var operation = new Spectrum4Leaflet.Services.Operation("maps/"+ this.clearParam(mapName)+ ".json");
         this._addResolutionAndLocale(operation,null,locale);
 	    this.startRequest(operation, callback, context);
     },
@@ -89,7 +89,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
         var mapsString = mapNames.join(",");
         if (mapsString.length<1000){
 	        operation.options.getParams.q = "describe";
-	        operation.options.getParams.layers = mapsString;
+	        operation.options.getParams.maps = mapsString;
         } 
         else{
 	        operation.options.postParams = { "Maps" : mapNames };
@@ -102,7 +102,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     @private
     */
     _createRenderOperation:function (mapName, imageType,width,height,bounds,cx,cy,scale,zoom,srs,resolution,locale, rd,bc,bo, additionalParams, callback, context){
-	    var operation = new Spectrum4Leaflet.Services.Operation("maps/"+ mapName+"."+imageType);
+	    var operation = new Spectrum4Leaflet.Services.Operation("maps/"+ this.clearParam(mapName)+"/image."+imageType);
 	    operation.options.getParams.w = width;
 	    operation.options.getParams.h = height;
 	    if (bounds){
@@ -136,7 +136,9 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 	    
 	    if (additionalParams){
 		    operation.options.postParams = additionalParams;
-	    }	    
+	    }
+	    
+	    return operation;	    
     },
 
     /**
@@ -298,7 +300,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     @param {Object} context Context for callback
     */
     getLegendForMap: function(mapName ,width, height, imageType, resolution,locale, inlineSwatch,callback, context){
-	    var operation = new Spectrum4Leaflet.Services.Operation("maps/"+ mapName+"/legend.json");
+	    var operation = new Spectrum4Leaflet.Services.Operation("maps/"+ this.clearParam(mapName)+"/legend.json");
 	    operation.options.getParams.w = width;
 	    operation.options.getParams.h = height;
 	    operation.options.getParams.t = imageType;
@@ -324,7 +326,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     @param {Object} context Context for callback
     */
     getSwatchForLayer: function(mapName,legendIndex,rowIndex,width, height, imageType,resolution, locale, callback, context){
-	    var operation = new Spectrum4Leaflet.Services.Operation("maps/"+ mapName+
+	    var operation = new Spectrum4Leaflet.Services.Operation("maps/"+ this.clearParam(mapName)+
 	                                                            "/legends/"+legendIndex + 
 	                                                             "/rows/" + rowIndex + 
 	                                                             "/swatch/" + width + "x" + height + "." + imageType);
@@ -344,7 +346,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     @returns {string}
     */
     getUrlSwatchForLayer: function(mapName,legendIndex,rowIndex,width, height, imageType,resolution, locale){
-	    var operation = new Spectrum4Leaflet.Services.Operation("maps/"+ mapName+
+	    var operation = new Spectrum4Leaflet.Services.Operation("maps/"+ this.clearParam(mapName)+
 	                                                            "/legends/"+legendIndex + 
 	                                                             "/rows/" + rowIndex + 
 	                                                             "/swatch/" + width + "x" + height + "." + imageType);
