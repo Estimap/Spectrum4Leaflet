@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Operation</title>
+    <title>JSDoc: Class: Service</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: Operation</h1>
+    <h1 class="page-title">Class: Service</h1>
     
     
 
@@ -29,10 +29,8 @@
     <h2>
         <span class="ancestors"><a href="Spectrum4Leaflet.html">Spectrum4Leaflet</a><a href="Spectrum4Leaflet.Services.html">.Services</a>.</span>
     
-    Operation
+    Service
     </h2>
-    
-        <div class="class-description">Service operation class</div>
     
 </header>  
 
@@ -43,7 +41,7 @@
     
         
 <dt>
-    <h4 class="name" id="Operation"><span class="type-signature"></span>new Operation<span class="signature">(name, options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Service"><span class="type-signature"></span>new Service<span class="signature">(url, options)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -81,7 +79,7 @@
 	
         <tr>
             
-                <td class="name"><code>name</code></td>
+                <td class="name"><code>url</code></td>
             
             
             <td class="type">
@@ -97,7 +95,7 @@
             
             
             
-            <td class="description last">Name of operation</td>
+            <td class="description last">Url of service</td>
         </tr>
 	
 	
@@ -110,7 +108,7 @@
             <td class="type">
             
                 
-<span class="param-type">Options</span>
+<span class="param-type"><a href="Services.Service.html#Options">Services.Service.Options</a></span>
 
 
             
@@ -120,7 +118,7 @@
             
             
             
-            <td class="description last">Additional options of operation</td>
+            <td class="description last">Additional options of service</td>
         </tr>
 	
 	
@@ -151,7 +149,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Operation.js.html">Services/Operation.js</a>, <a href="Operation.js.html#line33">line 33</a>
+        <a href="Service.js.html">Services/Service.js</a>, <a href="Service.js.html#line26">line 26</a>
     </li></ul></dd>
     
     
@@ -240,7 +238,7 @@
             <td class="type">
             
                 
-<span class="param-type">Options</span>
+<span class="param-type"><a href="Services.Service.html#Options">Services.Service.Options</a></span>
 
 
             
@@ -278,7 +276,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Operation.js.html">Services/Operation.js</a>, <a href="Operation.js.html#line18">line 18</a>
+        <a href="Service.js.html">Services/Service.js</a>, <a href="Service.js.html#line17">line 17</a>
     </li></ul></dd>
     
     
@@ -302,7 +300,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="getPostData"><span class="type-signature"></span>getPostData<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id="getUrl"><span class="type-signature"></span>getUrl<span class="signature">(operation)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
     
 </dt>
@@ -310,7 +308,7 @@
     
     
     <div class="description">
-        Creates string representation of postParams
+        Returns full url query for service
     </div>
     
 
@@ -318,6 +316,54 @@
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>operation</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Spectrum4Leaflet.Services.Operation.html">Spectrum4Leaflet.Services.Operation</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -343,7 +389,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Operation.js.html">Services/Operation.js</a>, <a href="Operation.js.html#line70">line 70</a>
+        <a href="Service.js.html">Services/Service.js</a>, <a href="Service.js.html#line51">line 51</a>
     </li></ul></dd>
     
     
@@ -389,7 +435,7 @@
         
             
 <dt>
-    <h4 class="name" id="getUrlQuery"><span class="type-signature"></span>getUrlQuery<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id="startRequest"><span class="type-signature"></span>startRequest<span class="signature">()</span><span class="type-signature"> &rarr; {XMLHttpRequest}</span></h4>
     
     
 </dt>
@@ -397,7 +443,7 @@
     
     
     <div class="description">
-        Builds query for url by name and getParams of operation
+        Starts request to service
     </div>
     
 
@@ -430,7 +476,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Operation.js.html">Services/Operation.js</a>, <a href="Operation.js.html#line43">line 43</a>
+        <a href="Service.js.html">Services/Service.js</a>, <a href="Service.js.html#line36">line 36</a>
     </li></ul></dd>
     
     
@@ -462,94 +508,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">string</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="isPostOperation"><span class="type-signature"></span>isPostOperation<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Check if operation should use only post request
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Operation.js.html">Services/Operation.js</a>, <a href="Operation.js.html#line78">line 78</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">boolean</span>
+<span class="param-type">XMLHttpRequest</span>
 
 
 	</dd>
@@ -576,13 +535,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Spectrum4Leaflet.Request.html">Request</a></li><li><a href="Spectrum4Leaflet.Services.MapService.html">MapService</a></li><li><a href="Spectrum4Leaflet.Services.Operation.html">Operation</a></li><li><a href="Spectrum4Leaflet.Services.Service.html">Service</a></li><li><a href="Spectrum4Leaflet.Util.html">Util</a></li></ul><h3>Namespaces</h3><ul><li><a href="Spectrum4Leaflet.html">Spectrum4Leaflet</a></li><li><a href="Spectrum4Leaflet.Services.html">Services</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Spectrum4Leaflet.Request.html">Request</a></li><li><a href="Spectrum4Leaflet.Services.MapService.html">MapService</a></li><li><a href="Spectrum4Leaflet.Services.Operation.html">Operation</a></li><li><a href="Spectrum4Leaflet.Services.html#Service">Service</a></li><li><a href="Spectrum4Leaflet.Util.html">Util</a></li></ul><h3>Namespaces</h3><ul><li><a href="Spectrum4Leaflet.html">Spectrum4Leaflet</a></li><li><a href="Spectrum4Leaflet.Services.html">Services</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Mon Feb 02 2015 04:08:23 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Mon Feb 02 2015 04:07:15 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -9,7 +9,7 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   */
 
   /**
-  @property {Options}  options 
+  @property {Services.Service.Options}  options 
   */
   options: {
   
@@ -19,7 +19,7 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   @classdesc Base service class
   @constructs
   @param {string} url Url of service
-  @param {Options} options Additional options of service
+  @param {Services.Service.Options} options Additional options of service
   */
   initialize: function (url, options) {
       options = options || {};
@@ -41,6 +41,11 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
 	  }
   },
   
+  /**
+  Returns full url query for service
+  @param {Spectrum4Leaflet.Services.Operation}
+  @returns {string}
+  */
   getUrl: function(operation){
 	  var separator = (this.options.url.slice(-1) === "/") ? "" : "/";
       return this.options.url + separator +  operation.getUrlQuery();

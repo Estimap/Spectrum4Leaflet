@@ -28,7 +28,7 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Class.extend({
 	    var nw = this._srs.project(this._bounds.getNorthWest());
 	    var se = this._srs.project(this._bounds.getSouthEast());
 	    
-	    this._url = this._service.getUrlRenderMap(this._mapName ,  this.options.imageType ,this._size.x,this._size.y,[ nw.x, nw.y, se.x,se.y ], this._srs.code);
+	    this._url = this._service.getUrlRenderMapByBounds(this._mapName ,  this.options.imageType ,this._size.x,this._size.y,[ nw.x, nw.y, se.x,se.y ], this._srs.code);
 		if (!this._image) {
 			this._initImage();
 
@@ -224,7 +224,7 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Class.extend({
 	   var nw = this._srs.project(this._bounds.getNorthWest());
 	   var se = this._srs.project(this._bounds.getSouthEast());
 	   this._size = this._map.getSize();	
-	   this.setUrl(this._service.getUrlRenderMap(this._mapName , this.options.imageType ,this._size.x,this._size.y,[ nw.x, nw.y, se.x,se.y ], this._srs.code));
+	   this.setUrl(this._service.getUrlRenderMapByBounds(this._mapName , this.options.imageType ,this._size.x,this._size.y,[ nw.x, nw.y, se.x,se.y ], this._srs.code));
 	   //this._reset();
 	},
 

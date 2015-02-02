@@ -4,7 +4,14 @@
  */
 var Spectrum4Leaflet = {
   Version: '0.1',
+  
+  /**
+  * Spectrum's services
+  * @namespace
+  */
   Services: {},
+  
+  
   Layers:{}
 };
 
