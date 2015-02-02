@@ -294,12 +294,13 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     @param {number} width Width of the individual legend swatch in pixels
     @param {number} height Height of the individual legend swatch in pixels
     @param {string} imageType The type of images to return for the legend swatches(e.g., gif, png, etc)
+    @param {boolean} inlineSwatch Determines if the swatch images are returned as data or URL to the image location on the server
     @param {number} resolution The DPI resolution of the legend swatches as an integer.
     @param {string} locale Locale
     @param {Request.Callback} callback Callback of the function
     @param {Object} context Context for callback
     */
-    getLegendForMap: function(mapName ,width, height, imageType, resolution,locale, inlineSwatch,callback, context){
+    getLegendForMap: function(mapName ,width, height, imageType, inlineSwatch, resolution,locale,callback, context){
 	    var operation = new Spectrum4Leaflet.Services.Operation("maps/"+ this.clearParam(mapName)+"/legend.json");
 	    operation.options.getParams.w = width;
 	    operation.options.getParams.h = height;
@@ -307,7 +308,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 	    this._addResolutionAndLocale(operation,resolution,locale);
 	    
 	    // I WANT TO KILL PB DEVELOPERS FOR THIS "?" IN QUERY
-	    if (inlineSwatch){
+	    if (inlineSwatch!==null){
 		    operation.options.getParams["?inlineSwatch"] = inlineSwatch;
 	    }
 	    this.startRequest(operation, callback, context);

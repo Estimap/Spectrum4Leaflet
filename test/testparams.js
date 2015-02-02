@@ -79,6 +79,17 @@ server.handle = function (request) {
 								  ]
 								} );
 	    break;
+	    case 'http://MappingService/maps/Samples/NamedMaps/MapWithLayer/legend.json;w=32;h=32;t=gif;?inlineSwatch=false':
+               recieve(request,        {
+									      "layerName": "World Capitals",
+									      "rows": [      {
+									        "description": "Point",
+									        "swatch": "http://www.pbbi.com/MappingService/services/rest/maps/Samples/NamedMaps/MapWithLayer/legends/0/rows/0/swatch/16x32.png"
+									      }],
+									      "title": "World Capitals",
+									      "type": "CARTOGRAPHIC"
+									    } );
+	    break;
 	    default:
             recieve(request, "I am Bender, please insert girder!","application/robot");
 	    break;

@@ -152,3 +152,36 @@ test( "Services.MapService.getUrlRenderMap tests", function() {
           service.getUrlRenderMapByBounds("Samples/NamedMaps/WorldMap","png",640,480,[-10,-10,10,10],"epsg:4326",72,"en_US"),
           "getUrlRenderMapByCenterZoom" );
 });
+
+asyncTest("Services.MapService.getLegendForMap test", function() {
+    expect(1);
+    
+    var returnJsonData = null; 
+
+    var callback = function(error, response) {
+	    returnJsonData = response;
+    };
+
+    var service = new Spectrum4Leaflet.Services.MapService("http://MappingService/");
+    
+    service.getLegendForMap("/Samples/NamedMaps/MapWithLayer", 32,32,"gif", false, null,null ,callback,{});
+
+    function theTest() {         
+        equal(returnJsonData.layerName, 
+              "World Capitals", 
+              "Server should return legend info ");
+        start();
+    }
+
+    setTimeout(theTest, servicetimeout); 
+});
+
+test( "Services.MapService.getUrlSwatchForLayer tests", function() {
+
+   var service = new Spectrum4Leaflet.Services.MapService("http://MappingService/");
+   
+   equal("http://MappingService/maps/Samples/NamedMaps/WorldMap/legends/0/rows/0/swatch/32x32.png;r=96",
+          service.getUrlSwatchForLayer("Samples/NamedMaps/WorldMap",0,0,32,32,"png",96),
+          "getUrlSwatchForLayer" );
+          
+});
