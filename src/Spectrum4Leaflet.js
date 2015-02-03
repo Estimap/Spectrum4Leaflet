@@ -3,7 +3,7 @@
  * @namespace
  */
 var Spectrum4Leaflet = {
-  Version: '0.1',
+  Version: '0.1.0',
   
   /**
   * Spectrum's services
@@ -11,8 +11,19 @@ var Spectrum4Leaflet = {
   */
   Services: {},
   
+  /**
+  * Spectrum's services
+  * @namespace
+  */
+  Layers:{},
   
-  Layers:{}
+  /**
+  * Environment values
+  * @namespace
+  */
+  Support: {
+    CORS: !!(window.XMLHttpRequest && 'withCredentials' in new XMLHttpRequest())
+  }
 };
 
 if(typeof window !== 'undefined' && window.L){

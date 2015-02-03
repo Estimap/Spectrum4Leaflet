@@ -6,13 +6,17 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   * Service's options class
   * @typedef {Object} Services.Service.Options
   * @property {string} url - Url of service
+  * @property {string} proxyUrl - proxy url 
+  * @property {string} alwaysUseProxy - use proxy for get requests
+  * @property {string} forceGet - always do not use jsonp
   */
 
   /**
   @property {Services.Service.Options}  options 
   */
   options: {
-  
+      alwaysUseProxy:false,
+      forceGet : false
   },
 
   /**
@@ -34,10 +38,19 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   startRequest: function(operation, callback,context){
       var urlWithQuery = this.getUrl(operation);
 	  if (operation.isPostOperation()){
-		  return Spectrum4Leaflet.Request.post(urlWithQuery, operation.getPostData(), callback, context);
+	      if (this.options.proxyUrl){
+		      urlWithQuery = this.options.proxyUrl + "?" + urlWithQuery;
+	      }
+		  return Spectrum4Leaflet.Request.post(urlWithQuery, operation.getPostData(), operation.getPostType(), callback, context);
 	  }
 	  else{
-		  return Spectrum4Leaflet.Request.get(urlWithQuery, callback, context);
+	      if (this.options.alwaysUseProxy){
+		      urlWithQuery = this.options.proxyUrl + "?" + urlWithQuery;
+		      return Spectrum4Leaflet.Request.get(urlWithQuery, callback, context);
+	      }
+		  return ( this.options.forceGet | Spectrum4Leaflet.Support.CORS ) ? 
+		             Spectrum4Leaflet.Request.get(urlWithQuery, callback, context):
+		             Spectrum4Leaflet.Request.jsonp(urlWithQuery,"?", callback, context);
 	  }
   },
   
@@ -47,11 +60,9 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   @returns {string}
   */
   getUrl: function(operation){
-      var urlQuery = this.clearParam(operation.getUrlQuery()); 
-      
-	  var separator = (this.options.url.slice(-1) === "/") ? "" : "/";
-	  
-      return this.options.url + separator +  urlQuery;
+      var urlQuery = this.clearParam(operation.getUrlQuery());     
+	  var separator = (this.options.url.slice(-1) === "/") ? "" : "/";  
+      return   this.options.url + separator +  urlQuery;
   },
   
   /**

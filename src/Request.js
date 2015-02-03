@@ -1,3 +1,7 @@
+var callbacks = 0;
+
+window._Spectrum4LeafletCallbacks = {};
+
 /**
 @classdesc Simple Wraper on XMLHttpRequest, has simple get and post functions
 @constructor
@@ -78,6 +82,60 @@ Spectrum4Leaflet.Request = {
     },
     
     /**
+    Runs get request by JSONP pattern 
+    @param {string} url Url for request
+    @param {Request.Callback} Callback function, when request is done
+    @param {Object} context Context for callback
+    @returns {XMLHttpRequest}
+    */
+    jsonp: function(url, callbackSeparator, callback,context){
+	    var callbackId = 'c' + callbacks;
+
+        var script = L.DomUtil.create('script', null, document.body);
+        script.type = 'text/javascript';
+        script.src = url + callbackSeparator + "callback=window._Spectrum4LeafletCallbacks." + callbackId;
+        script.id = callbackId;
+
+        window._Spectrum4LeafletCallbacks[callbackId] = function(response){
+          if(window._Spectrum4LeafletCallbacks[callbackId] !== true){
+            var error;
+            var responseType = Object.prototype.toString.call(response);
+
+            if(!(responseType === '[object Object]' || responseType === '[object Array]')){
+              error = {
+                error: {
+                  code: 500,
+                  message: 'Expected array or object as JSONP response'
+                }
+              };
+              response = null;
+            }
+
+            if (!error && response.error) {
+              error = response;
+              response = null;
+            }
+
+            callback.call(context, error, response);
+            window._Spectrum4LeafletCallbacks[callbackId] = true;
+          }
+        };
+
+        callbacks++;
+
+        return {
+          id: callbackId,
+          url: script.src,
+          abort: function(){
+            window._Spectrum4LeafletCallbacks._callback[callbackId]({
+              code: 0,
+              message: 'Request aborted.'
+            });
+          }
+        };
+    },
+    
+    /**
     Runs post request
     @param {string} url Url for request
     @param {object} postdata Data to send in request body
@@ -85,10 +143,10 @@ Spectrum4Leaflet.Request = {
     @param {object} context Context for callback
     @returns {XMLHttpRequest}
     */
-    post: function(url, postdata, callback,context){
+    post: function(url, postdata, posttype, callback,context){
         var httpRequest = this._createRequest(callback,context);
         httpRequest.open('POST', url, true);
-        httpRequest.setRequestHeader('Content-Type', 'application/json');
+        httpRequest.setRequestHeader('Content-Type', posttype);
         httpRequest.send(postdata);
         return httpRequest;
     }

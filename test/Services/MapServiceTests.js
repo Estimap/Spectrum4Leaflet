@@ -146,7 +146,7 @@ test( "Services.MapService.getUrlRenderMap tests", function() {
           
    equal("http://MappingService/maps/Samples/NamedMaps/WorldMap/image.png;w=640;h=480;c=-2.5%2C38.5%2Cepsg%3A4326;s=10000000;r=96;l=en_US",
           service.getUrlRenderMapByCenterScale("Samples/NamedMaps/WorldMap","png",640,480,-2.5,38.5,10000000,"epsg:4326",96,"en_US"),
-          "getUrlRenderMapByCenterScale" );
+          "getUrlRenderMapByCenterScale");
           
    equal("http://MappingService/maps/Samples/NamedMaps/WorldMap/image.png;w=640;h=480;b=-10%2C-10%2C10%2C10%2Cepsg%3A4326;r=72;l=en_US",
           service.getUrlRenderMapByBounds("Samples/NamedMaps/WorldMap","png",640,480,[-10,-10,10,10],"epsg:4326",72,"en_US"),

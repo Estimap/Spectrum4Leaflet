@@ -24,6 +24,10 @@ server.handle = function (request) {
                recieve(request, JSON.parse (request.requestText) );
 	        }
 	    break;
+	    case 'http://requesttest/;callback=window._Spectrum4LeafletCallbacks.c0':
+	           request.setResponseHeader("Content-Type", "application/json");
+	           request.receive(200, " { window._Spectrum4LeafletCallbacks.c0(\"test\": \"success\" });" );
+	    break;
 	    case 'http://MappingService/layers.json;l=en_US':
                recieve(request , { "listNamedLayersResponse": {"namedLayersList": ["/Samples/NamedLayers/WorldFeatureLayer"] } } );
 	    break;

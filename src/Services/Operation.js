@@ -5,11 +5,12 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
   /**
   * Operation's options class
   * @typedef {Object}  Services.Service.Options
-  * @property {string} name - Name of operation
-  * @property {Object} getParams - Params for get request
-  * @property {Object} postParams - Params for post request
-  * @property {boolean} forcePost - Is true if opertaion should use post request
-  * @property {string} paramsSeparator - Separator for get params in url
+  * @property {string} name Name of operation
+  * @property {Object} getParams Params for get request
+  * @property {Object} postParams Params for post request
+  * @property {boolean} forcePost Is true if opertaion should use post request
+  * @property {string} paramsSeparator Separator for get params in url
+  * @property {string} postType Type of post data. Default is "application/json"
   */
 
   /**
@@ -18,7 +19,8 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
   options: {
       forcePost :false,
       paramsSeparator: ";",
-      queryStartCharacter:";"
+      queryStartCharacter:";",
+      postType : "application/json"
   },
 
   /**
@@ -68,6 +70,14 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
   */
   getPostData: function(){
 	  return JSON.stringify(this.options.postParams);
+  },
+  
+  /**
+  Creates string representation of postParams
+  @returns {string}
+  */
+  getPostType: function(){
+	  return this.options.postType;
   },
   
   /**
