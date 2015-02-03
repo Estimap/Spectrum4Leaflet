@@ -3,7 +3,7 @@
  * @namespace
  */
 var Spectrum4Leaflet = {
-  Version: '0.1',
+  Version: '0.1.0',
   
   /**
   * Spectrum's services
@@ -11,8 +11,19 @@ var Spectrum4Leaflet = {
   */
   Services: {},
   
+  /**
+  * Spectrum's services
+  * @namespace
+  */
+  Layers:{},
   
-  Layers:{}
+  /**
+  * Environment values
+  * @namespace
+  */
+  Support: {
+    CORS: !!(window.XMLHttpRequest && 'withCredentials' in new XMLHttpRequest())
+  }
 };
 
 if(typeof window !== 'undefined' && window.L){
@@ -23,7 +34,11 @@ if(typeof window !== 'undefined' && window.L){
 */
 Spectrum4Leaflet.Util = {
     
-};;/**
+};;var callbacks = 0;
+
+window._Spectrum4LeafletCallbacks = {};
+
+/**
 @classdesc Simple Wraper on XMLHttpRequest, has simple get and post functions
 @constructor
 */
@@ -103,6 +118,60 @@ Spectrum4Leaflet.Request = {
     },
     
     /**
+    Runs get request by JSONP pattern 
+    @param {string} url Url for request
+    @param {Request.Callback} Callback function, when request is done
+    @param {Object} context Context for callback
+    @returns {XMLHttpRequest}
+    */
+    jsonp: function(url, callbackSeparator, callback,context){
+	    var callbackId = 'c' + callbacks;
+
+        var script = L.DomUtil.create('script', null, document.body);
+        script.type = 'text/javascript';
+        script.src = url + callbackSeparator + "callback=window._Spectrum4LeafletCallbacks." + callbackId;
+        script.id = callbackId;
+
+        window._Spectrum4LeafletCallbacks[callbackId] = function(response){
+          if(window._Spectrum4LeafletCallbacks[callbackId] !== true){
+            var error;
+            var responseType = Object.prototype.toString.call(response);
+
+            if(!(responseType === '[object Object]' || responseType === '[object Array]')){
+              error = {
+                error: {
+                  code: 500,
+                  message: 'Expected array or object as JSONP response'
+                }
+              };
+              response = null;
+            }
+
+            if (!error && response.error) {
+              error = response;
+              response = null;
+            }
+
+            callback.call(context, error, response);
+            window._Spectrum4LeafletCallbacks[callbackId] = true;
+          }
+        };
+
+        callbacks++;
+
+        return {
+          id: callbackId,
+          url: script.src,
+          abort: function(){
+            window._Spectrum4LeafletCallbacks._callback[callbackId]({
+              code: 0,
+              message: 'Request aborted.'
+            });
+          }
+        };
+    },
+    
+    /**
     Runs post request
     @param {string} url Url for request
     @param {object} postdata Data to send in request body
@@ -110,10 +179,10 @@ Spectrum4Leaflet.Request = {
     @param {object} context Context for callback
     @returns {XMLHttpRequest}
     */
-    post: function(url, postdata, callback,context){
+    post: function(url, postdata, posttype, callback,context){
         var httpRequest = this._createRequest(callback,context);
         httpRequest.open('POST', url, true);
-        httpRequest.setRequestHeader('Content-Type', 'application/json');
+        httpRequest.setRequestHeader('Content-Type', posttype);
         httpRequest.send(postdata);
         return httpRequest;
     }
@@ -124,11 +193,12 @@ Spectrum4Leaflet.Request = {
   /**
   * Operation's options class
   * @typedef {Object}  Services.Service.Options
-  * @property {string} name - Name of operation
-  * @property {Object} getParams - Params for get request
-  * @property {Object} postParams - Params for post request
-  * @property {boolean} forcePost - Is true if opertaion should use post request
-  * @property {string} paramsSeparator - Separator for get params in url
+  * @property {string} name Name of operation
+  * @property {Object} getParams Params for get request
+  * @property {Object} postParams Params for post request
+  * @property {boolean} forcePost Is true if opertaion should use post request
+  * @property {string} paramsSeparator Separator for get params in url
+  * @property {string} postType Type of post data. Default is "application/json"
   */
 
   /**
@@ -137,7 +207,8 @@ Spectrum4Leaflet.Request = {
   options: {
       forcePost :false,
       paramsSeparator: ";",
-      queryStartCharacter:";"
+      queryStartCharacter:";",
+      postType : "application/json"
   },
 
   /**
@@ -190,6 +261,14 @@ Spectrum4Leaflet.Request = {
   },
   
   /**
+  Creates string representation of postParams
+  @returns {string}
+  */
+  getPostType: function(){
+	  return this.options.postType;
+  },
+  
+  /**
   Check if operation should use only post request
   @returns {boolean}
   */
@@ -205,13 +284,17 @@ Spectrum4Leaflet.Request = {
   * Service's options class
   * @typedef {Object} Services.Service.Options
   * @property {string} url - Url of service
+  * @property {string} proxyUrl - proxy url 
+  * @property {string} alwaysUseProxy - use proxy for get requests
+  * @property {string} forceGet - always do not use jsonp
   */
 
   /**
   @property {Services.Service.Options}  options 
   */
   options: {
-  
+      alwaysUseProxy:false,
+      forceGet : false
   },
 
   /**
@@ -233,10 +316,19 @@ Spectrum4Leaflet.Request = {
   startRequest: function(operation, callback,context){
       var urlWithQuery = this.getUrl(operation);
 	  if (operation.isPostOperation()){
-		  return Spectrum4Leaflet.Request.post(urlWithQuery, operation.getPostData(), callback, context);
+	      if (this.options.proxyUrl){
+		      urlWithQuery = this.options.proxyUrl + "?" + urlWithQuery;
+	      }
+		  return Spectrum4Leaflet.Request.post(urlWithQuery, operation.getPostData(), operation.getPostType(), callback, context);
 	  }
 	  else{
-		  return Spectrum4Leaflet.Request.get(urlWithQuery, callback, context);
+	      if (this.options.alwaysUseProxy){
+		      urlWithQuery = this.options.proxyUrl + "?" + urlWithQuery;
+		      return Spectrum4Leaflet.Request.get(urlWithQuery, callback, context);
+	      }
+		  return ( this.options.forceGet | Spectrum4Leaflet.Support.CORS ) ? 
+		             Spectrum4Leaflet.Request.get(urlWithQuery, callback, context):
+		             Spectrum4Leaflet.Request.jsonp(urlWithQuery,"?", callback, context);
 	  }
   },
   
@@ -246,11 +338,9 @@ Spectrum4Leaflet.Request = {
   @returns {string}
   */
   getUrl: function(operation){
-      var urlQuery = this.clearParam(operation.getUrlQuery()); 
-      
-	  var separator = (this.options.url.slice(-1) === "/") ? "" : "/";
-	  
-      return this.options.url + separator +  urlQuery;
+      var urlQuery = this.clearParam(operation.getUrlQuery());     
+	  var separator = (this.options.url.slice(-1) === "/") ? "" : "/";  
+      return   this.options.url + separator +  urlQuery;
   },
   
   /**
@@ -561,12 +651,13 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     @param {number} width Width of the individual legend swatch in pixels
     @param {number} height Height of the individual legend swatch in pixels
     @param {string} imageType The type of images to return for the legend swatches(e.g., gif, png, etc)
+    @param {boolean} inlineSwatch Determines if the swatch images are returned as data or URL to the image location on the server
     @param {number} resolution The DPI resolution of the legend swatches as an integer.
     @param {string} locale Locale
     @param {Request.Callback} callback Callback of the function
     @param {Object} context Context for callback
     */
-    getLegendForMap: function(mapName ,width, height, imageType, resolution,locale, inlineSwatch,callback, context){
+    getLegendForMap: function(mapName ,width, height, imageType, inlineSwatch, resolution,locale,callback, context){
 	    var operation = new Spectrum4Leaflet.Services.Operation("maps/"+ this.clearParam(mapName)+"/legend.json");
 	    operation.options.getParams.w = width;
 	    operation.options.getParams.h = height;
@@ -574,7 +665,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 	    this._addResolutionAndLocale(operation,resolution,locale);
 	    
 	    // I WANT TO KILL PB DEVELOPERS FOR THIS "?" IN QUERY
-	    if (inlineSwatch){
+	    if (inlineSwatch!==null){
 		    operation.options.getParams["?inlineSwatch"] = inlineSwatch;
 	    }
 	    this.startRequest(operation, callback, context);
