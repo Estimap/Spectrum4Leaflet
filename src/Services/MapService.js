@@ -102,7 +102,12 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     @private
     */
     _createRenderOperation:function (mapName, imageType,width,height,bounds,cx,cy,scale,zoom,srs,resolution,locale, rd,bc,bo, additionalParams, callback, context){
-	    var operation = new Spectrum4Leaflet.Services.Operation("maps/"+ this.clearParam(mapName)+"/image."+imageType);
+       
+        mapName = this.clearParam(mapName);
+        if (mapName !== ''){
+	        mapName = "/"+mapName;
+        }
+	    var operation = new Spectrum4Leaflet.Services.Operation("maps"+ mapName+"/image."+imageType);
 	    operation.options.getParams.w = width;
 	    operation.options.getParams.h = height;
 	    if (bounds){
@@ -172,7 +177,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     @param {Object} context Context for callback
     */
     renderMapByBounds: function(mapName, imageType,width,height,bounds,srs,resolution,locale, rd,bc,bo, additionalParams, callback, context){
-	    var operation = this._createRenderOperation(mapName, imageType, width, height, bounds,null,null,null,null,srs,resolution,locale,rd,bc,bo);
+	    var operation = this._createRenderOperation(mapName, imageType, width, height, bounds,null,null,null,null,srs,resolution,locale,rd,bc,bo,additionalParams);
 	    this.startRequest(operation, callback, context);
     },
     

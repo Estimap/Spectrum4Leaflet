@@ -191,8 +191,26 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 				this._updateOpacity();
 			}
 		}
-	
-	    this._setUrl(
+		
+		if (this._postData){
+			this._service.renderMapByBounds(
+	                this._mapName , 
+	                this.options.imageType,
+	                size.x,
+	                size.y,
+	                [ nw.x, nw.y, se.x,se.y ], 
+	                this._srs.code,
+	                null,
+	                null,
+	                null,
+	                null,
+	                null,
+	                this._postData,
+	                this._postLoad,
+	                this);
+		}
+		else{
+			this._setUrl(
 	           this._service.getUrlRenderMapByBounds(
 	                this._mapName , 
 	                this.options.imageType,
@@ -200,6 +218,11 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 	                size.y,
 	                [ nw.x, nw.y, se.x,se.y ], 
 	                this._srs.code));
+		}
+	},
+	
+	_postLoad:function(error,response){
+		this._image.src = window.URL.createObjectURL(response);
 	},
 	
 	_updateOpacity: function () {

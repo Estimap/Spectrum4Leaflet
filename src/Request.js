@@ -46,7 +46,7 @@
 			          response = JSON.parse(httpRequest.responseText);
 		          }
 		          else{
-			          response = httpRequest.responseText;
+			          response = httpRequest.response;
 		          }   
 		        } catch(e) {
 		          response = null;

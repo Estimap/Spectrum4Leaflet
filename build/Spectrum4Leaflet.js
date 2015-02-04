@@ -82,7 +82,7 @@ Spectrum4Leaflet.Util = {
 			          response = JSON.parse(httpRequest.responseText);
 		          }
 		          else{
-			          response = httpRequest.responseText;
+			          response = httpRequest.response;
 		          }   
 		        } catch(e) {
 		          response = null;
@@ -477,7 +477,12 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     @private
     */
     _createRenderOperation:function (mapName, imageType,width,height,bounds,cx,cy,scale,zoom,srs,resolution,locale, rd,bc,bo, additionalParams, callback, context){
-	    var operation = new Spectrum4Leaflet.Services.Operation("maps/"+ this.clearParam(mapName)+"/image."+imageType);
+       
+        mapName = this.clearParam(mapName);
+        if (mapName !== ''){
+	        mapName = "/"+mapName;
+        }
+	    var operation = new Spectrum4Leaflet.Services.Operation("maps"+ mapName+"/image."+imageType);
 	    operation.options.getParams.w = width;
 	    operation.options.getParams.h = height;
 	    if (bounds){
@@ -547,7 +552,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     @param {Object} context Context for callback
     */
     renderMapByBounds: function(mapName, imageType,width,height,bounds,srs,resolution,locale, rd,bc,bo, additionalParams, callback, context){
-	    var operation = this._createRenderOperation(mapName, imageType, width, height, bounds,null,null,null,null,srs,resolution,locale,rd,bc,bo);
+	    var operation = this._createRenderOperation(mapName, imageType, width, height, bounds,null,null,null,null,srs,resolution,locale,rd,bc,bo,additionalParams);
 	    this.startRequest(operation, callback, context);
     },
     
@@ -928,8 +933,26 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 				this._updateOpacity();
 			}
 		}
-	
-	    this._setUrl(
+		
+		if (this._postData){
+			this._service.renderMapByBounds(
+	                this._mapName , 
+	                this.options.imageType,
+	                size.x,
+	                size.y,
+	                [ nw.x, nw.y, se.x,se.y ], 
+	                this._srs.code,
+	                null,
+	                null,
+	                null,
+	                null,
+	                null,
+	                this._postData,
+	                this._postLoad,
+	                this);
+		}
+		else{
+			this._setUrl(
 	           this._service.getUrlRenderMapByBounds(
 	                this._mapName , 
 	                this.options.imageType,
@@ -937,6 +960,11 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 	                size.y,
 	                [ nw.x, nw.y, se.x,se.y ], 
 	                this._srs.code));
+		}
+	},
+	
+	_postLoad:function(error,response){
+		this._image.src = window.URL.createObjectURL(response);
 	},
 	
 	_updateOpacity: function () {

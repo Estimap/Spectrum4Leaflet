@@ -33,6 +33,27 @@
 		
 		
 		function addMapServiceLayer(){
+		    
+/*
+		    var postdata = {
+				   'layers':[
+				      {
+				         'type':'NamedLayer',
+				         'name':'/Samples/NamedLayers/WorldcapFeatureLayer'
+				      },
+				      {
+				         'type':'NamedLayer',
+				         'name':'/Samples/NamedLayers/UK_REGNS_Layer'
+				      },
+				      {
+				         'type':'NamedLayer',
+				         'name':'/Samples/NamedLayers/WorldFeatureLayer'
+				      }
+				   ]
+				};
+*/
+		
+		
 		    var service = new Spectrum4Leaflet.Services.MapService(document.getElementById("ssurl").value);
 			var layer = new Spectrum4Leaflet.Layers.MapServiceLayer(service, document.getElementById("mapname").value,null, { opacity:1 } );
 			layer.addTo(map);
