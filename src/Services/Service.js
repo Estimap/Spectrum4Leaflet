@@ -41,15 +41,21 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
 	      if (this.options.proxyUrl){
 		      urlWithQuery = this.options.proxyUrl + "?" + urlWithQuery;
 	      }
-		  return Spectrum4Leaflet.Request.post(urlWithQuery, operation.getPostData(), operation.getPostType(), callback, context);
+		  return Spectrum4Leaflet.Request.post(urlWithQuery, 
+		                                       operation.getPostData(), 
+		                                       operation.getPostType(),
+		                                       this.options.login,
+		                                       this.options.password,  
+		                                       callback, 
+		                                       context);
 	  }
 	  else{
 	      if (this.options.alwaysUseProxy){
 		      urlWithQuery = this.options.proxyUrl + "?" + urlWithQuery;
-		      return Spectrum4Leaflet.Request.get(urlWithQuery, callback, context);
+		      return Spectrum4Leaflet.Request.get(urlWithQuery, this.options.login,this.options.password, callback, context);
 	      }
 		  return ( this.options.forceGet | Spectrum4Leaflet.Support.CORS ) ? 
-		             Spectrum4Leaflet.Request.get(urlWithQuery, callback, context):
+		             Spectrum4Leaflet.Request.get(urlWithQuery,this.options.login,this.options.password,  callback, context):
 		             Spectrum4Leaflet.Request.jsonp(urlWithQuery,"?", callback, context);
 	  }
   },
@@ -66,13 +72,16 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   },
   
   /**
-  Clears parameter from "/" at first letter
+  Clears parameter from "/" at first or last letter
   @param {string}
   @returns {string}
   */
   clearParam: function(param){
 	  if (param[0]==="/"){
-	      return param.substring(1);
+	      param = param.substring(1);
+      }
+      if (param.slice(-1) === "/") {
+	      param = param.substring(0, param.length-1);
       }
       return param;
   }

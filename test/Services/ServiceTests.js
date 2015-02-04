@@ -43,3 +43,10 @@ asyncTest("Services.Service.startRequest post test", function() {
 
     setTimeout(theTest, servicetimeout); 
 });
+
+test( "Services.Service.clearParam test", function() {
+   var service = new Spectrum4Leaflet.Services.Service("http://requesttest/");
+   equal(service.clearParam("/Sample/One/Two"), "Sample/One/Two", "/***" );
+   equal(service.clearParam("/Sample/One/Two/"), "Sample/One/Two", "/***/" );
+   equal(service.clearParam("Sample/One/Two/"), "Sample/One/Two", "***/" );
+});

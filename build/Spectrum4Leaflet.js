@@ -34,159 +34,168 @@ if(typeof window !== 'undefined' && window.L){
 */
 Spectrum4Leaflet.Util = {
     
-};;var callbacks = 0;
-
-window._Spectrum4LeafletCallbacks = {};
-
-/**
-@classdesc Simple Wraper on XMLHttpRequest, has simple get and post functions
-@constructor
-*/
-Spectrum4Leaflet.Request = {
-
-    /**
-	 * Callback function for {Spectrum4Leaflet.Request}
-	 *
-	 * @callback Request.Callback
-	 * @param {Object} error Error object, with fieds code and message
-	 * @param {Object} response Response
-	 */
-
-
-    /**
-    Creates XMLHttpRequest and binds callbacks
-    @private
-    @returns {XMLHttpRequest}
-    */
-	_createRequest: function (callback, context){
-	    var httpRequest = new XMLHttpRequest();
+};;(function(){
+	var callbacks = 0;
 	
-	    httpRequest.onerror = function(e) {
-	      callback.call(context, {
-	        error: {
-	          code: 500,
-	          message: 'XMLHttpRequest error'
-	        }
-	      }, null);
-	    };
+	window._Spectrum4LeafletCallbacks = {};
 	
-	    httpRequest.onreadystatechange = function(){
-	      var response;
-	      var error;
+	/**
+	@classdesc Simple Wraper on XMLHttpRequest, has simple get and post functions
+	@constructor
+	*/
+	Spectrum4Leaflet.Request = {
 	
-	      if (httpRequest.readyState === 4) {
-	        try {
-	          var contentType = this.getResponseHeader('content-type');
-	          if (contentType == 'application/json'){
-		          response = JSON.parse(httpRequest.responseText);
+	    /**
+		 * Callback function for {Spectrum4Leaflet.Request}
+		 *
+		 * @callback Request.Callback
+		 * @param {Object} error Error object, with fieds code and message
+		 * @param {Object} response Response
+		 */
+	
+	
+	    /**
+	    Creates XMLHttpRequest and binds callbacks
+	    @private
+	    @returns {XMLHttpRequest}
+	    */
+		_createRequest: function (callback, context){
+		    var httpRequest = new XMLHttpRequest();
+		
+		    httpRequest.onerror = function(e) {
+		      callback.call(context, {
+		        error: {
+		          code: 500,
+		          message: 'XMLHttpRequest error'
+		        }
+		      }, null);
+		    };
+		
+		    httpRequest.onreadystatechange = function(){
+		      var response;
+		      var error;
+		
+		      if (httpRequest.readyState === 4) {
+		        try {
+		          var contentType = this.getResponseHeader('content-type');
+		          if (contentType == 'application/json'){
+			          response = JSON.parse(httpRequest.responseText);
+		          }
+		          else{
+			          response = httpRequest.responseText;
+		          }   
+		        } catch(e) {
+		          response = null;
+		          error = {
+		            code: 500,
+		            message: 'Could not parse response as JSON.'
+		          };
+		        }
+		
+		        if (!error && response.error) {
+		          error = response.error;
+		          response = null;
+		        }
+		
+		        callback.call(context, error, response);
+		      }
+		    };
+		
+		    return httpRequest;
+	    },
+	    
+	    /**
+	    Runs get request
+	    @param {string} url Url for request
+	    @param {string} login Login 
+	    @param {string} password Password 
+	    @param {Request.Callback} Callback function, when request is done
+	    @param {Object} context Context for callback
+	    @returns {XMLHttpRequest}
+	    */
+	    get: function(url, login, password, callback, context){
+	        var httpRequest = this._createRequest(callback,context);
+		    httpRequest.open('GET', url , true, login, password);
+	        httpRequest.send(null);
+	        return httpRequest;
+	    },
+	    
+	    /**
+	    Runs get request by JSONP pattern 
+	    @param {string} url Url for request
+	    @param {Request.Callback} Callback function, when request is done
+	    @param {Object} context Context for callback
+	    @returns {XMLHttpRequest}
+	    */
+	    jsonp: function(url, callbackSeparator, callback,context){
+		    var callbackId = 'c' + callbacks;
+	
+	        var script = L.DomUtil.create('script', null, document.body);
+	        script.type = 'text/javascript';
+	        script.src = url + callbackSeparator + "callback=window._Spectrum4LeafletCallbacks." + callbackId;
+	        script.id = callbackId;
+	
+	        window._Spectrum4LeafletCallbacks[callbackId] = function(response){
+	          if(window._Spectrum4LeafletCallbacks[callbackId] !== true){
+	            var error;
+	            var responseType = Object.prototype.toString.call(response);
+	
+	            if(!(responseType === '[object Object]' || responseType === '[object Array]')){
+	              error = {
+	                error: {
+	                  code: 500,
+	                  message: 'Expected array or object as JSONP response'
+	                }
+	              };
+	              response = null;
+	            }
+	
+	            if (!error && response.error) {
+	              error = response;
+	              response = null;
+	            }
+	
+	            callback.call(context, error, response);
+	            window._Spectrum4LeafletCallbacks[callbackId] = true;
 	          }
-	          else{
-		          response = httpRequest.responseText;
-	          }   
-	        } catch(e) {
-	          response = null;
-	          error = {
-	            code: 500,
-	            message: 'Could not parse response as JSON.'
-	          };
-	        }
+	        };
 	
-	        if (!error && response.error) {
-	          error = response.error;
-	          response = null;
-	        }
+	        callbacks++;
 	
-	        callback.call(context, error, response);
-	      }
-	    };
-	
-	    return httpRequest;
-    },
-    
-    /**
-    Runs get request
-    @param {string} url Url for request
-    @param {Request.Callback} Callback function, when request is done
-    @param {Object} context Context for callback
-    @returns {XMLHttpRequest}
-    */
-    get: function(url, callback, context){
-        var httpRequest = this._createRequest(callback,context);
-	    httpRequest.open('GET', url , true);
-        httpRequest.send(null);
-        return httpRequest;
-    },
-    
-    /**
-    Runs get request by JSONP pattern 
-    @param {string} url Url for request
-    @param {Request.Callback} Callback function, when request is done
-    @param {Object} context Context for callback
-    @returns {XMLHttpRequest}
-    */
-    jsonp: function(url, callbackSeparator, callback,context){
-	    var callbackId = 'c' + callbacks;
+	        return {
+	          id: callbackId,
+	          url: script.src,
+	          abort: function(){
+	            window._Spectrum4LeafletCallbacks._callback[callbackId]({
+	              code: 0,
+	              message: 'Request aborted.'
+	            });
+	          }
+	        };
+	    },
+	    
+	    /**
+	    Runs post request
+	    @param {string} url Url for request
+	    @param {object} postdata Data to send in request body
+	    @param {string} posttype Type of post data 
+	    @param {string} login Login 
+	    @param {string} password Password 
+	    @param {Request.Callback} Callback function, when request is done
+	    @param {object} context Context for callback
+	    @returns {XMLHttpRequest}
+	    */
+	    post: function(url, postdata, posttype, login, password, callback,context){
+	        var httpRequest = this._createRequest(callback,context);
+	        httpRequest.open('POST', url, true, login, password);
+	        httpRequest.setRequestHeader('Content-Type', posttype);
+	        httpRequest.send(postdata);
+	        return httpRequest;
+	    }
+	};
+})();
 
-        var script = L.DomUtil.create('script', null, document.body);
-        script.type = 'text/javascript';
-        script.src = url + callbackSeparator + "callback=window._Spectrum4LeafletCallbacks." + callbackId;
-        script.id = callbackId;
-
-        window._Spectrum4LeafletCallbacks[callbackId] = function(response){
-          if(window._Spectrum4LeafletCallbacks[callbackId] !== true){
-            var error;
-            var responseType = Object.prototype.toString.call(response);
-
-            if(!(responseType === '[object Object]' || responseType === '[object Array]')){
-              error = {
-                error: {
-                  code: 500,
-                  message: 'Expected array or object as JSONP response'
-                }
-              };
-              response = null;
-            }
-
-            if (!error && response.error) {
-              error = response;
-              response = null;
-            }
-
-            callback.call(context, error, response);
-            window._Spectrum4LeafletCallbacks[callbackId] = true;
-          }
-        };
-
-        callbacks++;
-
-        return {
-          id: callbackId,
-          url: script.src,
-          abort: function(){
-            window._Spectrum4LeafletCallbacks._callback[callbackId]({
-              code: 0,
-              message: 'Request aborted.'
-            });
-          }
-        };
-    },
-    
-    /**
-    Runs post request
-    @param {string} url Url for request
-    @param {object} postdata Data to send in request body
-    @param {Request.Callback} Callback function, when request is done
-    @param {object} context Context for callback
-    @returns {XMLHttpRequest}
-    */
-    post: function(url, postdata, posttype, callback,context){
-        var httpRequest = this._createRequest(callback,context);
-        httpRequest.open('POST', url, true);
-        httpRequest.setRequestHeader('Content-Type', posttype);
-        httpRequest.send(postdata);
-        return httpRequest;
-    }
-};;Spectrum4Leaflet.Services.Operation = L.Class.extend(
+;Spectrum4Leaflet.Services.Operation = L.Class.extend(
 /** @lends Spectrum4Leaflet.Services.Operation.prototype */
 { 
 
@@ -319,15 +328,21 @@ Spectrum4Leaflet.Request = {
 	      if (this.options.proxyUrl){
 		      urlWithQuery = this.options.proxyUrl + "?" + urlWithQuery;
 	      }
-		  return Spectrum4Leaflet.Request.post(urlWithQuery, operation.getPostData(), operation.getPostType(), callback, context);
+		  return Spectrum4Leaflet.Request.post(urlWithQuery, 
+		                                       operation.getPostData(), 
+		                                       operation.getPostType(),
+		                                       this.options.login,
+		                                       this.options.password,  
+		                                       callback, 
+		                                       context);
 	  }
 	  else{
 	      if (this.options.alwaysUseProxy){
 		      urlWithQuery = this.options.proxyUrl + "?" + urlWithQuery;
-		      return Spectrum4Leaflet.Request.get(urlWithQuery, callback, context);
+		      return Spectrum4Leaflet.Request.get(urlWithQuery, this.options.login,this.options.password, callback, context);
 	      }
 		  return ( this.options.forceGet | Spectrum4Leaflet.Support.CORS ) ? 
-		             Spectrum4Leaflet.Request.get(urlWithQuery, callback, context):
+		             Spectrum4Leaflet.Request.get(urlWithQuery,this.options.login,this.options.password,  callback, context):
 		             Spectrum4Leaflet.Request.jsonp(urlWithQuery,"?", callback, context);
 	  }
   },
@@ -344,13 +359,16 @@ Spectrum4Leaflet.Request = {
   },
   
   /**
-  Clears parameter from "/" at first letter
+  Clears parameter from "/" at first or last letter
   @param {string}
   @returns {string}
   */
   clearParam: function(param){
 	  if (param[0]==="/"){
-	      return param.substring(1);
+	      param = param.substring(1);
+      }
+      if (param.slice(-1) === "/") {
+	      param = param.substring(0, param.length-1);
       }
       return param;
   }
@@ -732,7 +750,6 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 		this._mapName = mapName;
 		this._service = service;
 		this._postData = postData;
-		this.on('imageLoaded',this._afterLoad,this);
 		L.setOptions(this, options);
 	},
 	
@@ -740,22 +757,9 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 	    this._map = map;	    		
 	    this._srs = map.options.crs;
 	    this._update = L.Util.throttle(this._update, this.options.updateInterval, this);
+	    map.on('moveend', this._update, this);
 	    
 	    this._update();
-	    
-		if (!this._image) {
-			this._initImage();
-
-			if (this.options.opacity < 1) {
-				this._updateOpacity();
-			}
-		}
-		
-		map.on('moveend', this._update, this);
-		
-		this.getPane(this.options.pane).appendChild(this._image);
-		this._initInteraction();
-		
 	},
 
 	onRemove: function () {
@@ -840,6 +844,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 
 		if (this._image) {
 			this._image.src = url;
+			this.fire('loading');
 		}
 		return this;
 	},
@@ -851,15 +856,14 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 		img.onselectstart = L.Util.falseFn;
 		img.onmousemove = L.Util.falseFn;
         img.style.zIndex = this.options.zIndex;
-		img.onload = L.bind(this.fire, this, 'imageLoaded');
-		img.src = this._url;
+		img.onload = L.bind(this._afterLoad, this);
 		img.alt = this.options.alt;
+		
+		this.getPane(this.options.pane).appendChild(img);
+		this._initInteraction();
 	},
 	
 	_animateZoom: function (e) {
-		    
-	    console.log('startAnimateZoom');
-
 		var bounds = new L.Bounds(
 			this._map._latLngToNewLayerPoint(this._bounds.getNorthWest(), e.zoom, e.center),
 		    this._map._latLngToNewLayerPoint(this._bounds.getSouthEast(), e.zoom, e.center));
@@ -870,10 +874,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 	},
 	
 
-	_reset: function () {
-	
-	    console.log('reset');
-	    
+	_reset: function () {  
 		var image = this._image,
 		    bounds = new L.Bounds(
 		        this._map.latLngToLayerPoint(this._bounds.getNorthWest()),
@@ -886,10 +887,10 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 		image.style.height = size.y + 'px';
 	},
 	
-	_afterLoad: function () {
+	_afterLoad: function () {  
 	
-	    console.log('afterload');
-	    
+		this.fire('load');
+	 
 	    this._bounds = this._map.getBounds();
 	    this._size = this._map.getSize();
 	    
@@ -905,23 +906,30 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 		image.style.height = size.y + 'px';
 	},
 	
-
-	
 	_update:function(){
 	    
-		if(this._map._animatingZoom){
-	      return;
+	    if(this._map._animatingZoom){
+	       return;
 	    }
-
 	    
-	   console.log('update');
+	    if (this._map._panAnim && this._map._panAnim._inProgress) {
+           return;
+        }
+
+	    var bounds = this._map.getBounds();
+	    var size = this._map.getSize();
+	    var nw = this._srs.project(bounds.getNorthWest());
+	    var se = this._srs.project(bounds.getSouthEast());  
 	
-	   var bounds = this._map.getBounds();
-	   var size = this._map.getSize();
-	   var nw = this._srs.project(bounds.getNorthWest());
-	   var se = this._srs.project(bounds.getSouthEast());  
+	    if (!this._image) {
+			this._initImage();
+
+			if (this.options.opacity < 1) {
+				this._updateOpacity();
+			}
+		}
 	
-	   this._setUrl(
+	    this._setUrl(
 	           this._service.getUrlRenderMapByBounds(
 	                this._mapName , 
 	                this.options.imageType,
@@ -929,7 +937,6 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 	                size.y,
 	                [ nw.x, nw.y, se.x,se.y ], 
 	                this._srs.code));
-
 	},
 	
 	_updateOpacity: function () {

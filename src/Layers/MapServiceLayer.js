@@ -13,7 +13,6 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 		this._mapName = mapName;
 		this._service = service;
 		this._postData = postData;
-		this.on('imageLoaded',this._afterLoad,this);
 		L.setOptions(this, options);
 	},
 	
@@ -21,22 +20,9 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 	    this._map = map;	    		
 	    this._srs = map.options.crs;
 	    this._update = L.Util.throttle(this._update, this.options.updateInterval, this);
+	    map.on('moveend', this._update, this);
 	    
 	    this._update();
-	    
-		if (!this._image) {
-			this._initImage();
-
-			if (this.options.opacity < 1) {
-				this._updateOpacity();
-			}
-		}
-		
-		map.on('moveend', this._update, this);
-		
-		this.getPane(this.options.pane).appendChild(this._image);
-		this._initInteraction();
-		
 	},
 
 	onRemove: function () {
@@ -121,6 +107,7 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 
 		if (this._image) {
 			this._image.src = url;
+			this.fire('loading');
 		}
 		return this;
 	},
@@ -132,15 +119,14 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 		img.onselectstart = L.Util.falseFn;
 		img.onmousemove = L.Util.falseFn;
         img.style.zIndex = this.options.zIndex;
-		img.onload = L.bind(this.fire, this, 'imageLoaded');
-		img.src = this._url;
+		img.onload = L.bind(this._afterLoad, this);
 		img.alt = this.options.alt;
+		
+		this.getPane(this.options.pane).appendChild(img);
+		this._initInteraction();
 	},
 	
 	_animateZoom: function (e) {
-		    
-	    console.log('startAnimateZoom');
-
 		var bounds = new L.Bounds(
 			this._map._latLngToNewLayerPoint(this._bounds.getNorthWest(), e.zoom, e.center),
 		    this._map._latLngToNewLayerPoint(this._bounds.getSouthEast(), e.zoom, e.center));
@@ -151,10 +137,7 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 	},
 	
 
-	_reset: function () {
-	
-	    console.log('reset');
-	    
+	_reset: function () {  
 		var image = this._image,
 		    bounds = new L.Bounds(
 		        this._map.latLngToLayerPoint(this._bounds.getNorthWest()),
@@ -167,10 +150,10 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 		image.style.height = size.y + 'px';
 	},
 	
-	_afterLoad: function () {
+	_afterLoad: function () {  
 	
-	    console.log('afterload');
-	    
+		this.fire('load');
+	 
 	    this._bounds = this._map.getBounds();
 	    this._size = this._map.getSize();
 	    
@@ -186,23 +169,30 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 		image.style.height = size.y + 'px';
 	},
 	
-
-	
 	_update:function(){
 	    
-		if(this._map._animatingZoom){
-	      return;
+	    if(this._map._animatingZoom){
+	       return;
 	    }
-
 	    
-	   console.log('update');
+	    if (this._map._panAnim && this._map._panAnim._inProgress) {
+           return;
+        }
+
+	    var bounds = this._map.getBounds();
+	    var size = this._map.getSize();
+	    var nw = this._srs.project(bounds.getNorthWest());
+	    var se = this._srs.project(bounds.getSouthEast());  
 	
-	   var bounds = this._map.getBounds();
-	   var size = this._map.getSize();
-	   var nw = this._srs.project(bounds.getNorthWest());
-	   var se = this._srs.project(bounds.getSouthEast());  
+	    if (!this._image) {
+			this._initImage();
+
+			if (this.options.opacity < 1) {
+				this._updateOpacity();
+			}
+		}
 	
-	   this._setUrl(
+	    this._setUrl(
 	           this._service.getUrlRenderMapByBounds(
 	                this._mapName , 
 	                this.options.imageType,
@@ -210,7 +200,6 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 	                size.y,
 	                [ nw.x, nw.y, se.x,se.y ], 
 	                this._srs.code));
-
 	},
 	
 	_updateOpacity: function () {
