@@ -67,7 +67,7 @@ asyncTest("Request.post function", function() {
     
     var postData = { test : "success" };
 
-    var request = Spectrum4Leaflet.Request.post("http://requesttest/", JSON.stringify(postData),"application/json", null , null, callback, {});
+    var request = Spectrum4Leaflet.Request.post("http://requesttest/", JSON.stringify(postData),"application/json", null , null, null, callback, {});
 
     function theTest() {         
         equal(returnJsonData.test, "success" , "Server should return returns  {\"test\": \"success\"}");

@@ -41,8 +41,9 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
         var operation = new Spectrum4Leaflet.Services.Operation("layers.json", {  paramsSeparator : "&", queryStartCharacter : "?" } );
         
         var layersString = layerNames.join(",");
+        operation.options.getParams.q = "describe";
         if (layersString.length<1000){
-	        operation.options.getParams.q = "describe";
+	        
 	        operation.options.getParams.layers = layersString;
         } 
         else{
@@ -107,7 +108,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
         if (mapName !== ''){
 	        mapName = "/"+mapName;
         }
-	    var operation = new Spectrum4Leaflet.Services.Operation("maps"+ mapName+"/image."+imageType);
+	    var operation = new Spectrum4Leaflet.Services.Operation("maps"+ mapName+"/image."+imageType , { responseType: 'arraybuffer' } );
 	    operation.options.getParams.w = width;
 	    operation.options.getParams.h = height;
 	    if (bounds){
@@ -198,7 +199,8 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     */
     getUrlRenderMapByBounds: function(mapName, imageType,width,height,bounds,srs,resolution,locale,rd,bc,bo){
 	    var operation = this._createRenderOperation(mapName, imageType, width, height, bounds,null,null,null,null,srs,resolution,locale,rd,bc,bo);
-	    return this.getUrl(operation);
+	    
+	    return (this.options.alwaysUseProxy ? this.options.proxyUrl : '') + this.getUrl(operation);
     },
     
     /**

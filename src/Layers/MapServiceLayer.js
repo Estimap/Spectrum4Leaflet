@@ -113,18 +113,20 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 	},
 
 	_initImage: function () {
-		var img = this._image = L.DomUtil.create('img',
-				'leaflet-image-layer ' + (this._zoomAnimated ? 'leaflet-zoom-animated' : ''));
-
+		var img = L.DomUtil.create('img','leaflet-image-layer ' + (this._zoomAnimated ? 'leaflet-zoom-animated' : ''));
 		img.onselectstart = L.Util.falseFn;
 		img.onmousemove = L.Util.falseFn;
         img.style.zIndex = this.options.zIndex;
-		img.onload = L.bind(this._afterLoad, this);
 		img.alt = this.options.alt;
 		
-		this.getPane(this.options.pane).appendChild(img);
-		this._initInteraction();
+		if (this.options.opacity < 1) {
+			L.DomUtil.setOpacity(img, this.options.opacity);
+		}
+		
+		return img;
 	},
+	
+	_requestCounter :0,
 	
 	_animateZoom: function (e) {
 		var bounds = new L.Bounds(
@@ -150,14 +152,20 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 		image.style.height = size.y + 'px';
 	},
 	
-	_afterLoad: function () {  
+	_afterLoad: function (params) {  
+	
+	    //only last request we will draw
+	    if (this._requestCounter!= params.counter){
+	        delete params.image;
+	        return;
+	    }
 	
 		this.fire('load');
 	 
-	    this._bounds = this._map.getBounds();
+	    this._bounds = params.bounds;
 	    this._size = this._map.getSize();
 	    
-		var image = this._image,
+		var image = params.image,
 		    bounds = new L.Bounds(
 		        this._map.latLngToLayerPoint(this._bounds.getNorthWest()),
 		        this._map.latLngToLayerPoint(this._bounds.getSouthEast())),
@@ -167,6 +175,18 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 
 		image.style.width  = size.x + 'px';
 		image.style.height = size.y + 'px';
+					
+		this.getPane(this.options.pane).appendChild(image);
+		
+		//clears old image
+		if (this._image){
+		    this.getPane(this.options.pane).removeChild(this._image);
+		    L.DomEvent.off(this._image, 'click dblclick mousedown mouseup mouseover mousemove mouseout contextmenu',this._fireMouseEvent, this);
+		    delete this._image;
+	    }
+	 
+	    this._image = image;	
+		this._initInteraction();
 	},
 	
 	_update:function(){
@@ -184,13 +204,10 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 	    var nw = this._srs.project(bounds.getNorthWest());
 	    var se = this._srs.project(bounds.getSouthEast());  
 	
-	    if (!this._image) {
-			this._initImage();
-
-			if (this.options.opacity < 1) {
-				this._updateOpacity();
-			}
-		}
+	    var newImage = this._initImage();
+	    
+	    this._requestCounter++;
+	    
 		
 		if (this._postData){
 			this._service.renderMapByBounds(
@@ -207,22 +224,36 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 	                null,
 	                this._postData,
 	                this._postLoad,
-	                this);
+	                { context: this, image: newImage, bounds:bounds, counter:this._requestCounter});
 		}
 		else{
-			this._setUrl(
+		    newImage.onload = L.bind(this._afterLoad, this, { image: newImage, bounds:bounds, counter:this._requestCounter});
+			newImage.src = 
 	           this._service.getUrlRenderMapByBounds(
 	                this._mapName , 
 	                this.options.imageType,
 	                size.x,
 	                size.y,
 	                [ nw.x, nw.y, se.x,se.y ], 
-	                this._srs.code));
+	                this._srs.code);
+	              
 		}
+		this.fire('loading');
 	},
 	
 	_postLoad:function(error,response){
-		this._image.src = window.URL.createObjectURL(response);
+	    var uInt8Array = new Uint8Array(response);
+	    var i = uInt8Array.length;
+	    var binaryString = new Array(i);
+	    while (i--)
+	    {
+	      binaryString[i] = String.fromCharCode(uInt8Array[i]);
+	    }
+	    var data = binaryString.join('');
+	
+	    var base64 = window.btoa(data);
+	    this.image.src ="data:image/png;base64,"+base64;
+	    this.context._afterLoad({ image: this.image, bounds:this.bounds, counter:this.counter});
 	},
 	
 	_updateOpacity: function () {

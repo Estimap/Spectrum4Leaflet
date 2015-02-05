@@ -39,19 +39,20 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
       var urlWithQuery = this.getUrl(operation);
 	  if (operation.isPostOperation()){
 	      if (this.options.proxyUrl){
-		      urlWithQuery = this.options.proxyUrl + "?" + urlWithQuery;
+		      urlWithQuery = this.options.proxyUrl + urlWithQuery;
 	      }
 		  return Spectrum4Leaflet.Request.post(urlWithQuery, 
 		                                       operation.getPostData(), 
 		                                       operation.getPostType(),
+		                                       operation.getResponseType(),
 		                                       this.options.login,
-		                                       this.options.password,  
+		                                       this.options.password,  		                                       
 		                                       callback, 
 		                                       context);
 	  }
 	  else{
 	      if (this.options.alwaysUseProxy){
-		      urlWithQuery = this.options.proxyUrl + "?" + urlWithQuery;
+		      urlWithQuery = this.options.proxyUrl + urlWithQuery;
 		      return Spectrum4Leaflet.Request.get(urlWithQuery, this.options.login,this.options.password, callback, context);
 	      }
 		  return ( this.options.forceGet | Spectrum4Leaflet.Support.CORS ) ? 

@@ -10,7 +10,9 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
   * @property {Object} postParams Params for post request
   * @property {boolean} forcePost Is true if opertaion should use post request
   * @property {string} paramsSeparator Separator for get params in url
+  * @property {string} queryStartCharacter Character from which query begins 
   * @property {string} postType Type of post data. Default is "application/json"
+  * @property {string} responseType Type of response data. Used for post response with image (only for XHR2)
   */
 
   /**
@@ -20,7 +22,8 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
       forcePost :false,
       paramsSeparator: ";",
       queryStartCharacter:";",
-      postType : "application/json"
+      postType : "application/json",
+      responseType:null
   },
 
   /**
@@ -43,7 +46,7 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
   */
   getUrlQuery: function(){
       
-      var keyValueArray = [];
+	  var keyValueArray = [];
   
       var params =  this.options.getParams;
       
@@ -57,12 +60,12 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
       var query = this.options.name;
       
       if (keyValueArray.length>0){
-	      query+= this.options.queryStartCharacter + keyValueArray.join(this.options.paramsSeparator);
+	      query+=this.options.queryStartCharacter + keyValueArray.join(this.options.paramsSeparator);
       }
       
       return query;
-      
   },
+
   
   /**
   Creates string representation of postParams
@@ -73,11 +76,19 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
   },
   
   /**
-  Creates string representation of postParams
+  Returns type of post data
   @returns {string}
   */
   getPostType: function(){
 	  return this.options.postType;
+  },
+  
+  /**
+  Returns type of response type (for xhr 2)
+  @returns {string}
+  */
+  getResponseType: function(){
+	  return this.options.responseType;
   },
   
   /**

@@ -149,10 +149,15 @@
 	    @param {object} context Context for callback
 	    @returns {XMLHttpRequest}
 	    */
-	    post: function(url, postdata, posttype, login, password, callback,context){
+	    post: function(url, postdata, posttype, responseType, login, password, callback,context){
 	        var httpRequest = this._createRequest(callback,context);
 	        httpRequest.open('POST', url, true, login, password);
 	        httpRequest.setRequestHeader('Content-Type', posttype);
+	        
+	        if (responseType){
+		        httpRequest.responseType = responseType;
+	        }
+	        
 	        httpRequest.send(postdata);
 	        return httpRequest;
 	    }

@@ -185,10 +185,15 @@ Spectrum4Leaflet.Util = {
 	    @param {object} context Context for callback
 	    @returns {XMLHttpRequest}
 	    */
-	    post: function(url, postdata, posttype, login, password, callback,context){
+	    post: function(url, postdata, posttype, responseType, login, password, callback,context){
 	        var httpRequest = this._createRequest(callback,context);
 	        httpRequest.open('POST', url, true, login, password);
 	        httpRequest.setRequestHeader('Content-Type', posttype);
+	        
+	        if (responseType){
+		        httpRequest.responseType = responseType;
+	        }
+	        
 	        httpRequest.send(postdata);
 	        return httpRequest;
 	    }
@@ -207,7 +212,9 @@ Spectrum4Leaflet.Util = {
   * @property {Object} postParams Params for post request
   * @property {boolean} forcePost Is true if opertaion should use post request
   * @property {string} paramsSeparator Separator for get params in url
+  * @property {string} queryStartCharacter Character from which query begins 
   * @property {string} postType Type of post data. Default is "application/json"
+  * @property {string} responseType Type of response data. Used for post response with image (only for XHR2)
   */
 
   /**
@@ -217,7 +224,8 @@ Spectrum4Leaflet.Util = {
       forcePost :false,
       paramsSeparator: ";",
       queryStartCharacter:";",
-      postType : "application/json"
+      postType : "application/json",
+      responseType:null
   },
 
   /**
@@ -240,7 +248,7 @@ Spectrum4Leaflet.Util = {
   */
   getUrlQuery: function(){
       
-      var keyValueArray = [];
+	  var keyValueArray = [];
   
       var params =  this.options.getParams;
       
@@ -254,12 +262,12 @@ Spectrum4Leaflet.Util = {
       var query = this.options.name;
       
       if (keyValueArray.length>0){
-	      query+= this.options.queryStartCharacter + keyValueArray.join(this.options.paramsSeparator);
+	      query+=this.options.queryStartCharacter + keyValueArray.join(this.options.paramsSeparator);
       }
       
       return query;
-      
   },
+
   
   /**
   Creates string representation of postParams
@@ -270,11 +278,19 @@ Spectrum4Leaflet.Util = {
   },
   
   /**
-  Creates string representation of postParams
+  Returns type of post data
   @returns {string}
   */
   getPostType: function(){
 	  return this.options.postType;
+  },
+  
+  /**
+  Returns type of response type (for xhr 2)
+  @returns {string}
+  */
+  getResponseType: function(){
+	  return this.options.responseType;
   },
   
   /**
@@ -326,19 +342,20 @@ Spectrum4Leaflet.Util = {
       var urlWithQuery = this.getUrl(operation);
 	  if (operation.isPostOperation()){
 	      if (this.options.proxyUrl){
-		      urlWithQuery = this.options.proxyUrl + "?" + urlWithQuery;
+		      urlWithQuery = this.options.proxyUrl + urlWithQuery;
 	      }
 		  return Spectrum4Leaflet.Request.post(urlWithQuery, 
 		                                       operation.getPostData(), 
 		                                       operation.getPostType(),
+		                                       operation.getResponseType(),
 		                                       this.options.login,
-		                                       this.options.password,  
+		                                       this.options.password,  		                                       
 		                                       callback, 
 		                                       context);
 	  }
 	  else{
 	      if (this.options.alwaysUseProxy){
-		      urlWithQuery = this.options.proxyUrl + "?" + urlWithQuery;
+		      urlWithQuery = this.options.proxyUrl + urlWithQuery;
 		      return Spectrum4Leaflet.Request.get(urlWithQuery, this.options.login,this.options.password, callback, context);
 	      }
 		  return ( this.options.forceGet | Spectrum4Leaflet.Support.CORS ) ? 
@@ -416,8 +433,9 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
         var operation = new Spectrum4Leaflet.Services.Operation("layers.json", {  paramsSeparator : "&", queryStartCharacter : "?" } );
         
         var layersString = layerNames.join(",");
+        operation.options.getParams.q = "describe";
         if (layersString.length<1000){
-	        operation.options.getParams.q = "describe";
+	        
 	        operation.options.getParams.layers = layersString;
         } 
         else{
@@ -482,7 +500,7 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
         if (mapName !== ''){
 	        mapName = "/"+mapName;
         }
-	    var operation = new Spectrum4Leaflet.Services.Operation("maps"+ mapName+"/image."+imageType);
+	    var operation = new Spectrum4Leaflet.Services.Operation("maps"+ mapName+"/image."+imageType , { responseType: 'arraybuffer' } );
 	    operation.options.getParams.w = width;
 	    operation.options.getParams.h = height;
 	    if (bounds){
@@ -573,7 +591,8 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
     */
     getUrlRenderMapByBounds: function(mapName, imageType,width,height,bounds,srs,resolution,locale,rd,bc,bo){
 	    var operation = this._createRenderOperation(mapName, imageType, width, height, bounds,null,null,null,null,srs,resolution,locale,rd,bc,bo);
-	    return this.getUrl(operation);
+	    
+	    return (this.options.alwaysUseProxy ? this.options.proxyUrl : '') + this.getUrl(operation);
     },
     
     /**
@@ -855,18 +874,20 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 	},
 
 	_initImage: function () {
-		var img = this._image = L.DomUtil.create('img',
-				'leaflet-image-layer ' + (this._zoomAnimated ? 'leaflet-zoom-animated' : ''));
-
+		var img = L.DomUtil.create('img','leaflet-image-layer ' + (this._zoomAnimated ? 'leaflet-zoom-animated' : ''));
 		img.onselectstart = L.Util.falseFn;
 		img.onmousemove = L.Util.falseFn;
         img.style.zIndex = this.options.zIndex;
-		img.onload = L.bind(this._afterLoad, this);
 		img.alt = this.options.alt;
 		
-		this.getPane(this.options.pane).appendChild(img);
-		this._initInteraction();
+		if (this.options.opacity < 1) {
+			L.DomUtil.setOpacity(img, this.options.opacity);
+		}
+		
+		return img;
 	},
+	
+	_requestCounter :0,
 	
 	_animateZoom: function (e) {
 		var bounds = new L.Bounds(
@@ -892,14 +913,20 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 		image.style.height = size.y + 'px';
 	},
 	
-	_afterLoad: function () {  
+	_afterLoad: function (params) {  
+	
+	    //only last request we will draw
+	    if (this._requestCounter!= params.counter){
+	        delete params.image;
+	        return;
+	    }
 	
 		this.fire('load');
 	 
-	    this._bounds = this._map.getBounds();
+	    this._bounds = params.bounds;
 	    this._size = this._map.getSize();
 	    
-		var image = this._image,
+		var image = params.image,
 		    bounds = new L.Bounds(
 		        this._map.latLngToLayerPoint(this._bounds.getNorthWest()),
 		        this._map.latLngToLayerPoint(this._bounds.getSouthEast())),
@@ -909,6 +936,18 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 
 		image.style.width  = size.x + 'px';
 		image.style.height = size.y + 'px';
+					
+		this.getPane(this.options.pane).appendChild(image);
+		
+		//clears old image
+		if (this._image){
+		    this.getPane(this.options.pane).removeChild(this._image);
+		    L.DomEvent.off(this._image, 'click dblclick mousedown mouseup mouseover mousemove mouseout contextmenu',this._fireMouseEvent, this);
+		    delete this._image;
+	    }
+	 
+	    this._image = image;	
+		this._initInteraction();
 	},
 	
 	_update:function(){
@@ -926,13 +965,10 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 	    var nw = this._srs.project(bounds.getNorthWest());
 	    var se = this._srs.project(bounds.getSouthEast());  
 	
-	    if (!this._image) {
-			this._initImage();
-
-			if (this.options.opacity < 1) {
-				this._updateOpacity();
-			}
-		}
+	    var newImage = this._initImage();
+	    
+	    this._requestCounter++;
+	    
 		
 		if (this._postData){
 			this._service.renderMapByBounds(
@@ -949,22 +985,36 @@ Spectrum4Leaflet.Services.MapService = Spectrum4Leaflet.Services.Service.extend(
 	                null,
 	                this._postData,
 	                this._postLoad,
-	                this);
+	                { context: this, image: newImage, bounds:bounds, counter:this._requestCounter});
 		}
 		else{
-			this._setUrl(
+		    newImage.onload = L.bind(this._afterLoad, this, { image: newImage, bounds:bounds, counter:this._requestCounter});
+			newImage.src = 
 	           this._service.getUrlRenderMapByBounds(
 	                this._mapName , 
 	                this.options.imageType,
 	                size.x,
 	                size.y,
 	                [ nw.x, nw.y, se.x,se.y ], 
-	                this._srs.code));
+	                this._srs.code);
+	              
 		}
+		this.fire('loading');
 	},
 	
 	_postLoad:function(error,response){
-		this._image.src = window.URL.createObjectURL(response);
+	    var uInt8Array = new Uint8Array(response);
+	    var i = uInt8Array.length;
+	    var binaryString = new Array(i);
+	    while (i--)
+	    {
+	      binaryString[i] = String.fromCharCode(uInt8Array[i]);
+	    }
+	    var data = binaryString.join('');
+	
+	    var base64 = window.btoa(data);
+	    this.image.src ="data:image/png;base64,"+base64;
+	    this.context._afterLoad({ image: this.image, bounds:this.bounds, counter:this.counter});
 	},
 	
 	_updateOpacity: function () {
