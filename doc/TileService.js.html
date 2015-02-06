@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Services/TileService.js</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Source: Services/TileService.js</h1>
+    
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/** 
+* @class Spectrum Spatial Tile Service wrapper
+* @augments Spectrum4Leaflet.Services.Service 
+*/
+Spectrum4Leaflet.Services.TileService = Spectrum4Leaflet.Services.Service.extend(
+/** @lends Spectrum4Leaflet.Services.TileService# */
+{
+    /**
+    * Returns the list of available named tiles for the Map Tiling Service
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    */
+    mapList : function(callback, context){  
+        var operation = new Spectrum4Leaflet.Services.Operation("mapList.json");
+	    this.startRequest(operation, callback, context);
+    },
+    
+    /**
+    * Returns the metadata of a specified named tile for the Map Tiling Service
+    * @param {string} mapName The name of the named tile to return the metadata for
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    */
+    description : function(mapName,callback, context){  
+        var operation = new Spectrum4Leaflet.Services.Operation("/"+ this.clearParam(mapName) + "/description.json");
+	    this.startRequest(operation, callback, context);
+    },  
+    
+    /**
+    * Returns generated map tiles from the Map Tiling Service based on the input parameters specified.
+    * @param {string} mapName The name of the named tile to generate the tile from
+    * @param {number} level Determines the zoom level of the tile to be returned
+    * @param {number} x Specifies the column of the tile, based on the level parameter specified
+    * @param {number} y Specifies the row of the tile, based on the level parameter specified
+    * @param {string} imageType Specifies the response image format. Must be png, gif, or jpeg.
+    */
+    getTileUrl: function(mapName,level,x,y,imageType){
+        var operation = this._createTileOperation(mapName,level,x,y,imageType);
+        return (this.options.alwaysUseProxy ? this.options.proxyUrl : '') +  this.checkEncodeUrl(this.getUrl(operation));
+    },
+    
+    /**
+    * Returns generated map tiles from the Map Tiling Service based on the input parameters specified.
+    * @param {string} mapName The name of the named tile to generate the tile from
+    * @param {number} level Determines the zoom level of the tile to be returned
+    * @param {number} x Specifies the column of the tile, based on the level parameter specified
+    * @param {number} y Specifies the row of the tile, based on the level parameter specified
+    * @param {string} imageType Specifies the response image format. Must be png, gif, or jpeg.
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    */
+    getTile: function(mapName,level,x,y,imageType, callback,context){
+        var operation = this._createTileOperation(mapName,level,x,y,imageType);
+        this.startRequest(operation, callback, context);
+    },
+    
+    /**
+    * @private
+    */
+    _createTileOperation:function(mapName,level,x,y,imageType){
+        mapName = this.clearParam(mapName);
+        if (mapName !== ''){
+	        mapName = "/"+mapName;
+        }
+	    return new Spectrum4Leaflet.Services.Operation(mapName+"/"+level+"/" + x + ":" + y + "/tile." + imageType );
+    }
+    
+    
+});</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Spectrum4Leaflet.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="Spectrum4Leaflet.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="Spectrum4Leaflet.Request.html">Request</a></li><li><a href="Spectrum4Leaflet.Services.MapService.html">MapService</a></li><li><a href="Spectrum4Leaflet.Services.Operation.html">Operation</a></li><li><a href="Spectrum4Leaflet.Services.Service.html">Service</a></li><li><a href="Spectrum4Leaflet.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="Spectrum4Leaflet.html">Spectrum4Leaflet</a></li><li><a href="Spectrum4Leaflet.Layers.html">Layers</a></li><li><a href="Spectrum4Leaflet.Services.html">Services</a></li><li><a href="Spectrum4Leaflet.Support.html">Support</a></li><li><a href="Spectrum4Leaflet.Util.html">Util</a></li></ul><h3>Global</h3><ul><li><a href="global.html#options">options</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Fri Feb 06 2015 20:51:45 GMT+0400 (MSK)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

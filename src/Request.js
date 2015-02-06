@@ -4,8 +4,8 @@
 	window._Spectrum4LeafletCallbacks = {};
 	
 	/**
-	@classdesc Simple Wraper on XMLHttpRequest, has simple get and post functions
-	@constructor
+	* @classdesc Simple Wraper on XMLHttpRequest, has simple get and post functions
+	* @constructor
 	*/
 	Spectrum4Leaflet.Request = {
 	
@@ -19,9 +19,9 @@
 	
 	
 	    /**
-	    Creates XMLHttpRequest and binds callbacks
-	    @private
-	    @returns {XMLHttpRequest}
+	    * Creates XMLHttpRequest and binds callbacks
+	    * @private
+	    * @returns {XMLHttpRequest}
 	    */
 		_createRequest: function (callback, context){
 		    var httpRequest = new XMLHttpRequest();
@@ -69,13 +69,13 @@
 	    },
 	    
 	    /**
-	    Runs get request
-	    @param {string} url Url for request
-	    @param {string} login Login 
-	    @param {string} password Password 
-	    @param {Request.Callback} Callback function, when request is done
-	    @param {Object} context Context for callback
-	    @returns {XMLHttpRequest}
+	    * Runs get request
+	    * @param {string} url Url for request
+	    * @param {string} login Login 
+	    * @param {string} password Password 
+	    * @param {Request.Callback} Callback function, when request is done
+	    * @param {Object} context Context for callback
+	    * @returns {XMLHttpRequest}
 	    */
 	    get: function(url, login, password, callback, context){
 	        var httpRequest = this._createRequest(callback,context);
@@ -85,11 +85,12 @@
 	    },
 	    
 	    /**
-	    Runs get request by JSONP pattern 
-	    @param {string} url Url for request
-	    @param {Request.Callback} Callback function, when request is done
-	    @param {Object} context Context for callback
-	    @returns {XMLHttpRequest}
+	    * Runs get request by JSONP pattern 
+	    * @param {string} url Url for request
+	    * @param {string} callbackSeparator Special character to separate callback param from query param
+	    * @param {Request.Callback} Callback function, when request is done
+	    * @param {Object} context Context for callback
+	    * @returns {XMLHttpRequest}
 	    */
 	    jsonp: function(url, callbackSeparator, callback,context){
 		    var callbackId = 'c' + callbacks;
@@ -139,15 +140,16 @@
 	    },
 	    
 	    /**
-	    Runs post request
-	    @param {string} url Url for request
-	    @param {object} postdata Data to send in request body
-	    @param {string} posttype Type of post data 
-	    @param {string} login Login 
-	    @param {string} password Password 
-	    @param {Request.Callback} Callback function, when request is done
-	    @param {object} context Context for callback
-	    @returns {XMLHttpRequest}
+	    * Runs post request
+	    * @param {string} url Url for request
+	    * @param {object} postdata Data to send in request body
+	    * @param {string} posttype Type of post data 
+	    * @param {string} responseType Type of returned data (only for XHR2)
+	    * @param {string} login Login 
+	    * @param {string} password Password 
+	    * @param {Request.Callback} Callback function, when request is done
+	    * @param {object} context Context for callback
+	    * @returns {XMLHttpRequest}
 	    */
 	    post: function(url, postdata, posttype, responseType, login, password, callback,context){
 	        var httpRequest = this._createRequest(callback,context);

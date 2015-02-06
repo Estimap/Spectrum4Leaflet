@@ -15,7 +15,9 @@ module.exports = function(grunt) {
 		     'src/Services/Operation.js',
 		     'src/Services/Service.js',
 		     'src/Services/MapService.js',
-		     'src/Layers/MapServiceLayer.js'
+		     'src/Services/TileService.js',
+		     'src/Layers/MapServiceLayer.js',
+		     'src/Layers/TileServiceLayer.js'
 		],
         dest: 'build/<%= pkg.name %>.js'
       }
@@ -66,7 +68,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
 
   grunt.registerTask('test', ['jshint', 'qunit']);
-
-  grunt.registerTask('default', ['jshint', 'qunit', 'concat', 'uglify']);
+  grunt.registerTask('dev', ['jshint', 'concat']);
+  grunt.registerTask('default', ['jshint', 'qunit', 'concat']);
+  grunt.registerTask('production', ['jshint', 'qunit', 'concat', 'uglify','jsdoc']);
 
 };

@@ -16,7 +16,7 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
   */
 
   /**
-  @property {Options}  options 
+  * @property {Options}  options 
   */
   options: {
       forcePost :false,
@@ -27,10 +27,11 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
   },
 
   /**
-  @classdesc Service operation class
-  @constructs
-  @param {string} name Name of operation
-  @param {Options} options Additional options of operation
+  * @class Service operation class
+  * @augments {L.Class} 
+  * @constructs Spectrum4Leaflet.Services.Operation
+  * @param {string} name Name of operation
+  * @param {Options} options Additional options of operation
   */
   initialize: function(name,options) {
       this.options.getParams = {};
@@ -41,8 +42,8 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
   },
   
   /**
-  Builds query for url by name and getParams of operation
-  @returns {string}
+  * Builds query for url by name and getParams of operation
+  * @returns {string}
   */
   getUrlQuery: function(){
       
@@ -68,32 +69,32 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
 
   
   /**
-  Creates string representation of postParams
-  @returns {string}
+  * Creates string representation of postParams
+  * @returns {string}
   */
   getPostData: function(){
 	  return JSON.stringify(this.options.postParams);
   },
   
   /**
-  Returns type of post data
-  @returns {string}
+  * Returns type of post data
+  * @returns {string}
   */
   getPostType: function(){
 	  return this.options.postType;
   },
   
   /**
-  Returns type of response type (for xhr 2)
-  @returns {string}
+  * Returns type of response type (for xhr 2)
+  * @returns {string}
   */
   getResponseType: function(){
 	  return this.options.responseType;
   },
   
   /**
-  Check if operation should use only post request
-  @returns {boolean}
+  * Check if operation should use only post request
+  * @returns {boolean}
   */
   isPostOperation:function(){
 	  return (Object.keys(this.options.postParams).length!==0) | this.options.forcePost;

@@ -1,6 +1,6 @@
 /**
-@classdesc Usefull utils
-@constructor
+* Usefull utils
+* @namespace
 */
 Spectrum4Leaflet.Util = {
     

@@ -1,0 +1,170 @@
+Spectrum4Leaflet.Layers.TileServiceLayer = L.GridLayer.extend({
+/** @lends Spectrum4Leaflet.Layers.TileServiceLayer.prototype */
+
+    /**
+    * TileServiceLayer options class
+    * @typedef {Object} Spectrum4Leaflet.Layers.TileServiceLayer.Options
+    * @property {number} maxZoom  Maximum zoom level
+    * @property {number} minZoom  Minimum zoom level
+    * @property {string} errorTileUrl  Url of image to display when tile loading failed
+    * @property {number} zoomOffset  
+    * @property {number} maxNativeZoom  
+    * @property {boolean} tms  
+    * @property {boolean} zoomReverse  
+    * @property {boolean} detectRetina  
+    * @property {boolean} crossOrigin 
+    */
+
+    /**
+    * @property {Spectrum4Leaflet.Layers.TileServiceLayer.Options} options 
+    */
+	options: {
+		maxZoom: 18,
+        minZoom: 0,
+		errorTileUrl: '',
+		zoomOffset: 0,
+		maxNativeZoom: null, 
+		tms: false,
+		zoomReverse: false,
+		detectRetina: false,
+		crossOrigin: false
+	},
+
+
+    /**
+	* @class TileService layer class
+	* @constructs Spectrum4Leaflet.Layers.TileServiceLayer
+    * @augments {L.GridLayer}
+    * @param {Spectrum4Leaflet.Service.TileService} service Map Service for layer
+    * @param {string} mapName Name of the tiled map to display on tile service
+    * @param {Spectrum4Leaflet.Layers.TileServiceLayer.Options} options Additional options of layer
+    */
+	initialize: function (service, mapName, options) {
+
+		this._service = service;
+		this._mapName = mapName;
+
+		options = L.setOptions(this, options);
+
+		// detecting retina displays, adjusting tileSize and zoom levels
+		if (options.detectRetina && L.Browser.retina && options.maxZoom > 0) {
+
+			options.tileSize = Math.floor(options.tileSize / 2);
+			options.zoomOffset++;
+
+			options.minZoom = Math.max(0, options.minZoom);
+			options.maxZoom--;
+		}
+
+		// for https://github.com/Leaflet/Leaflet/issues/137
+		if (!L.Browser.android) {
+			this.on('tileunload', this._onTileRemove);
+		}
+	},
+
+	setService: function (service, noRedraw) {
+		this._service = service;
+        
+		if (!noRedraw) {
+			this.redraw();
+		}
+		return this;
+	},
+	
+	setMapName: function (mapName, noRedraw) {
+        this._mapName = mapName;
+        
+		if (!noRedraw) {
+			this.redraw();
+		}
+		return this;
+	},
+
+	createTile: function (coords, done) {
+		var tile = document.createElement('img');
+
+		tile.onload = L.bind(this._tileOnLoad, this, done, tile);
+		tile.onerror = L.bind(this._tileOnError, this, done, tile);
+
+		if (this.options.crossOrigin) {
+			tile.crossOrigin = '';
+		}
+
+		/*
+		 Alt tag is set to empty string to keep screen readers from reading URL and for compliance reasons
+		 http://www.w3.org/TR/WCAG20-TECHS/H67
+		*/
+		tile.alt = '';
+
+		tile.src = this.getTileUrl(coords);
+
+		return tile;
+	},
+
+	getTileUrl: function (coords) {
+		return this._service.getTileUrl(
+		                          this._mapName,
+		                          this._getZoomForUrl()+1,
+		                          coords.x + 1,
+		                          (this.options.tms ? this._globalTileRange.max.y - coords.y : coords.y) + 1  ,
+		                          "png");
+	},
+
+	_tileOnLoad: function (done, tile) {
+		done(null, tile);
+	},
+
+	_tileOnError: function (done, tile, e) {
+		var errorUrl = this.options.errorTileUrl;
+		if (errorUrl) {
+			tile.src = errorUrl;
+		}
+		done(e, tile);
+	},
+
+	_getTileSize: function () {
+		var map = this._map,
+		    options = this.options,
+		    zoom = map.getZoom() + options.zoomOffset,
+		    zoomN = options.maxNativeZoom;
+
+		// increase tile size when overscaling
+		return zoomN !== null && zoom > zoomN ?
+				Math.round(map.getZoomScale(zoomN, zoom) * options.tileSize) :
+				options.tileSize;
+	},
+
+	_onTileRemove: function (e) {
+		e.tile.onload = null;
+	},
+
+	_getZoomForUrl: function () {
+
+		var options = this.options,
+		    zoom = this._tileZoom;
+
+		if (options.zoomReverse) {
+			zoom = options.maxZoom - zoom;
+		}
+
+		zoom += options.zoomOffset;
+
+		return options.maxNativeZoom ? Math.min(zoom, options.maxNativeZoom) : zoom;
+	},
+
+	// stops loading all tiles in the background layer
+	_abortLoading: function () {
+		var i, tile;
+		for (i in this._tiles) {
+			tile = this._tiles[i].el;
+
+			tile.onload = L.Util.falseFn;
+			tile.onerror = L.Util.falseFn;
+
+			if (!tile.complete) {
+				tile.src = L.Util.emptyImageUrl;
+				L.DomUtil.remove(tile);
+			}
+		}
+	}
+});

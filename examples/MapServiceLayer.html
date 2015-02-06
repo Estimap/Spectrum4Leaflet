@@ -21,7 +21,7 @@
     <script src="../build/Spectrum4Leaflet.js"></script>
 	<script>
 
-		var map = L.map('map').setView([51.505, -0.09], 13);
+		var map = L.map('map').setView([0, 0], 0);
         
 		L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
 			maxZoom: 18,
@@ -31,29 +31,7 @@
 			id: 'examples.map-i875mjb7'
 		}).addTo(map);
 		
-		
 		function addMapServiceLayer(){
-		    
-/*
-		    var postdata = {
-				   'layers':[
-				      {
-				         'type':'NamedLayer',
-				         'name':'/Samples/NamedLayers/WorldcapFeatureLayer'
-				      },
-				      {
-				         'type':'NamedLayer',
-				         'name':'/Samples/NamedLayers/UK_REGNS_Layer'
-				      },
-				      {
-				         'type':'NamedLayer',
-				         'name':'/Samples/NamedLayers/WorldFeatureLayer'
-				      }
-				   ]
-				};
-*/
-		
-		
 		    var service = new Spectrum4Leaflet.Services.MapService(document.getElementById("ssurl").value);
 			var layer = new Spectrum4Leaflet.Layers.MapServiceLayer(service, document.getElementById("mapname").value,null, { opacity:1 } );
 			layer.addTo(map);

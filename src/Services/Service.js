@@ -13,7 +13,7 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   */
 
   /**
-  @property {Services.Service.Options}  options 
+  * @property {Services.Service.Options}  options 
   */
   options: {
       alwaysUseProxy:false,
@@ -22,10 +22,11 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   },
 
   /**
-  @classdesc Base service class
-  @constructs
-  @param {string} url Url of service
-  @param {Services.Service.Options} options Additional options of service
+  * @class Base service class
+  * @augments {L.Class} 
+  * @constructs 
+  * @param {string} url Url of service
+  * @param {Services.Service.Options} options Additional options of service
   */
   initialize: function (url, options) {
       options = options || {};
@@ -34,8 +35,8 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   },
   
   /**
-  Starts request to service
-  @returns {XMLHttpRequest}
+  * Starts request to service
+  * @returns {XMLHttpRequest}
   */
   startRequest: function(operation, callback,context){
       var urlWithQuery = this.getUrl(operation);
@@ -64,9 +65,9 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   },
   
   /**
-  Returns full url query for service
-  @param {Spectrum4Leaflet.Services.Operation}
-  @returns {string}
+  * Returns full url query for service
+  * @param {Spectrum4Leaflet.Services.Operation}
+  * @returns {string}
   */
   getUrl: function(operation){
       var urlQuery = this.clearParam(operation.getUrlQuery());     
@@ -75,9 +76,9 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   },
   
   /**
-  Clears parameter from "/" at first or last letter
-  @param {string}
-  @returns {string}
+  * Clears parameter from "/" at first or last letter
+  * @param {string}
+  * @returns {string}
   */
   clearParam: function(param){
 	  if (param[0]==="/"){
@@ -90,9 +91,9 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   },
   
   /**
-  Encode specified url if options.encodeUrlForProxy is true
-  @param {string}
-  @returns {string}
+  * Encode specified url if options.encodeUrlForProxy is true
+  * @param {string}
+  * @returns {string}
   */
   checkEncodeUrl:function(url){
 	  return  this.options.encodeUrlForProxy ? encodeURIComponent(url) : url;

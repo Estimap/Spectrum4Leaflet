@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>TileServiceLayer example</title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="../leaflet/leaflet.css" />
+</head>
+<body>
+	<div id="map" style="width: 600px; height: 400px"></div>
+	<br/>
+	<label for="ssurl">Spectrum Spatial tile service url</label>
+	<input type="text" id="ssurl"></input>
+	<br/>
+	<label for="ssurl">Spectrum Spatial tile map name</label>
+	<input type="text" id="mapname"></input>
+	<input type="button" onclick="addMapServiceLayer()" value="Add" />
+    <script src="../leaflet/leaflet-src.js"></script>
+    <script src="../build/Spectrum4Leaflet.js"></script>
+	<script>
+
+		var map = L.map('map').setView([0, 0], 0);
+        
+		
+		function addMapServiceLayer(){
+		    var service = new Spectrum4Leaflet.Services.TileService(document.getElementById("ssurl").value);
+		    var layer = new Spectrum4Leaflet.Layers.TileServiceLayer(service,document.getElementById("mapname").value);
+		    layer.addTo(map);
+		}
+
+	</script>
+</body>
+</html>
+

@@ -99,6 +99,39 @@ server.handle = function (request) {
 									      "type": "CARTOGRAPHIC"
 									    } );
 	    break;
+	    case 'http://TilingService/mapList.json':
+               recieve(request,        { "Response":[
+                                                      "/Samples/NamedTiles/WorldTile",
+                                                      "/Samples/NamedTiles/UKCountriesTile",
+                                                      "/Samples/NamedTiles/USATile",
+                                                      "/Samples/NamedTiles/UK_REGNSTile"
+                                                    ]});
+	    break;
+	    case 'http://TilingService/Samples/NamedTiles/WorldTile/description.json':
+               recieve(request, {"Response": { 
+                                                  "mapName":"World",
+                                                  "description":"Map Of The World",
+                                                  "namedMapLocation":"/Samples/NamedMaps/WorldMap",
+                                                  "coordSys":"epsg:3857",
+                                                  "minimumLevel":1,
+                                                  "maximumLevel":20,
+                                                  "tileWidth":256,
+                                                  "tileHeight":256,
+                                                  "bounds":{ 
+                                                              "maxX":2.003750834E7,
+                                                              "maxY":2.003750834E7,
+                                                              "minX":-2.003750834E7,
+                                                              "minY":-2.003750834E7
+                                                           },
+                                                  "outputTypes":["image/png","image/jpeg","image/gif"],
+                                                  "mapExpirationDate":"Tue Dec 31 00:00:00 EST 2019",
+                                                  "mapResolution":96,
+                                                  "mapRendering":"SPEED",
+                                                  "rasterRendering":"SPEED",
+                                                  "renderLabels":false,
+                                                  "mapPadFactor":1,
+                                                  "backgroundOpacity":0.5}});
+	    break;
 	    default:
             recieve(request, "I am Bender, please insert girder!","application/robot");
 	    break;

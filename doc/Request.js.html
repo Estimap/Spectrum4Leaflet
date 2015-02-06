@@ -31,8 +31,8 @@
 	window._Spectrum4LeafletCallbacks = {};
 	
 	/**
-	@classdesc Simple Wraper on XMLHttpRequest, has simple get and post functions
-	@constructor
+	* @classdesc Simple Wraper on XMLHttpRequest, has simple get and post functions
+	* @constructor
 	*/
 	Spectrum4Leaflet.Request = {
 	
@@ -46,9 +46,9 @@
 	
 	
 	    /**
-	    Creates XMLHttpRequest and binds callbacks
-	    @private
-	    @returns {XMLHttpRequest}
+	    * Creates XMLHttpRequest and binds callbacks
+	    * @private
+	    * @returns {XMLHttpRequest}
 	    */
 		_createRequest: function (callback, context){
 		    var httpRequest = new XMLHttpRequest();
@@ -96,13 +96,13 @@
 	    },
 	    
 	    /**
-	    Runs get request
-	    @param {string} url Url for request
-	    @param {string} login Login 
-	    @param {string} password Password 
-	    @param {Request.Callback} Callback function, when request is done
-	    @param {Object} context Context for callback
-	    @returns {XMLHttpRequest}
+	    * Runs get request
+	    * @param {string} url Url for request
+	    * @param {string} login Login 
+	    * @param {string} password Password 
+	    * @param {Request.Callback} Callback function, when request is done
+	    * @param {Object} context Context for callback
+	    * @returns {XMLHttpRequest}
 	    */
 	    get: function(url, login, password, callback, context){
 	        var httpRequest = this._createRequest(callback,context);
@@ -112,11 +112,12 @@
 	    },
 	    
 	    /**
-	    Runs get request by JSONP pattern 
-	    @param {string} url Url for request
-	    @param {Request.Callback} Callback function, when request is done
-	    @param {Object} context Context for callback
-	    @returns {XMLHttpRequest}
+	    * Runs get request by JSONP pattern 
+	    * @param {string} url Url for request
+	    * @param {string} callbackSeparator Special character to separate callback param from query param
+	    * @param {Request.Callback} Callback function, when request is done
+	    * @param {Object} context Context for callback
+	    * @returns {XMLHttpRequest}
 	    */
 	    jsonp: function(url, callbackSeparator, callback,context){
 		    var callbackId = 'c' + callbacks;
@@ -166,15 +167,16 @@
 	    },
 	    
 	    /**
-	    Runs post request
-	    @param {string} url Url for request
-	    @param {object} postdata Data to send in request body
-	    @param {string} posttype Type of post data 
-	    @param {string} login Login 
-	    @param {string} password Password 
-	    @param {Request.Callback} Callback function, when request is done
-	    @param {object} context Context for callback
-	    @returns {XMLHttpRequest}
+	    * Runs post request
+	    * @param {string} url Url for request
+	    * @param {object} postdata Data to send in request body
+	    * @param {string} posttype Type of post data 
+	    * @param {string} responseType Type of returned data (only for XHR2)
+	    * @param {string} login Login 
+	    * @param {string} password Password 
+	    * @param {Request.Callback} Callback function, when request is done
+	    * @param {object} context Context for callback
+	    * @returns {XMLHttpRequest}
 	    */
 	    post: function(url, postdata, posttype, responseType, login, password, callback,context){
 	        var httpRequest = this._createRequest(callback,context);
@@ -201,13 +203,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Spectrum4Leaflet.Request.html">Request</a></li><li><a href="Spectrum4Leaflet.Services.MapService.html">MapService</a></li><li><a href="Spectrum4Leaflet.Services.Operation.html">Operation</a></li><li><a href="Spectrum4Leaflet.Services.Service.html">Service</a></li><li><a href="Spectrum4Leaflet.Util.html">Util</a></li></ul><h3>Namespaces</h3><ul><li><a href="Spectrum4Leaflet.html">Spectrum4Leaflet</a></li><li><a href="Spectrum4Leaflet.Layers.html">Layers</a></li><li><a href="Spectrum4Leaflet.Services.html">Services</a></li><li><a href="Spectrum4Leaflet.Support.html">Support</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Spectrum4Leaflet.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="Spectrum4Leaflet.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="Spectrum4Leaflet.Request.html">Request</a></li><li><a href="Spectrum4Leaflet.Services.MapService.html">MapService</a></li><li><a href="Spectrum4Leaflet.Services.Operation.html">Operation</a></li><li><a href="Spectrum4Leaflet.Services.Service.html">Service</a></li><li><a href="Spectrum4Leaflet.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="Spectrum4Leaflet.html">Spectrum4Leaflet</a></li><li><a href="Spectrum4Leaflet.Layers.html">Layers</a></li><li><a href="Spectrum4Leaflet.Services.html">Services</a></li><li><a href="Spectrum4Leaflet.Support.html">Support</a></li><li><a href="Spectrum4Leaflet.Util.html">Util</a></li></ul><h3>Global</h3><ul><li><a href="global.html#options">options</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Thu Feb 05 2015 21:38:04 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Fri Feb 06 2015 20:51:45 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>
