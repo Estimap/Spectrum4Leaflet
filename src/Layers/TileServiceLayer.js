@@ -1,9 +1,9 @@
-Spectrum4Leaflet.Layers.TileServiceLayer = L.GridLayer.extend({
-/** @lends Spectrum4Leaflet.Layers.TileServiceLayer.prototype */
+L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
+/** @lends L.SpectrumSpatial.Layers.TileServiceLayer.prototype */
 
     /**
     * TileServiceLayer options class
-    * @typedef {Object} Spectrum4Leaflet.Layers.TileServiceLayer.Options
+    * @typedef {Object} L.SpectrumSpatial.Layers.TileServiceLayer.Options
     * @property {number} maxZoom  Maximum zoom level
     * @property {number} minZoom  Minimum zoom level
     * @property {string} errorTileUrl  Url of image to display when tile loading failed
@@ -16,7 +16,7 @@ Spectrum4Leaflet.Layers.TileServiceLayer = L.GridLayer.extend({
     */
 
     /**
-    * @property {Spectrum4Leaflet.Layers.TileServiceLayer.Options} options 
+    * @property {L.SpectrumSpatial.Layers.TileServiceLayer.Options} options 
     */
 	options: {
 		maxZoom: 18,
@@ -33,11 +33,11 @@ Spectrum4Leaflet.Layers.TileServiceLayer = L.GridLayer.extend({
 
     /**
 	* @class TileService layer class
-	* @constructs Spectrum4Leaflet.Layers.TileServiceLayer
+	* @constructs L.SpectrumSpatial.Layers.TileServiceLayer
     * @augments {L.GridLayer}
-    * @param {Spectrum4Leaflet.Service.TileService} service Map Service for layer
+    * @param {L.SpectrumSpatial.Service.TileService} service Map Service for layer
     * @param {string} mapName Name of the tiled map to display on tile service
-    * @param {Spectrum4Leaflet.Layers.TileServiceLayer.Options} options Additional options of layer
+    * @param {L.SpectrumSpatial.Layers.TileServiceLayer.Options} options Additional options of layer
     */
 	initialize: function (service, mapName, options) {
 
@@ -107,7 +107,7 @@ Spectrum4Leaflet.Layers.TileServiceLayer = L.GridLayer.extend({
 		                          this._getZoomForUrl()+1,
 		                          coords.x + 1,
 		                          (this.options.tms ? this._globalTileRange.max.y - coords.y : coords.y) + 1  ,
-		                          "png");
+		                          'png');
 	},
 
 	_tileOnLoad: function (done, tile) {
@@ -168,3 +168,7 @@ Spectrum4Leaflet.Layers.TileServiceLayer = L.GridLayer.extend({
 		}
 	}
 });
+
+L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
+  return new L.SpectrumSpatial.Layers.TileServiceLayer(service,mapName,options);
+};

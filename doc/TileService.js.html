@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: Services/TileService.js</title>
+    <title>JSDoc: Source: services/TileService.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Source: Services/TileService.js</h1>
+    <h1 class="page-title">Source: services/TileService.js</h1>
     
     
 
@@ -27,10 +27,10 @@
         <article>
             <pre class="prettyprint source"><code>/** 
 * @class Spectrum Spatial Tile Service wrapper
-* @augments Spectrum4Leaflet.Services.Service 
+* @augments L.SpectrumSpatial.Services.Service 
 */
-Spectrum4Leaflet.Services.TileService = Spectrum4Leaflet.Services.Service.extend(
-/** @lends Spectrum4Leaflet.Services.TileService# */
+L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.extend(
+/** @lends L.SpectrumSpatial.Services.TileService# */
 {
     /**
     * Returns the list of available named tiles for the Map Tiling Service
@@ -38,7 +38,7 @@ Spectrum4Leaflet.Services.TileService = Spectrum4Leaflet.Services.Service.extend
     * @param {Object} context Context for callback
     */
     mapList : function(callback, context){  
-        var operation = new Spectrum4Leaflet.Services.Operation("mapList.json");
+        var operation = new L.SpectrumSpatial.Services.Operation('mapList.json');
 	    this.startRequest(operation, callback, context);
     },
     
@@ -49,7 +49,7 @@ Spectrum4Leaflet.Services.TileService = Spectrum4Leaflet.Services.Service.extend
     * @param {Object} context Context for callback
     */
     description : function(mapName,callback, context){  
-        var operation = new Spectrum4Leaflet.Services.Operation("/"+ this.clearParam(mapName) + "/description.json");
+        var operation = new L.SpectrumSpatial.Services.Operation('/'+ this.clearParam(mapName) + '/description.json');
 	    this.startRequest(operation, callback, context);
     },  
     
@@ -87,13 +87,17 @@ Spectrum4Leaflet.Services.TileService = Spectrum4Leaflet.Services.Service.extend
     _createTileOperation:function(mapName,level,x,y,imageType){
         mapName = this.clearParam(mapName);
         if (mapName !== ''){
-	        mapName = "/"+mapName;
+	        mapName = '/'+mapName;
         }
-	    return new Spectrum4Leaflet.Services.Operation(mapName+"/"+level+"/" + x + ":" + y + "/tile." + imageType );
+	    return new L.SpectrumSpatial.Services.Operation(mapName+'/'+level+'/' + x + ':' + y + '/tile.' + imageType );
     }
     
     
-});</code></pre>
+});
+
+L.SpectrumSpatial.Services.tileService = function(url,options){
+  return new L.SpectrumSpatial.Services.TileService(url,options);
+};</code></pre>
         </article>
     </section>
 
@@ -103,13 +107,13 @@ Spectrum4Leaflet.Services.TileService = Spectrum4Leaflet.Services.Service.extend
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Spectrum4Leaflet.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="Spectrum4Leaflet.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="Spectrum4Leaflet.Request.html">Request</a></li><li><a href="Spectrum4Leaflet.Services.MapService.html">MapService</a></li><li><a href="Spectrum4Leaflet.Services.Operation.html">Operation</a></li><li><a href="Spectrum4Leaflet.Services.Service.html">Service</a></li><li><a href="Spectrum4Leaflet.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="Spectrum4Leaflet.html">Spectrum4Leaflet</a></li><li><a href="Spectrum4Leaflet.Layers.html">Layers</a></li><li><a href="Spectrum4Leaflet.Services.html">Services</a></li><li><a href="Spectrum4Leaflet.Support.html">Support</a></li><li><a href="Spectrum4Leaflet.Util.html">Util</a></li></ul><h3>Global</h3><ul><li><a href="global.html#options">options</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Util.html">Util</a></li></ul><h3>Global</h3><ul><li><a href="global.html#options">options</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Fri Feb 06 2015 20:51:45 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Feb 10 2015 02:51:18 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>

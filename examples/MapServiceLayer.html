@@ -6,7 +6,7 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link rel="stylesheet" href="../leaflet/leaflet.css" />
+	<link rel="stylesheet" href="../lib/leaflet/leaflet.css" />
 </head>
 <body>
 	<div id="map" style="width: 600px; height: 400px"></div>
@@ -17,8 +17,8 @@
 	<label for="ssurl">Spectrum Spatial map name</label>
 	<input type="text" id="mapname"></input>
 	<input type="button" onclick="addMapServiceLayer()" value="Add" />
-    <script src="../leaflet/leaflet-src.js"></script>
-    <script src="../build/Spectrum4Leaflet.js"></script>
+    <script src="../lib/leaflet/leaflet-src.js"></script>
+    <script src="../dist/Spectrum4Leaflet.js"></script>
 	<script>
 
 		var map = L.map('map').setView([0, 0], 0);
@@ -32,9 +32,10 @@
 		}).addTo(map);
 		
 		function addMapServiceLayer(){
-		    var service = new Spectrum4Leaflet.Services.MapService(document.getElementById("ssurl").value);
-			var layer = new Spectrum4Leaflet.Layers.MapServiceLayer(service, document.getElementById("mapname").value,null, { opacity:1 } );
-			layer.addTo(map);
+		    var serviceUrl = document.getElementById("ssurl").value;
+		    var mapName =  document.getElementById("mapname").value;
+		    
+		    L.SpectrumSpatial.Layers.mapServiceLayer( L.SpectrumSpatial.mapService(serviceUrl), mapName).addTo(map);
 		}
 
 	</script>

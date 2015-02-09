@@ -7,7 +7,7 @@
 	* @classdesc Simple Wraper on XMLHttpRequest, has simple get and post functions
 	* @constructor
 	*/
-	Spectrum4Leaflet.Request = {
+	L.SpectrumSpatial.Request = {
 	
 	    /**
 		 * Callback function for {Spectrum4Leaflet.Request}
@@ -73,7 +73,7 @@
 	    * @param {string} url Url for request
 	    * @param {string} login Login 
 	    * @param {string} password Password 
-	    * @param {Request.Callback} Callback function, when request is done
+	    * @param {Request.Callback} callback function, when request is done
 	    * @param {Object} context Context for callback
 	    * @returns {XMLHttpRequest}
 	    */
@@ -88,7 +88,7 @@
 	    * Runs get request by JSONP pattern 
 	    * @param {string} url Url for request
 	    * @param {string} callbackSeparator Special character to separate callback param from query param
-	    * @param {Request.Callback} Callback function, when request is done
+	    * @param {Request.Callback} callback function, when request is done
 	    * @param {Object} context Context for callback
 	    * @returns {XMLHttpRequest}
 	    */
@@ -97,7 +97,7 @@
 	
 	        var script = L.DomUtil.create('script', null, document.body);
 	        script.type = 'text/javascript';
-	        script.src = url + callbackSeparator + "callback=window._Spectrum4LeafletCallbacks." + callbackId;
+	        script.src = url + callbackSeparator + 'callback=window._Spectrum4LeafletCallbacks.' + callbackId;
 	        script.id = callbackId;
 	
 	        window._Spectrum4LeafletCallbacks[callbackId] = function(response){

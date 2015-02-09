@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: Layers/TileServiceLayer.js</title>
+    <title>JSDoc: Source: layers/TileServiceLayer.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Source: Layers/TileServiceLayer.js</h1>
+    <h1 class="page-title">Source: layers/TileServiceLayer.js</h1>
     
     
 
@@ -25,12 +25,12 @@
     
     <section>
         <article>
-            <pre class="prettyprint source"><code>Spectrum4Leaflet.Layers.TileServiceLayer = L.GridLayer.extend({
-/** @lends Spectrum4Leaflet.Layers.TileServiceLayer.prototype */
+            <pre class="prettyprint source"><code>L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
+/** @lends L.SpectrumSpatial.Layers.TileServiceLayer.prototype */
 
     /**
     * TileServiceLayer options class
-    * @typedef {Object} Spectrum4Leaflet.Layers.TileServiceLayer.Options
+    * @typedef {Object} L.SpectrumSpatial.Layers.TileServiceLayer.Options
     * @property {number} maxZoom  Maximum zoom level
     * @property {number} minZoom  Minimum zoom level
     * @property {string} errorTileUrl  Url of image to display when tile loading failed
@@ -43,7 +43,7 @@
     */
 
     /**
-    * @property {Spectrum4Leaflet.Layers.TileServiceLayer.Options} options 
+    * @property {L.SpectrumSpatial.Layers.TileServiceLayer.Options} options 
     */
 	options: {
 		maxZoom: 18,
@@ -60,11 +60,11 @@
 
     /**
 	* @class TileService layer class
-	* @constructs Spectrum4Leaflet.Layers.TileServiceLayer
+	* @constructs L.SpectrumSpatial.Layers.TileServiceLayer
     * @augments {L.GridLayer}
-    * @param {Spectrum4Leaflet.Service.TileService} service Map Service for layer
+    * @param {L.SpectrumSpatial.Service.TileService} service Map Service for layer
     * @param {string} mapName Name of the tiled map to display on tile service
-    * @param {Spectrum4Leaflet.Layers.TileServiceLayer.Options} options Additional options of layer
+    * @param {L.SpectrumSpatial.Layers.TileServiceLayer.Options} options Additional options of layer
     */
 	initialize: function (service, mapName, options) {
 
@@ -134,7 +134,7 @@
 		                          this._getZoomForUrl()+1,
 		                          coords.x + 1,
 		                          (this.options.tms ? this._globalTileRange.max.y - coords.y : coords.y) + 1  ,
-		                          "png");
+		                          'png');
 	},
 
 	_tileOnLoad: function (done, tile) {
@@ -195,7 +195,10 @@
 		}
 	}
 });
-</code></pre>
+
+L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
+  return new L.SpectrumSpatial.Layers.TileServiceLayer(service,mapName,options);
+};</code></pre>
         </article>
     </section>
 
@@ -205,13 +208,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Spectrum4Leaflet.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="Spectrum4Leaflet.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="Spectrum4Leaflet.Request.html">Request</a></li><li><a href="Spectrum4Leaflet.Services.MapService.html">MapService</a></li><li><a href="Spectrum4Leaflet.Services.Operation.html">Operation</a></li><li><a href="Spectrum4Leaflet.Services.Service.html">Service</a></li><li><a href="Spectrum4Leaflet.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="Spectrum4Leaflet.html">Spectrum4Leaflet</a></li><li><a href="Spectrum4Leaflet.Layers.html">Layers</a></li><li><a href="Spectrum4Leaflet.Services.html">Services</a></li><li><a href="Spectrum4Leaflet.Support.html">Support</a></li><li><a href="Spectrum4Leaflet.Util.html">Util</a></li></ul><h3>Global</h3><ul><li><a href="global.html#options">options</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Util.html">Util</a></li></ul><h3>Global</h3><ul><li><a href="global.html#options">options</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Fri Feb 06 2015 20:51:45 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Feb 10 2015 02:51:18 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>

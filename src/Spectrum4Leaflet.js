@@ -1,8 +1,15 @@
 /**
-* Spectrum for leaftlet namespace
+ * Leaflet namespace
+ * @namespace L
+ */
+
+
+
+/**
+* Spectrum spatial for leaftlet namespace
 * @namespace
 */
-var Spectrum4Leaflet = {
+L.SpectrumSpatial = {
   Version: '0.1.0',
   
   /**
@@ -18,6 +25,12 @@ var Spectrum4Leaflet = {
   Layers:{},
   
   /**
+  * Controls
+  * @namespace
+  */
+  Controls:{},
+  
+  /**
   * Environment values
   * @namespace
   */
@@ -27,5 +40,5 @@ var Spectrum4Leaflet = {
 };
 
 if(typeof window !== 'undefined' && window.L){
-  window.L.spectrum4L = Spectrum4Leaflet;
+  window.L.SpectrumSpatial = L.SpectrumSpatial;
 }

@@ -12,14 +12,14 @@ module.exports = function(grunt) {
 		     'src/Spectrum4Leaflet.js',
 		     'src/Util.js',
 		     'src/Request.js',
-		     'src/Services/Operation.js',
-		     'src/Services/Service.js',
-		     'src/Services/MapService.js',
-		     'src/Services/TileService.js',
-		     'src/Layers/MapServiceLayer.js',
-		     'src/Layers/TileServiceLayer.js'
+		     'src/services/Operation.js',
+		     'src/services/Service.js',
+		     'src/services/MapService.js',
+		     'src/services/TileService.js',
+		     'src/layers/MapServiceLayer.js',
+		     'src/layers/TileServiceLayer.js'
 		],
-        dest: 'build/<%= pkg.name %>.js'
+        dest: 'dist/<%= pkg.name %>.js'
       }
     },
     uglify: {
@@ -28,12 +28,12 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'build/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+          'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
         }
       }
     },
     qunit: {
-      files: ['test/**/*.html']
+      files: ['spec/**/*.html']
     },
     jshint: {
       files: ['Gruntfile.js', 'src/**/*.js'],

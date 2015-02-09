@@ -1,9 +1,9 @@
 /** 
 * @class Spectrum Spatial Tile Service wrapper
-* @augments Spectrum4Leaflet.Services.Service 
+* @augments L.SpectrumSpatial.Services.Service 
 */
-Spectrum4Leaflet.Services.TileService = Spectrum4Leaflet.Services.Service.extend(
-/** @lends Spectrum4Leaflet.Services.TileService# */
+L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.extend(
+/** @lends L.SpectrumSpatial.Services.TileService# */
 {
     /**
     * Returns the list of available named tiles for the Map Tiling Service
@@ -11,7 +11,7 @@ Spectrum4Leaflet.Services.TileService = Spectrum4Leaflet.Services.Service.extend
     * @param {Object} context Context for callback
     */
     mapList : function(callback, context){  
-        var operation = new Spectrum4Leaflet.Services.Operation("mapList.json");
+        var operation = new L.SpectrumSpatial.Services.Operation('mapList.json');
 	    this.startRequest(operation, callback, context);
     },
     
@@ -22,7 +22,7 @@ Spectrum4Leaflet.Services.TileService = Spectrum4Leaflet.Services.Service.extend
     * @param {Object} context Context for callback
     */
     description : function(mapName,callback, context){  
-        var operation = new Spectrum4Leaflet.Services.Operation("/"+ this.clearParam(mapName) + "/description.json");
+        var operation = new L.SpectrumSpatial.Services.Operation('/'+ this.clearParam(mapName) + '/description.json');
 	    this.startRequest(operation, callback, context);
     },  
     
@@ -60,10 +60,14 @@ Spectrum4Leaflet.Services.TileService = Spectrum4Leaflet.Services.Service.extend
     _createTileOperation:function(mapName,level,x,y,imageType){
         mapName = this.clearParam(mapName);
         if (mapName !== ''){
-	        mapName = "/"+mapName;
+	        mapName = '/'+mapName;
         }
-	    return new Spectrum4Leaflet.Services.Operation(mapName+"/"+level+"/" + x + ":" + y + "/tile." + imageType );
+	    return new L.SpectrumSpatial.Services.Operation(mapName+'/'+level+'/' + x + ':' + y + '/tile.' + imageType );
     }
     
     
 });
+
+L.SpectrumSpatial.Services.tileService = function(url,options){
+  return new L.SpectrumSpatial.Services.TileService(url,options);
+};

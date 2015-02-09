@@ -1,5 +1,5 @@
-Spectrum4Leaflet.Services.Operation = L.Class.extend(
-/** @lends Spectrum4Leaflet.Services.Operation.prototype */
+L.SpectrumSpatial.Services.Operation = L.Class.extend(
+/** @lends L.SpectrumSpatial.Services.Operation.prototype */
 { 
 
   /**
@@ -11,27 +11,27 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
   * @property {boolean} forcePost Is true if opertaion should use post request
   * @property {string} paramsSeparator Separator for get params in url
   * @property {string} queryStartCharacter Character from which query begins 
-  * @property {string} postType Type of post data. Default is "application/json"
+  * @property {string} postType Type of post data. Default is 'application/json'
   * @property {string} responseType Type of response data. Used for post response with image (only for XHR2)
   */
 
   /**
-  * @property {Options}  options 
+  * @property {Services.Service.Options}  options 
   */
   options: {
       forcePost :false,
-      paramsSeparator: ";",
-      queryStartCharacter:";",
-      postType : "application/json",
+      paramsSeparator: ';',
+      queryStartCharacter:';',
+      postType : 'application/json',
       responseType:null
   },
 
   /**
   * @class Service operation class
   * @augments {L.Class} 
-  * @constructs Spectrum4Leaflet.Services.Operation
+  * @constructs L.SpectrumSpatial.Services.Operation
   * @param {string} name Name of operation
-  * @param {Options} options Additional options of operation
+  * @param {Services.Service.Options} options Additional options of operation
   */
   initialize: function(name,options) {
       this.options.getParams = {};
@@ -55,7 +55,7 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
           if(params.hasOwnProperty(key)){
              var param = params[key];
              
-             keyValueArray.push(key + "=" + encodeURIComponent(param));
+             keyValueArray.push(key + '=' + encodeURIComponent(param));
           }
       }
       var query = this.options.name;
@@ -101,3 +101,7 @@ Spectrum4Leaflet.Services.Operation = L.Class.extend(
   }
   
 });
+
+L.SpectrumSpatial.Services.operation = function(name,options){
+  return new L.SpectrumSpatial.Services.Operation(name,options);
+};

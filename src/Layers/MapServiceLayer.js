@@ -1,27 +1,27 @@
-Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
-/** @lends Spectrum4Leaflet.Layers.MapServiceLayer.prototype */
+L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
+/** @lends L.SpectrumSpatial.Layers.MapServiceLayer.prototype */
 
 
     /**
     * MapServiceLayer's options class
-    * @typedef {Object} Spectrum4Leaflet.Layers.MapServiceLayer.Options
+    * @typedef {Object} L.SpectrumSpatial.Layers.MapServiceLayer.Options
     * @property {number} opacity  Opacity of layer image (1 is default)
     * @property {string} alt  Title for layer image
     * @property {boolean} interactive  If layer is interactive
-    * @property {string} imageType  Type of image ( "png" is default )
-    * @property {number} zIndex  ZIndex of layer's image ("auto" is default)
+    * @property {string} imageType  Type of image ( 'png' is default )
+    * @property {number} zIndex  ZIndex of layer's image ('auto' is default)
     * @property {number} updateInterval  Min update interval of the layer
     */
 
     /**
-    * @property {Spectrum4Leaflet.Layers.MapServiceLayer.Options} options 
+    * @property {L.SpectrumSpatial.Layers.MapServiceLayer.Options} options 
     */
     options: {
 		opacity: 1,
 		alt: '',
 		interactive: false,
-		imageType: "png",
-		zIndex: "auto",
+		imageType: 'png',
+		zIndex: 'auto',
 		updateInterval:200,
 	},
 
@@ -29,11 +29,11 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
     /**
     * @class MapService layer class
     * @augments {L.Layer}
-	* @constructs Spectrum4Leaflet.Layers.MapServiceLayer
-    * @param {Spectrum4Leaflet.Service.MapService} service Map Service for layer
+	* @constructs L.SpectrumSpatial.Layers.MapServiceLayer
+    * @param {L.SpectrumSpatial.Service.MapService} service Map Service for layer
     * @param {string} mapName Name of the map to display on map service
     * @param {Object} postData Post data to map (only if browser supports XHR2)
-    * @param {Spectrum4Leaflet.Layers.MapServiceLayer.Options} options Additional options of layer
+    * @param {L.SpectrumSpatial.Layers.MapServiceLayer.Options} options Additional options of layer
     */
 	initialize: function (service, mapName, postData, options) { 
 		this._mapName = mapName;
@@ -288,7 +288,7 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 	    var data = binaryString.join('');
 	
 	    var base64 = window.btoa(data);
-	    this.image.src ="data:image/png;base64,"+base64;
+	    this.image.src ='data:image/png;base64,'+base64;
 	    this.context._afterLoad({ image: this.image, bounds:this.bounds, counter:this.counter});
 	},
 	
@@ -302,3 +302,6 @@ Spectrum4Leaflet.Layers.MapServiceLayer =  L.Layer.extend({
 	
 });
 
+L.SpectrumSpatial.Layers.mapServiceLayer = function(service,mapName,postData,options){
+  return new L.SpectrumSpatial.Layers.MapServiceLayer(service,mapName,postData,options);
+};

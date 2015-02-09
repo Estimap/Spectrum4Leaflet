@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: Services/Service.js</title>
+    <title>JSDoc: Source: services/Service.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Source: Services/Service.js</h1>
+    <h1 class="page-title">Source: services/Service.js</h1>
     
     
 
@@ -25,8 +25,8 @@
     
     <section>
         <article>
-            <pre class="prettyprint source"><code>Spectrum4Leaflet.Services.Service = L.Class.extend(
-/** @lends Spectrum4Leaflet.Services.Service.prototype */
+            <pre class="prettyprint source"><code>L.SpectrumSpatial.Services.Service = L.Class.extend(
+/** @lends L.SpectrumSpatial.Services.Service.prototype */
 { 
 
   /**
@@ -71,7 +71,7 @@
 	      if (this.options.proxyUrl){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
 	      }
-		  return Spectrum4Leaflet.Request.post(urlWithQuery, 
+		  return L.SpectrumSpatial.Request.post(urlWithQuery, 
 		                                       operation.getPostData(), 
 		                                       operation.getPostType(),
 		                                       operation.getResponseType(),
@@ -83,35 +83,35 @@
 	  else{
 	      if (this.options.alwaysUseProxy){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
-		      return Spectrum4Leaflet.Request.get(urlWithQuery, this.options.login,this.options.password, callback, context);
+		      return L.SpectrumSpatial.Request.get(urlWithQuery, this.options.login,this.options.password, callback, context);
 	      }
-		  return ( this.options.forceGet | Spectrum4Leaflet.Support.CORS ) ? 
-		             Spectrum4Leaflet.Request.get(urlWithQuery,this.options.login,this.options.password,  callback, context):
-		             Spectrum4Leaflet.Request.jsonp(urlWithQuery,"?", callback, context);
+		  return ( this.options.forceGet | L.SpectrumSpatial.Support.CORS ) ? 
+		             L.SpectrumSpatial.Request.get(urlWithQuery,this.options.login,this.options.password,  callback, context):
+		             L.SpectrumSpatial.Request.jsonp(urlWithQuery,'?', callback, context);
 	  }
   },
   
   /**
   * Returns full url query for service
-  * @param {Spectrum4Leaflet.Services.Operation}
+  * @param {L.SpectrumSpatial.Services.Operation}
   * @returns {string}
   */
   getUrl: function(operation){
       var urlQuery = this.clearParam(operation.getUrlQuery());     
-	  var separator = (this.options.url.slice(-1) === "/") ? "" : "/";  
+	  var separator = (this.options.url.slice(-1) === '/') ? '' : '/';  
 	  return this.options.url + separator +  urlQuery;
   },
   
   /**
-  * Clears parameter from "/" at first or last letter
+  * Clears parameter from '/' at first or last letter
   * @param {string}
   * @returns {string}
   */
   clearParam: function(param){
-	  if (param[0]==="/"){
+	  if (param[0]==='/'){
 	      param = param.substring(1);
       }
-      if (param.slice(-1) === "/") {
+      if (param.slice(-1) === '/') {
 	      param = param.substring(0, param.length-1);
       }
       return param;
@@ -126,7 +126,11 @@
 	  return  this.options.encodeUrlForProxy ? encodeURIComponent(url) : url;
   }
   
-});</code></pre>
+});
+
+L.SpectrumSpatial.Services.service = function(url,options){
+  return new L.SpectrumSpatial.Services.Service(url,options);
+};</code></pre>
         </article>
     </section>
 
@@ -136,13 +140,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Spectrum4Leaflet.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="Spectrum4Leaflet.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="Spectrum4Leaflet.Request.html">Request</a></li><li><a href="Spectrum4Leaflet.Services.MapService.html">MapService</a></li><li><a href="Spectrum4Leaflet.Services.Operation.html">Operation</a></li><li><a href="Spectrum4Leaflet.Services.Service.html">Service</a></li><li><a href="Spectrum4Leaflet.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="Spectrum4Leaflet.html">Spectrum4Leaflet</a></li><li><a href="Spectrum4Leaflet.Layers.html">Layers</a></li><li><a href="Spectrum4Leaflet.Services.html">Services</a></li><li><a href="Spectrum4Leaflet.Support.html">Support</a></li><li><a href="Spectrum4Leaflet.Util.html">Util</a></li></ul><h3>Global</h3><ul><li><a href="global.html#options">options</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Util.html">Util</a></li></ul><h3>Global</h3><ul><li><a href="global.html#options">options</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Fri Feb 06 2015 20:51:45 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Feb 10 2015 02:51:18 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>

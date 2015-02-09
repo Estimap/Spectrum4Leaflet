@@ -1,5 +1,5 @@
-Spectrum4Leaflet.Services.Service = L.Class.extend(
-/** @lends Spectrum4Leaflet.Services.Service.prototype */
+L.SpectrumSpatial.Services.Service = L.Class.extend(
+/** @lends L.SpectrumSpatial.Services.Service.prototype */
 { 
 
   /**
@@ -44,7 +44,7 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
 	      if (this.options.proxyUrl){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
 	      }
-		  return Spectrum4Leaflet.Request.post(urlWithQuery, 
+		  return L.SpectrumSpatial.Request.post(urlWithQuery, 
 		                                       operation.getPostData(), 
 		                                       operation.getPostType(),
 		                                       operation.getResponseType(),
@@ -56,35 +56,35 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
 	  else{
 	      if (this.options.alwaysUseProxy){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
-		      return Spectrum4Leaflet.Request.get(urlWithQuery, this.options.login,this.options.password, callback, context);
+		      return L.SpectrumSpatial.Request.get(urlWithQuery, this.options.login,this.options.password, callback, context);
 	      }
-		  return ( this.options.forceGet | Spectrum4Leaflet.Support.CORS ) ? 
-		             Spectrum4Leaflet.Request.get(urlWithQuery,this.options.login,this.options.password,  callback, context):
-		             Spectrum4Leaflet.Request.jsonp(urlWithQuery,"?", callback, context);
+		  return ( this.options.forceGet | L.SpectrumSpatial.Support.CORS ) ? 
+		             L.SpectrumSpatial.Request.get(urlWithQuery,this.options.login,this.options.password,  callback, context):
+		             L.SpectrumSpatial.Request.jsonp(urlWithQuery,'?', callback, context);
 	  }
   },
   
   /**
   * Returns full url query for service
-  * @param {Spectrum4Leaflet.Services.Operation}
+  * @param {L.SpectrumSpatial.Services.Operation}
   * @returns {string}
   */
   getUrl: function(operation){
       var urlQuery = this.clearParam(operation.getUrlQuery());     
-	  var separator = (this.options.url.slice(-1) === "/") ? "" : "/";  
+	  var separator = (this.options.url.slice(-1) === '/') ? '' : '/';  
 	  return this.options.url + separator +  urlQuery;
   },
   
   /**
-  * Clears parameter from "/" at first or last letter
+  * Clears parameter from '/' at first or last letter
   * @param {string}
   * @returns {string}
   */
   clearParam: function(param){
-	  if (param[0]==="/"){
+	  if (param[0]==='/'){
 	      param = param.substring(1);
       }
-      if (param.slice(-1) === "/") {
+      if (param.slice(-1) === '/') {
 	      param = param.substring(0, param.length-1);
       }
       return param;
@@ -100,3 +100,7 @@ Spectrum4Leaflet.Services.Service = L.Class.extend(
   }
   
 });
+
+L.SpectrumSpatial.Services.service = function(url,options){
+  return new L.SpectrumSpatial.Services.Service(url,options);
+};

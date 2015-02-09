@@ -2,6 +2,6 @@
 * Usefull utils
 * @namespace
 */
-Spectrum4Leaflet.Util = {
+L.SpectrumSpatial.Util = {
     
 };
