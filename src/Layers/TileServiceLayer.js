@@ -15,9 +15,6 @@ L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
     * @property {boolean} crossOrigin 
     */
 
-    /**
-    * @property {L.SpectrumSpatial.Layers.TileServiceLayer.Options} options 
-    */
 	options: {
 		maxZoom: 18,
         minZoom: 0,

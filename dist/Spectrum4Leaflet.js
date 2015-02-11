@@ -95,19 +95,13 @@ L.SpectrumSpatial.Utils = {
 	L.SpectrumSpatial.Request = {
 	
 	    /**
-		 * Callback function for {Spectrum4Leaflet.Request}
+		 * Callback function for {L.SpectrumSpatial.Request}
 		 *
-		 * @callback Request.Callback
+		 * @callback L.SpectrumSpatial.Request.Callback
 		 * @param {Object} error Error object, with fieds code and message
 		 * @param {Object} response Response
 		 */
 	
-	
-	    /**
-	    * Creates XMLHttpRequest and binds callbacks
-	    * @private
-	    * @returns {XMLHttpRequest}
-	    */
 		_createRequest: function (callback, context){
 		    var httpRequest = new XMLHttpRequest();
 		
@@ -156,13 +150,13 @@ L.SpectrumSpatial.Utils = {
 	    /**
 	    * Runs get request
 	    * @param {string} url Url for request
-	    * @param {string} login Login 
-	    * @param {string} password Password 
 	    * @param {Request.Callback} callback function, when request is done
-	    * @param {Object} context Context for callback
+	    * @param {Object} [context] Context for callback
+	    * @param {string} [login] Login 
+	    * @param {string} [password] Password 
 	    * @returns {XMLHttpRequest}
 	    */
-	    get: function(url, login, password, callback, context){
+	    get: function(url, callback, context, login, password){
 	        var httpRequest = this._createRequest(callback,context);
 		    httpRequest.open('GET', url , true, login, password);
 	        httpRequest.send(null);
@@ -175,10 +169,15 @@ L.SpectrumSpatial.Utils = {
 	    * @param {string} callbackSeparator Special character to separate callback param from query param
 	    * @param {Request.Callback} callback function, when request is done
 	    * @param {Object} context Context for callback
+	    * @param {string} [callbackSeparator] Special character to separate callback param from query param
 	    * @returns {XMLHttpRequest}
 	    */
-	    jsonp: function(url, callbackSeparator, callback,context){
+	    jsonp: function(url, callback, context, callbackSeparator){
 		    var callbackId = 'c' + callbacks;
+	
+	        if (!callbackSeparator){
+		        callbackSeparator='';
+	        }
 	
 	        var script = L.DomUtil.create('script', null, document.body);
 	        script.type = 'text/javascript';
@@ -225,27 +224,38 @@ L.SpectrumSpatial.Utils = {
 	    },
 	    
 	    /**
+		* Request post options
+		* @typedef {Object} L.SpectrumSpatial.Request.PostOptions
+		* @property {string} [login]  Login
+		* @property {string} [password]  Password
+		* @property {Object} [postData] Data to post
+		* @property {string} [postType=application/json] Type of post data
+		* @property {string} [responseType] Type of response (only for XHR2)
+		*/
+	    
+	    /**
 	    * Runs post request
 	    * @param {string} url Url for request
-	    * @param {object} postdata Data to send in request body
-	    * @param {string} posttype Type of post data 
-	    * @param {string} responseType Type of returned data (only for XHR2)
-	    * @param {string} login Login 
-	    * @param {string} password Password 
 	    * @param {Request.Callback} Callback function, when request is done
 	    * @param {object} context Context for callback
+	    * @param {L.SpectrumSpatial.Request.PostOptions} [options] Options for function
 	    * @returns {XMLHttpRequest}
 	    */
-	    post: function(url, postdata, posttype, responseType, login, password, callback,context){
+	    post: function(url, callback, context, options ){	    
+		    options = options || {};	    
+		    if (!options.postType){
+			    options.postType = 'application/json';
+		    }
+
 	        var httpRequest = this._createRequest(callback,context);
-	        httpRequest.open('POST', url, true, login, password);
-	        httpRequest.setRequestHeader('Content-Type', posttype);
+	        httpRequest.open('POST', url, true, options.login, options.password);
+	        httpRequest.setRequestHeader('Content-Type', options.postType);
 	        
-	        if (responseType){
-		        httpRequest.responseType = responseType;
+	        if (options.responseType){
+		        httpRequest.responseType = options.responseType;
 	        }
 	        
-	        httpRequest.send(postdata);
+	        httpRequest.send(options.postData);
 	        return httpRequest;
 	    }
 	};
@@ -363,16 +373,16 @@ L.SpectrumSpatial.Services.operation = function(name,options){
 
   /**
   * Service's options class
-  * @typedef {Object} Services.Service.Options
-  * @property {string} url - Url of service
-  * @property {string} proxyUrl - proxy url 
-  * @property {boolean} alwaysUseProxy - use proxy for get requests
-  * @property {boolean} forceGet - always do not use jsonp
-  * @property {boolean} encodeUrlForProxy - if true encode query url for using with proxy
+  * @typedef {Object} L.SpectrumSpatial.Services.Service.Options
+  * @property {string} [url] - Url of service
+  * @property {string} [proxyUrl] - proxy url 
+  * @property {boolean} [alwaysUseProxy=false] - use proxy for get requests
+  * @property {boolean} [forceGet=false] always do not use jsonp
+  * @property {boolean} [encodeUrlForProxy=false] - if true encode query url for using with proxy
   */
 
   /**
-  * @property {Services.Service.Options}  options 
+  * @property {L.SpectrumSpatial.Services.Service.Options}  options 
   */
   options: {
       alwaysUseProxy:false,
@@ -385,7 +395,7 @@ L.SpectrumSpatial.Services.operation = function(name,options){
   * @augments {L.Class} 
   * @constructs 
   * @param {string} url Url of service
-  * @param {Services.Service.Options} options Additional options of service
+  * @param {L.SpectrumSpatial.Services.Service.Options} [options] Additional options of service
   */
   initialize: function (url, options) {
       options = options || {};
@@ -402,30 +412,32 @@ L.SpectrumSpatial.Services.operation = function(name,options){
 	  if (operation.isPostOperation()){
 	      if (this.options.proxyUrl){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
-	      }
-		  return L.SpectrumSpatial.Request.post(urlWithQuery, 
-		                                       operation.getPostData(), 
-		                                       operation.getPostType(),
-		                                       operation.getResponseType(),
-		                                       this.options.login,
-		                                       this.options.password,  		                                       
-		                                       callback, 
-		                                       context);
+	      }      
+		  return L.SpectrumSpatial.Request.post(urlWithQuery, 	                                       
+		                                        callback, 
+		                                        context,
+		                                        { 
+			                                        postData: operation.getPostData(), 
+		                                            postType: operation.getPostType(),
+		                                            responseType: operation.getResponseType(),
+		                                            login: this.options.login,
+		                                            password: this.options.password
+		                                        });
 	  }
 	  else{
 	      if (this.options.alwaysUseProxy){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
-		      return L.SpectrumSpatial.Request.get(urlWithQuery, this.options.login,this.options.password, callback, context);
+		      return L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, this.options.login, this.options.password);
 	      }
 		  return ( this.options.forceGet | L.SpectrumSpatial.Support.CORS ) ? 
-		             L.SpectrumSpatial.Request.get(urlWithQuery,this.options.login,this.options.password,  callback, context):
-		             L.SpectrumSpatial.Request.jsonp(urlWithQuery,'?', callback, context);
+		             L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, this.options.login, this.options.password):
+		             L.SpectrumSpatial.Request.jsonp(urlWithQuery, callback, context, '?');
 	  }
   },
   
   /**
   * Returns full url query for service
-  * @param {L.SpectrumSpatial.Services.Operation}
+  * @param {L.SpectrumSpatial.Services.Operation} operation
   * @returns {string}
   */
   getUrl: function(operation){
@@ -436,7 +448,7 @@ L.SpectrumSpatial.Services.operation = function(name,options){
   
   /**
   * Clears parameter from '/' at first or last letter
-  * @param {string}
+  * @param {string} param
   * @returns {string}
   */
   clearParam: function(param){
@@ -451,7 +463,7 @@ L.SpectrumSpatial.Services.operation = function(name,options){
   
   /**
   * Encode specified url if options.encodeUrlForProxy is true
-  * @param {string}
+  * @param {string} url
   * @returns {string}
   */
   checkEncodeUrl:function(url){
@@ -467,20 +479,65 @@ L.SpectrumSpatial.Services.service = function(url,options){
 * @augments L.SpectrumSpatial.Services.Service 
 * @constructs L.SpectrumSpatial.Services.MapService
 * @param {string} url Url of service
-* @param {Services.Service.Options} options Additional options of service
+* @param {L.SpectrumSpatial.Services.Service.Options} [options] Additional options of service
 */
 L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.extend(
 /** @lends L.SpectrumSpatial.Services.MapService# */
 {     
-
+    /**
+    * Render options
+	* @typedef {Object} L.SpectrumSpatial.Services.MapService.RenderOptions
+    * @property {string} mapName Name of map to render
+    * @property {string} [imageType=png] Type of image ( png, jpg etc.) 
+    * @property {number} width Width of rendered image
+    * @property {number} height Height of rendered image
+    * @property {Array.<number>} bounds Array of geo bounds for image. [left,top,right,bottom]
+    * @property {number} cx Center x coordinate 
+    * @property {number} cy Center y coordinate 
+    * @property {number} scale Scale
+    * @property {number} zoom Zoom
+    * @property {string} srs Reference system code
+    * @property {number} [resolution] Resolution
+    * @property {string} [locale] Locale
+    * @property {string} [rd] The type of rendering to perform ( s (speed) or q (quality))
+    * @property {string} [bc] The background color to use for the map image (RRGGBB)
+    * @property {number} [bo] The opacity of the background color
+    * @property {Object} [additionalParams] Additional parameters for post query
+	*/
+	
+	/**
+    * Legend options
+	* @typedef {Object} L.SpectrumSpatial.Services.MapService.LegendOptions
+    * @property {string} mapName Name of map for legend 
+    * @property {number} width Width of the individual legend swatch in pixels
+    * @property {number} height Height of the individual legend swatch in pixels
+    * @property {string} [imageType=png] Type of image ( png, jpg etc.)
+    * @property {boolean} [inlineSwatch=true] Determines if the swatch images are returned as data or URL to the image location on the server
+    * @property {number} [resolution] Resolution
+    * @property {string} [locale] Locale
+    * @property {Object} [postData] If specified runs post request to render legend
+	*/
+	
+	/**
+    * Legend's swatch options
+	* @typedef {Object} L.SpectrumSpatial.Services.MapService.SwatchOptions
+    * @property {string} mapName Name of map for legend 
+    * @property {number} legendIndex The legend to get the swatch from in the named map
+    * @property {number} rowIndex The swatch location (row) within the legend
+    * @property {number} width Width of the individual legend swatch in pixels
+    * @property {number} height Height of the individual legend swatch in pixels
+    * @property {string} [imageType=png] Type of image ( png, jpg etc.)
+    * @property {number} [resolution] Resolution
+    * @property {string} [locale] Locale
+	*/
 
     /**
     * Lists all named layers which map service contains
-    * @param {string} locale Locale of response 
     * @param {Request.Callback} callback Callback of the function
     * @param {Object} context Context for callback
+    * @param {string} [locale] Locale of response 
     */
-    listNamedLayers : function(locale, callback, context){  
+    listNamedLayers : function(callback, context, locale){  
         var operation = new L.SpectrumSpatial.Services.Operation('layers.json');
         this._addResolutionAndLocale(operation,null,locale);
 	    this.startRequest(operation, callback, context);
@@ -489,11 +546,11 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     /**
     * Describes specified layer
     * @param {string} layerName name of layer
-    * @param {string} locale Locale of response 
     * @param {Request.Callback} callback Callback of the function
     * @param {Object} context Context for callback
+    * @param {string} [locale] Locale of response 
     */
-    describeNamedLayer : function(layerName, locale, callback, context){  
+    describeNamedLayer : function(layerName, callback, context, locale){  
         var operation = new L.SpectrumSpatial.Services.Operation('layers/'+ this.clearParam(layerName) + '.json');
         this._addResolutionAndLocale(operation,null,locale);
 	    this.startRequest(operation, callback, context);
@@ -523,11 +580,11 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     
     /**
     * Lists all named maps which map service contains
-    * @param {string} locale Locale of response 
     * @param {Request.Callback} callback Callback of the function
     * @param {Object} context Context for callback
+    * @param {string} [locale] Locale of response 
     */
-    listNamedMaps : function(locale, callback, context){  
+    listNamedMaps : function(callback, context, locale){  
         var operation = new L.SpectrumSpatial.Services.Operation('maps.json');
         this._addResolutionAndLocale(operation,null,locale);
 	    this.startRequest(operation, callback, context);
@@ -536,11 +593,11 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     /**
     * Describes specified map
     * @param {string} mapName name of map
-    * @param {string} locale Locale of response 
     * @param {Request.Callback} callback Callback of the function
     * @param {Object} context Context for callback
+    * @param {string} [locale] Locale of response 
     */
-    describeNamedMap : function(mapName, locale, callback, context){  
+    describeNamedMap : function(mapName, callback, context, locale ){  
         var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(mapName)+ '.json');
         this._addResolutionAndLocale(operation,null,locale);
 	    this.startRequest(operation, callback, context);
@@ -567,57 +624,57 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
 	    this.startRequest(operation, callback, context);
     },
     
-    /**
-    * @private
-    */
-    _createRenderOperation:function (mapName, imageType,width,height,bounds,cx,cy,scale,zoom,srs,resolution,locale, rd,bc,bo, additionalParams, callback, context){
+    
+    _createRenderOperation:function (options){
        
-        mapName = this.clearParam(mapName);
+        var mapName = this.clearParam(options.mapName);
         if (mapName !== ''){
 	        mapName = '/'+mapName;
         }
-	    var operation = new L.SpectrumSpatial.Services.Operation('maps'+ mapName+'/image.'+imageType , { responseType: 'arraybuffer' } );
-	    operation.options.getParams.w = width;
-	    operation.options.getParams.h = height;
-	    if (bounds){
-		    operation.options.getParams.b= bounds.join(',')+ ',' + srs;
+        
+        if (!options.imageType){
+	        options.imageType = 'png';
+        }
+        
+	    var operation = new L.SpectrumSpatial.Services.Operation('maps'+ mapName+'/image.' + options.imageType , { responseType: 'arraybuffer' } );
+	    operation.options.getParams.w = options.width;
+	    operation.options.getParams.h = options.height;
+	    if (options.bounds){
+		    operation.options.getParams.b= options.bounds.join(',')+ ',' + options.srs;
 	    }
 	    else{
-		    operation.options.getParams.c= cx+ ',' +cy + ',' + srs;
+		    operation.options.getParams.c= options.cx+ ',' +options.cy + ',' + options.srs;
 	    }
 	    
-	    if (scale){
-		    operation.options.getParams.s = scale;
+	    if (options.scale){
+		    operation.options.getParams.s = options.scale;
 	    }
 	    
-	    if (zoom){
-		    operation.options.getParams.z = zoom;
+	    if (options.zoom){
+		    operation.options.getParams.z = options.zoom;
 	    }
 	    
-	    this._addResolutionAndLocale(operation,resolution,locale);
+	    this._addResolutionAndLocale(operation, options.resolution, options.locale);
 	    
-	    if (rd){
-		    operation.options.getParams.rd = rd;
+	    if (options.rd){
+		    operation.options.getParams.rd = options.rd;
 	    }
 	    
-	    if (bc){
-		    operation.options.getParams.bc = bc;
+	    if (options.bc){
+		    operation.options.getParams.bc = options.bc;
 	    }
 	    
-	    if (bo){
-		    operation.options.getParams.bc = bc;
+	    if (options.bo){
+		    operation.options.getParams.bc = options.bc;
 	    }
 	    
-	    if (additionalParams){
-		    operation.options.postParams = additionalParams;
+	    if (options.additionalParams){
+		    operation.options.postParams = options.additionalParams;
 	    }
 	    
 	    return operation;	    
     },
-
-    /**
-    * @private
-    */    
+ 
     _addResolutionAndLocale: function(operation,resolution, locale){
 	    if (resolution){
 		    operation.options.getParams.r = resolution;
@@ -630,209 +687,124 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     
     /**
     * Runs rendering  map by bounds request
-    * @param {string} mapName Name of map to render
-    * @param {string} imageType Type of image ( png, jpg etc.) 
-    * @param {number} width Width of rendered image
-    * @param {number} height Height of rendered image
-    * @param {Array.<number>} bounds Array of geo bounds for image. [left,top,right,bottom]
-    * @param {string} srs Reference system code
-    * @param {number} resolution Resolution
-    * @param {string} locale Locale
-    * @param {string} rd The type of rendering to perform ( s (speed) or q (quality))
-    * @param {string} bc The background color to use for the map image (RRGGBB)
-    * @param {number} bo The opacity of the background color
-    * @param {Object} additionalParams Additional parameters for post query
+    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
     * @param {Request.Callback} callback Callback of the function
     * @param {Object} context Context for callback
     */
-    renderMapByBounds: function(mapName, imageType,width,height,bounds,srs,resolution,locale, rd,bc,bo, additionalParams, callback, context){
-	    var operation = this._createRenderOperation(mapName, imageType, width, height, bounds,null,null,null,null,srs,resolution,locale,rd,bc,bo,additionalParams);
+    renderMapByBounds: function(options, callback, context){
+	    var operation = this._createRenderOperation(options);
 	    this.startRequest(operation, callback, context);
     },
     
     /**
     * Returns url of image (redered map by bounds) for get request
-    * @param {string} mapName Name of map to render
-    * @param {string} imageType Type of image ( png, jpg etc.) 
-    * @param {number} width Width of rendered image
-    * @param {number} height Height of rendered image
-    * @param {Array.<number>} bounds Array of geo bounds for image. [left,top,right,bottom]
-    * @param {string} srs Reference system code
-    * @param {number} resolution Resolution
-    * @param {string} locale Locale
-    * @param {string} rd The type of rendering to perform ( s (speed) or q (quality))
-    * @param {string} bc The background color to use for the map image (RRGGBB)
-    * @param {number} bo The opacity of the background color
+    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
     * @returns {string}
     */
-    getUrlRenderMapByBounds: function(mapName, imageType,width,height,bounds,srs,resolution,locale,rd,bc,bo){
-	    var operation = this._createRenderOperation(mapName, imageType, width, height, bounds,null,null,null,null,srs,resolution,locale,rd,bc,bo);
-	    
+    getUrlRenderMapByBounds: function(options){
+	    var operation = this._createRenderOperation(options);
 	    return (this.options.alwaysUseProxy ? this.options.proxyUrl : '') +  this.checkEncodeUrl(this.getUrl(operation));
     },
     
     /**
     * Runs rendering  map by center and scale request
-    * @param {string} mapName Name of map to render
-    * @param {string} imageType Type of image ( png, jpg etc.) 
-    * @param {number} width Width of rendered image
-    * @param {number} height Height of rendered image
-    * @param {number} cx Center x coordinate 
-    * @param {number} cy Center y coordinate 
-    * @param {number} scale Scale
-    * @param {string} srs Reference system code
-    * @param {number} resolution Resolution
-    * @param {string} locale Locale
-    * @param {string} rd The type of rendering to perform ( s (speed) or q (quality))
-    * @param {string} bc The background color to use for the map image (RRGGBB)
-    * @param {number} bo The opacity of the background color
-    * @param {Object} additionalParams Additional parameters for post query
+    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
     * @param {Request.Callback} callback Callback of the function
     * @param {Object} context Context for callback
     */
-    renderMapByCenterScale: function(mapName, imageType,width,height,cx,cy,scale,srs,resolution,locale, rd,bc,bo, additionalParams, callback, context){
-	    var operation = this._createRenderOperation(mapName, imageType, width, height, null,cx,cy,scale,null,srs,resolution,locale,rd,bc,bo);
+    renderMapByCenterScale: function(options, callback, context){
+	    var operation = this._createRenderOperation(options);
 	    this.startRequest(operation, callback, context);
     },
     
     /**
     * Returns url of image (map by center and scale)  for get request
-    * @param {string} mapName Name of map to render
-    * @param {string} imageType Type of image ( png, jpg etc.) 
-    * @param {number} width Width of rendered image
-    * @param {number} height Height of rendered image
-    * @param {number} cx Center x coordinate 
-    * @param {number} cy Center y coordinate 
-    * @param {number} scale Scale
-    * @param {string} srs Reference system code
-    * @param {number} resolution Resolution
-    * @param {string} locale Locale
-    * @param {string} rd The type of rendering to perform ( s (speed) or q (quality))
-    * @param {string} bc The background color to use for the map image (RRGGBB)
-    * @param {number} bo The opacity of the background color
+    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
     * @returns {string}
     */
-    getUrlRenderMapByCenterScale: function(mapName, imageType,width,height,cx,cy,scale,srs,resolution,locale,rd,bc,bo){
-	    var operation = this._createRenderOperation(mapName, imageType, width, height, null,cx,cy,scale,null,srs,resolution,locale,rd,bc,bo);
+    getUrlRenderMapByCenterScale: function(options){
+	    var operation = this._createRenderOperation(options);
 	    return this.getUrl(operation);
     },
     
     /**
     * Runs rendering  map by center and zoom request
-    * @param {string} mapName Name of map to render
-    * @param {string} imageType Type of image ( png, jpg etc.) 
-    * @param {number} width Width of rendered image
-    * @param {number} height Height of rendered image
-    * @param {number} cx Center x coordinate 
-    * @param {number} cy Center y coordinate 
-    * @param {number} zoom Zoom
-    * @param {string} srs Reference system code
-    * @param {number} resolution Resolution
-    * @param {string} locale Locale
-    * @param {string} rd The type of rendering to perform ( s (speed) or q (quality))
-    * @param {string} bc The background color to use for the map image (RRGGBB)
-    * @param {number} bo The opacity of the background color
-    * @param {Object} additionalParams Additional parameters for post query
+    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
     * @param {Request.Callback} callback Callback of the function
     * @param {Object} context Context for callback
     */
-    renderMapByCenterZoom: function(mapName, imageType,width,height,cx,cy,zoom,srs,resolution,locale, rd,bc,bo, additionalParams, callback, context){
-	    var operation = this._createRenderOperation(mapName, imageType, width, height, null,cx,cy,null,zoom,srs,resolution,locale,rd,bc,bo);
+    renderMapByCenterZoom: function(options, callback, context){
+	    var operation = this._createRenderOperation(options);
 	    this.startRequest(operation, callback, context);
     },
     
     /**
     * Returns url of image (map by center and zoom)  for get request
-    * @param {string} mapName Name of map to render
-    * @param {string} imageType Type of image ( png, jpg etc.) 
-    * @param {number} width Width of rendered image
-    * @param {number} height Height of rendered image
-    * @param {number} cx Center x coordinate 
-    * @param {number} cy Center y coordinate 
-    * @param {number} zoom Zoom
-    * @param {string} srs Reference system code
-    * @param {number} resolution Resolution
-    * @param {string} locale Locale
-    * @param {string} rd The type of rendering to perform ( s (speed) or q (quality))
-    * @param {string} bc The background color to use for the map image (RRGGBB)
-    * @param {number} bo The opacity of the background color
+    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
     * @returns {string}
     */
-    getUrlRenderMapByCenterZoom: function(mapName, imageType,width,height,cx,cy,zoom,srs,resolution,locale,rd,bc,bo){
-	    var operation = this._createRenderOperation(mapName, imageType, width, height, null,cx,cy,null,zoom,srs,resolution,locale,rd,bc,bo);
+    getUrlRenderMapByCenterZoom: function(options){
+	    var operation = this._createRenderOperation(options);
 	    return this.getUrl(operation);
     },
     
     /**
     * Runs legend request
-    * @param {string} mapName The name of the map to return the legend.
-    * @param {number} width Width of the individual legend swatch in pixels
-    * @param {number} height Height of the individual legend swatch in pixels
-    * @param {string} imageType The type of images to return for the legend swatches(e.g., gif, png, etc)
-    * @param {boolean} inlineSwatch Determines if the swatch images are returned as data or URL to the image location on the server
-    * @param {number} resolution The DPI resolution of the legend swatches as an integer.
-    * @param {string} locale Locale
+    * @param {L.SpectrumSpatial.Services.MapService.LegendOptions} options Options for legend
     * @param {Request.Callback} callback Callback of the function
     * @param {Object} context Context for callback
     */
-    getLegendForMap: function(mapName ,width, height, imageType, inlineSwatch, resolution,locale,callback, context){
-	    var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(mapName)+'/legend.json');
-	    operation.options.getParams.w = width;
-	    operation.options.getParams.h = height;
-	    operation.options.getParams.t = imageType;
-	    this._addResolutionAndLocale(operation,resolution,locale);
+    getLegendForMap: function(options, callback, context){
+	    if (!options.imageType){
+		    options.imageType = 'png';
+	    }
+	    var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(options.mapName)+'/legend.json',
+	                                                             { responseType: 'arraybuffer' });
+	    operation.options.getParams.w = options.width;
+	    operation.options.getParams.h = options.height;
+	    operation.options.getParams.t = options.imageType;
+	    this._addResolutionAndLocale(operation,options.resolution,options.locale);
 	    
 	    // I WANT TO KILL PB DEVELOPERS FOR THIS '?' IN QUERY
-	    if (inlineSwatch!==null){
-		    operation.options.getParams['?inlineSwatch'] = inlineSwatch;
+	    if (!options.inlineSwatch){
+		    operation.options.getParams['?inlineSwatch'] = options.inlineSwatch;
+	    }
+	    if (options.postData){
+		    operation.options.postParams = options.postData;
 	    }
 	    this.startRequest(operation, callback, context);
     },
     
+    _createSwatchOperation: function(options){
+	    if (!options.imageType){
+		    options.imageType = 'png';
+	    }
+	    var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(options.mapName)+
+	                                                            '/legends/'+options.legendIndex + 
+	                                                             '/rows/' + options.rowIndex + 
+	                                                             '/swatch/' + options.width + 'x' + options.height + '.' + options.imageType);
+	                                                             
+	    this._addResolutionAndLocale(operation,options.resolution,options.locale);
+	    return operation;
+    },
+    
     /**
     * Runs request for an individual swatch for a layer of a named map
-    * @param {string} mapName The name of the map to return the swatch
-    * @param {number} legendIndex The legend to get the swatch from in the named map
-    * @param {number} rowIndex The swatch location (row) within the legend
-    * @param {number} width Width of the individual legend swatch in pixels
-    * @param {number} height Height of the individual legend swatch in pixels
-    * @param {number} resolution The DPI resolution of the swatch as an integer
-    * @param {string} locale The locale in which to render the swatch
+    * @param {L.SpectrumSpatial.Services.MapService.SwatchOptions} options Options for swatch
     * @param {Request.Callback} callback Callback of the function
     * @param {Object} context Context for callback
     */
-    getSwatchForLayer: function(mapName,legendIndex,rowIndex,width, height, imageType,resolution, locale, callback, context){
-	    var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(mapName)+
-	                                                            '/legends/'+legendIndex + 
-	                                                             '/rows/' + rowIndex + 
-	                                                             '/swatch/' + width + 'x' + height + '.' + imageType);
-	    this._addResolutionAndLocale(operation,resolution,locale);
-	    this.startRequest(operation, callback, context);
+    getSwatchForLayer: function(options, callback, context){
+	    this.startRequest( this._createSwatchOperation(options), callback, context);
     },
     
     /**
     * Returns an individual swatch for a layer of a named map
-    * @param {string} mapName The name of the map to return the swatch
-    * @param {number} legendIndex The legend to get the swatch from in the named map
-    * @param {number} rowIndex The swatch location (row) within the legend
-    * @param {number} width Width of the individual legend swatch in pixels
-    * @param {number} height Height of the individual legend swatch in pixels
-    * @param {number} resolution The DPI resolution of the swatch as an integer
-    * @param {string} locale The locale in which to render the swatch
+    * @param {L.SpectrumSpatial.Services.MapService.SwatchOptions} options Options for swatch
     * @returns {string}
     */
-    getUrlSwatchForLayer: function(mapName,legendIndex,rowIndex,width, height, imageType,resolution, locale){
-	    var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(mapName)+
-	                                                            '/legends/'+legendIndex + 
-	                                                             '/rows/' + rowIndex + 
-	                                                             '/swatch/' + width + 'x' + height + '.' + imageType);
-	    this._addResolutionAndLocale(operation,resolution,locale);
-	    return this.getUrl(operation);
-    },
-    
-    //??????????? strange definition in Spectrum Spatial Guide
-    renderLegend: function(mapName ,width, height, imageType, resolution,locale, inlineSwatch,callback, context){
-	    //var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ mapName+'/legend.json');
+    getUrlSwatchForLayer: function(options){
+	    return this.getUrl(this._createSwatchOperation(options));
     }
     
 });
@@ -876,9 +848,12 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
     * @param {number} level Determines the zoom level of the tile to be returned
     * @param {number} x Specifies the column of the tile, based on the level parameter specified
     * @param {number} y Specifies the row of the tile, based on the level parameter specified
-    * @param {string} imageType Specifies the response image format. Must be png, gif, or jpeg.
+    * @param {string} [imageType=png] Specifies the response image format. Must be png, gif, or jpeg.
     */
     getTileUrl: function(mapName,level,x,y,imageType){
+	    if (!imageType){
+		    imageType='png';
+	    }
         var operation = this._createTileOperation(mapName,level,x,y,imageType);
         return (this.options.alwaysUseProxy ? this.options.proxyUrl : '') +  this.checkEncodeUrl(this.getUrl(operation));
     },
@@ -889,11 +864,14 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
     * @param {number} level Determines the zoom level of the tile to be returned
     * @param {number} x Specifies the column of the tile, based on the level parameter specified
     * @param {number} y Specifies the row of the tile, based on the level parameter specified
-    * @param {string} imageType Specifies the response image format. Must be png, gif, or jpeg.
     * @param {Request.Callback} callback Callback of the function
     * @param {Object} context Context for callback
+    * @param {string} [imageType=png] Specifies the response image format. Must be png, gif, or jpeg.
     */
-    getTile: function(mapName,level,x,y,imageType, callback,context){
+    getTile: function(mapName, level, x, y, callback, context, imageType){
+	    if (!imageType){
+		    imageType='png';
+	    }
         var operation = this._createTileOperation(mapName,level,x,y,imageType);
         this.startRequest(operation, callback, context);
     },
@@ -929,9 +907,6 @@ L.SpectrumSpatial.Services.tileService = function(url,options){
     * @property {number} updateInterval  Min update interval of the layer
     */
 
-    /**
-    * @property {L.SpectrumSpatial.Layers.MapServiceLayer.Options} options 
-    */
     options: {
 		opacity: 1,
 		alt: '',
@@ -997,6 +972,10 @@ L.SpectrumSpatial.Services.tileService = function(url,options){
 			this._updateOpacity();
 		}
 		return this;
+	},
+	
+	getOpacity: function () {
+		return this.options.opacity;
 	},
 
 	setStyle: function (styleOpts) {
@@ -1124,35 +1103,30 @@ L.SpectrumSpatial.Services.tileService = function(url,options){
 	    
 	    this._requestCounter++;
 	    
+	    var renderOptions = {
+		    mapName : this._mapName ,
+		    imageType : this.options.imageType,
+		    width: size.x,
+		    height: size.y,
+		    bounds :[ nw.x, nw.y, se.x,se.y ],
+		    srs:this._srs.code,
+		    postData : this._postData
+	    };
 		
 		if (this._postData){
 			this._service.renderMapByBounds(
-	                this._mapName , 
-	                this.options.imageType,
-	                size.x,
-	                size.y,
-	                [ nw.x, nw.y, se.x,se.y ], 
-	                this._srs.code,
-	                null,
-	                null,
-	                null,
-	                null,
-	                null,
-	                this._postData,
-	                this._postLoad,
-	                { context: this, image: newImage, bounds:bounds, counter:this._requestCounter});
+							                renderOptions,
+							                this._postLoad,
+							                {
+								                context: this, 
+								                image: newImage, 
+								                bounds:bounds, 
+								                counter:this._requestCounter
+								            });
 		}
 		else{
 		    newImage.onload = L.bind(this._afterLoad, this, { image: newImage, bounds:bounds, counter:this._requestCounter});
-			newImage.src = 
-	           this._service.getUrlRenderMapByBounds(
-	                this._mapName , 
-	                this.options.imageType,
-	                size.x,
-	                size.y,
-	                [ nw.x, nw.y, se.x,se.y ], 
-	                this._srs.code);
-	              
+			newImage.src = this._service.getUrlRenderMapByBounds(renderOptions);              
 		}
 		this.fire('loading');
 	},
@@ -1241,9 +1215,6 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service,mapName,postData,opt
     * @property {boolean} crossOrigin 
     */
 
-    /**
-    * @property {L.SpectrumSpatial.Layers.TileServiceLayer.Options} options 
-    */
 	options: {
 		maxZoom: 18,
         minZoom: 0,
@@ -1418,6 +1389,32 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 		}
 	},
 	
+	addTo: function (map, outsideContainer) {
+		this.remove();
+		this._map = map;
+
+        
+		var container = this._container = this.onAdd(map);
+		L.DomUtil.addClass(container, 'leaflet-control');
+		if (outsideContainer){
+            outsideContainer.appendChild(container);
+		}
+		else{
+			var pos = this.getPosition();
+			var corner = map._controlCorners[pos];
+	
+			L.DomUtil.addClass(container, 'leaflet-control');
+	
+			if (pos.indexOf('bottom') !== -1) {
+				corner.insertBefore(container, corner.firstChild);
+			} else {
+				corner.appendChild(container);
+			}	
+		}
+
+		return this;
+	},
+	
 	_addLayer: function (layer, name, overlay) {
 		layer.on('add remove', this._onLayerChange, this);
 
@@ -1479,7 +1476,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 	
 	_initLayout: function () {
 		var className = 'leaflet-control-layers',
-		    container = this._container = L.DomUtil.create('div', className);
+		    container = this._container = L.DomUtil.create('div', this.options.cssOff ? '' : className);
 
 		// makes this work on IE touch devices by stopping it from firing a mouseout event when the touch is released
 		container.setAttribute('aria-haspopup', true);
@@ -1582,7 +1579,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 			opacity.type = 'textbox';
 			opacity.name = 'opacityInput';
 			opacity.className = 'leaflet-ss-cell leaflet-ss-control-layers-input';
-			opacity.value = 1;
+			opacity.value = (obj.layer.getOpacity)? obj.layer.getOpacity(): this.options.opacity;
 			opacity.layerId = L.stamp(obj.layer);
 			L.DomEvent.on(opacity, 'input', this._onOpacityChanged, this);
 			row.appendChild(opacity);

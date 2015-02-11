@@ -31,16 +31,16 @@
 
   /**
   * Service's options class
-  * @typedef {Object} Services.Service.Options
-  * @property {string} url - Url of service
-  * @property {string} proxyUrl - proxy url 
-  * @property {boolean} alwaysUseProxy - use proxy for get requests
-  * @property {boolean} forceGet - always do not use jsonp
-  * @property {boolean} encodeUrlForProxy - if true encode query url for using with proxy
+  * @typedef {Object} L.SpectrumSpatial.Services.Service.Options
+  * @property {string} [url] - Url of service
+  * @property {string} [proxyUrl] - proxy url 
+  * @property {boolean} [alwaysUseProxy=false] - use proxy for get requests
+  * @property {boolean} [forceGet=false] always do not use jsonp
+  * @property {boolean} [encodeUrlForProxy=false] - if true encode query url for using with proxy
   */
 
   /**
-  * @property {Services.Service.Options}  options 
+  * @property {L.SpectrumSpatial.Services.Service.Options}  options 
   */
   options: {
       alwaysUseProxy:false,
@@ -53,7 +53,7 @@
   * @augments {L.Class} 
   * @constructs 
   * @param {string} url Url of service
-  * @param {Services.Service.Options} options Additional options of service
+  * @param {L.SpectrumSpatial.Services.Service.Options} [options] Additional options of service
   */
   initialize: function (url, options) {
       options = options || {};
@@ -70,30 +70,32 @@
 	  if (operation.isPostOperation()){
 	      if (this.options.proxyUrl){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
-	      }
-		  return L.SpectrumSpatial.Request.post(urlWithQuery, 
-		                                       operation.getPostData(), 
-		                                       operation.getPostType(),
-		                                       operation.getResponseType(),
-		                                       this.options.login,
-		                                       this.options.password,  		                                       
-		                                       callback, 
-		                                       context);
+	      }      
+		  return L.SpectrumSpatial.Request.post(urlWithQuery, 	                                       
+		                                        callback, 
+		                                        context,
+		                                        { 
+			                                        postData: operation.getPostData(), 
+		                                            postType: operation.getPostType(),
+		                                            responseType: operation.getResponseType(),
+		                                            login: this.options.login,
+		                                            password: this.options.password
+		                                        });
 	  }
 	  else{
 	      if (this.options.alwaysUseProxy){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
-		      return L.SpectrumSpatial.Request.get(urlWithQuery, this.options.login,this.options.password, callback, context);
+		      return L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, this.options.login, this.options.password);
 	      }
 		  return ( this.options.forceGet | L.SpectrumSpatial.Support.CORS ) ? 
-		             L.SpectrumSpatial.Request.get(urlWithQuery,this.options.login,this.options.password,  callback, context):
-		             L.SpectrumSpatial.Request.jsonp(urlWithQuery,'?', callback, context);
+		             L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, this.options.login, this.options.password):
+		             L.SpectrumSpatial.Request.jsonp(urlWithQuery, callback, context, '?');
 	  }
   },
   
   /**
   * Returns full url query for service
-  * @param {L.SpectrumSpatial.Services.Operation}
+  * @param {L.SpectrumSpatial.Services.Operation} operation
   * @returns {string}
   */
   getUrl: function(operation){
@@ -104,7 +106,7 @@
   
   /**
   * Clears parameter from '/' at first or last letter
-  * @param {string}
+  * @param {string} param
   * @returns {string}
   */
   clearParam: function(param){
@@ -119,7 +121,7 @@
   
   /**
   * Encode specified url if options.encodeUrlForProxy is true
-  * @param {string}
+  * @param {string} url
   * @returns {string}
   */
   checkEncodeUrl:function(url){
@@ -140,13 +142,13 @@ L.SpectrumSpatial.Services.service = function(url,options){
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CompareFunction">CompareFunction</a></li><li><a href="global.html#options">options</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Feb 11 2015 16:44:06 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Feb 11 2015 22:39:12 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>

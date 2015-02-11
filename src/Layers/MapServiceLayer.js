@@ -13,9 +13,6 @@ L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
     * @property {number} updateInterval  Min update interval of the layer
     */
 
-    /**
-    * @property {L.SpectrumSpatial.Layers.MapServiceLayer.Options} options 
-    */
     options: {
 		opacity: 1,
 		alt: '',
@@ -81,6 +78,10 @@ L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
 			this._updateOpacity();
 		}
 		return this;
+	},
+	
+	getOpacity: function () {
+		return this.options.opacity;
 	},
 
 	setStyle: function (styleOpts) {
@@ -208,35 +209,30 @@ L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
 	    
 	    this._requestCounter++;
 	    
+	    var renderOptions = {
+		    mapName : this._mapName ,
+		    imageType : this.options.imageType,
+		    width: size.x,
+		    height: size.y,
+		    bounds :[ nw.x, nw.y, se.x,se.y ],
+		    srs:this._srs.code,
+		    postData : this._postData
+	    };
 		
 		if (this._postData){
 			this._service.renderMapByBounds(
-	                this._mapName , 
-	                this.options.imageType,
-	                size.x,
-	                size.y,
-	                [ nw.x, nw.y, se.x,se.y ], 
-	                this._srs.code,
-	                null,
-	                null,
-	                null,
-	                null,
-	                null,
-	                this._postData,
-	                this._postLoad,
-	                { context: this, image: newImage, bounds:bounds, counter:this._requestCounter});
+							                renderOptions,
+							                this._postLoad,
+							                {
+								                context: this, 
+								                image: newImage, 
+								                bounds:bounds, 
+								                counter:this._requestCounter
+								            });
 		}
 		else{
 		    newImage.onload = L.bind(this._afterLoad, this, { image: newImage, bounds:bounds, counter:this._requestCounter});
-			newImage.src = 
-	           this._service.getUrlRenderMapByBounds(
-	                this._mapName , 
-	                this.options.imageType,
-	                size.x,
-	                size.y,
-	                [ nw.x, nw.y, se.x,se.y ], 
-	                this._srs.code);
-	              
+			newImage.src = this._service.getUrlRenderMapByBounds(renderOptions);              
 		}
 		this.fire('loading');
 	},

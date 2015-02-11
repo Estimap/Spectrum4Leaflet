@@ -4,16 +4,16 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
 
   /**
   * Service's options class
-  * @typedef {Object} Services.Service.Options
-  * @property {string} url - Url of service
-  * @property {string} proxyUrl - proxy url 
-  * @property {boolean} alwaysUseProxy - use proxy for get requests
-  * @property {boolean} forceGet - always do not use jsonp
-  * @property {boolean} encodeUrlForProxy - if true encode query url for using with proxy
+  * @typedef {Object} L.SpectrumSpatial.Services.Service.Options
+  * @property {string} [url] - Url of service
+  * @property {string} [proxyUrl] - proxy url 
+  * @property {boolean} [alwaysUseProxy=false] - use proxy for get requests
+  * @property {boolean} [forceGet=false] always do not use jsonp
+  * @property {boolean} [encodeUrlForProxy=false] - if true encode query url for using with proxy
   */
 
   /**
-  * @property {Services.Service.Options}  options 
+  * @property {L.SpectrumSpatial.Services.Service.Options}  options 
   */
   options: {
       alwaysUseProxy:false,
@@ -26,7 +26,7 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
   * @augments {L.Class} 
   * @constructs 
   * @param {string} url Url of service
-  * @param {Services.Service.Options} options Additional options of service
+  * @param {L.SpectrumSpatial.Services.Service.Options} [options] Additional options of service
   */
   initialize: function (url, options) {
       options = options || {};
@@ -43,30 +43,32 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
 	  if (operation.isPostOperation()){
 	      if (this.options.proxyUrl){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
-	      }
-		  return L.SpectrumSpatial.Request.post(urlWithQuery, 
-		                                       operation.getPostData(), 
-		                                       operation.getPostType(),
-		                                       operation.getResponseType(),
-		                                       this.options.login,
-		                                       this.options.password,  		                                       
-		                                       callback, 
-		                                       context);
+	      }      
+		  return L.SpectrumSpatial.Request.post(urlWithQuery, 	                                       
+		                                        callback, 
+		                                        context,
+		                                        { 
+			                                        postData: operation.getPostData(), 
+		                                            postType: operation.getPostType(),
+		                                            responseType: operation.getResponseType(),
+		                                            login: this.options.login,
+		                                            password: this.options.password
+		                                        });
 	  }
 	  else{
 	      if (this.options.alwaysUseProxy){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
-		      return L.SpectrumSpatial.Request.get(urlWithQuery, this.options.login,this.options.password, callback, context);
+		      return L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, this.options.login, this.options.password);
 	      }
 		  return ( this.options.forceGet | L.SpectrumSpatial.Support.CORS ) ? 
-		             L.SpectrumSpatial.Request.get(urlWithQuery,this.options.login,this.options.password,  callback, context):
-		             L.SpectrumSpatial.Request.jsonp(urlWithQuery,'?', callback, context);
+		             L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, this.options.login, this.options.password):
+		             L.SpectrumSpatial.Request.jsonp(urlWithQuery, callback, context, '?');
 	  }
   },
   
   /**
   * Returns full url query for service
-  * @param {L.SpectrumSpatial.Services.Operation}
+  * @param {L.SpectrumSpatial.Services.Operation} operation
   * @returns {string}
   */
   getUrl: function(operation){
@@ -77,7 +79,7 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
   
   /**
   * Clears parameter from '/' at first or last letter
-  * @param {string}
+  * @param {string} param
   * @returns {string}
   */
   clearParam: function(param){
@@ -92,7 +94,7 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
   
   /**
   * Encode specified url if options.encodeUrlForProxy is true
-  * @param {string}
+  * @param {string} url
   * @returns {string}
   */
   checkEncodeUrl:function(url){

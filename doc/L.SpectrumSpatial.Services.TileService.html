@@ -246,7 +246,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="Services.Service.html#Options">Services.Service.Options</a></span>
+<span class="param-type"><a href="L.SpectrumSpatial.Services.Service.html#Options">L.SpectrumSpatial.Services.Service.Options</a></span>
 
 
             
@@ -350,7 +350,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TileService.js.html">services/TileService.js</a>, <a href="TileService.js.html#line63">line 63</a>
+        <a href="TileService.js.html">services/TileService.js</a>, <a href="TileService.js.html#line69">line 69</a>
     </li></ul></dd>
     
     
@@ -472,7 +472,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Service.js.html">services/Service.js</a>, <a href="Service.js.html#line98">line 98</a>
+        <a href="Service.js.html">services/Service.js</a>, <a href="Service.js.html#line100">line 100</a>
     </li></ul></dd>
     
     
@@ -612,7 +612,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Service.js.html">services/Service.js</a>, <a href="Service.js.html#line83">line 83</a>
+        <a href="Service.js.html">services/Service.js</a>, <a href="Service.js.html#line85">line 85</a>
     </li></ul></dd>
     
     
@@ -729,7 +729,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="Request.html#Callback">Request.Callback</a></span>
+<span class="param-type">Request.Callback</span>
 
 
             
@@ -821,7 +821,7 @@
         
             
 <dt>
-    <h4 class="name" id="getTile"><span class="type-signature"></span>getTile<span class="signature">(mapName, level, x, y, imageType, callback, context)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="getTile"><span class="type-signature"></span>getTile<span class="signature">(mapName, level, x, y, callback, context, <span class="optional">imageType</span>)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -851,7 +851,11 @@
 		<th>Type</th>
 		
 		
+		<th>Argument</th>
 		
+		
+		
+		<th>Default</th>
 		
 		
 		<th class="last">Description</th>
@@ -876,7 +880,19 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
+            
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">The name of the named tile to generate the tile from</td>
@@ -899,7 +915,19 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
+            
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">Determines the zoom level of the tile to be returned</td>
@@ -922,7 +950,19 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
+            
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">Specifies the column of the tile, based on the level parameter specified</td>
@@ -945,33 +985,22 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
+            
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">Specifies the row of the tile, based on the level parameter specified</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>imageType</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Specifies the response image format. Must be png, gif, or jpeg.</td>
         </tr>
 	
 	
@@ -984,14 +1013,26 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="Request.html#Callback">Request.Callback</a></span>
+<span class="param-type">Request.Callback</span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
+            
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">Callback of the function</td>
@@ -1014,10 +1055,61 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
+            
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">Context for callback</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>imageType</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    png
+                
+                </td>
+            
+            
+            <td class="description last">Specifies the response image format. Must be png, gif, or jpeg.</td>
         </tr>
 	
 	
@@ -1048,7 +1140,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TileService.js.html">services/TileService.js</a>, <a href="TileService.js.html#line55">line 55</a>
+        <a href="TileService.js.html">services/TileService.js</a>, <a href="TileService.js.html#line58">line 58</a>
     </li></ul></dd>
     
     
@@ -1076,7 +1168,7 @@
         
             
 <dt>
-    <h4 class="name" id="getTileUrl"><span class="type-signature"></span>getTileUrl<span class="signature">(mapName, level, x, y, imageType)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="getTileUrl"><span class="type-signature"></span>getTileUrl<span class="signature">(mapName, level, x, y, <span class="optional">imageType</span>)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -1106,7 +1198,11 @@
 		<th>Type</th>
 		
 		
+		<th>Argument</th>
 		
+		
+		
+		<th>Default</th>
 		
 		
 		<th class="last">Description</th>
@@ -1131,7 +1227,19 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
+            
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">The name of the named tile to generate the tile from</td>
@@ -1154,7 +1262,19 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
+            
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">Determines the zoom level of the tile to be returned</td>
@@ -1177,7 +1297,19 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
+            
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">Specifies the column of the tile, based on the level parameter specified</td>
@@ -1200,7 +1332,19 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
+            
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">Specifies the row of the tile, based on the level parameter specified</td>
@@ -1223,7 +1367,23 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
             
+            
+            
+                <td class="default">
+                
+                    png
+                
+                </td>
             
             
             <td class="description last">Specifies the response image format. Must be png, gif, or jpeg.</td>
@@ -1379,7 +1539,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Service.js.html">services/Service.js</a>, <a href="Service.js.html#line72">line 72</a>
+        <a href="Service.js.html">services/Service.js</a>, <a href="Service.js.html#line74">line 74</a>
     </li></ul></dd>
     
     
@@ -1473,7 +1633,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="Request.html#Callback">Request.Callback</a></span>
+<span class="param-type">Request.Callback</span>
 
 
             
@@ -1670,13 +1830,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CompareFunction">CompareFunction</a></li><li><a href="global.html#options">options</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Feb 11 2015 16:44:07 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Feb 11 2015 22:39:12 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>

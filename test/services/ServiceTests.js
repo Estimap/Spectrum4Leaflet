@@ -8,7 +8,6 @@ asyncTest('Services.Service.startRequest get test', function() {
     };
 
     var operation = new L.SpectrumSpatial.Services.Operation('');
-
     var service = new L.SpectrumSpatial.Services.Service('http://requesttest/');
     
     service.startRequest(operation,callback,{});
@@ -31,7 +30,6 @@ asyncTest('Services.Service.startRequest post test', function() {
     };
 
     var operation = new L.SpectrumSpatial.Services.Operation('', { postParams : {test:'success'} });
-    
     var service = new L.SpectrumSpatial.Services.Service('http://requesttest/');
     
     service.startRequest(operation,callback,{});

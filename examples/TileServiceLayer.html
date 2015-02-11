@@ -27,7 +27,7 @@
 		function addMapServiceLayer(){
 			var serviceUrl = document.getElementById("ssurl").value;
 		    var mapName =  document.getElementById("mapname").value;
-		    L.SpectrumSpatial.Layers.tileServiceLayer( L.SpectrumSpatial.tileService(serviceUrl), mapName).addTo(map);
+		    L.SpectrumSpatial.Layers.tileServiceLayer( L.SpectrumSpatial.Services.tileService(serviceUrl,{ login:'admin', password:'admin' }), mapName).addTo(map);
 		}
 
 	</script>

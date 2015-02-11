@@ -35,9 +35,12 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
     * @param {number} level Determines the zoom level of the tile to be returned
     * @param {number} x Specifies the column of the tile, based on the level parameter specified
     * @param {number} y Specifies the row of the tile, based on the level parameter specified
-    * @param {string} imageType Specifies the response image format. Must be png, gif, or jpeg.
+    * @param {string} [imageType=png] Specifies the response image format. Must be png, gif, or jpeg.
     */
     getTileUrl: function(mapName,level,x,y,imageType){
+	    if (!imageType){
+		    imageType='png';
+	    }
         var operation = this._createTileOperation(mapName,level,x,y,imageType);
         return (this.options.alwaysUseProxy ? this.options.proxyUrl : '') +  this.checkEncodeUrl(this.getUrl(operation));
     },
@@ -48,11 +51,14 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
     * @param {number} level Determines the zoom level of the tile to be returned
     * @param {number} x Specifies the column of the tile, based on the level parameter specified
     * @param {number} y Specifies the row of the tile, based on the level parameter specified
-    * @param {string} imageType Specifies the response image format. Must be png, gif, or jpeg.
     * @param {Request.Callback} callback Callback of the function
     * @param {Object} context Context for callback
+    * @param {string} [imageType=png] Specifies the response image format. Must be png, gif, or jpeg.
     */
-    getTile: function(mapName,level,x,y,imageType, callback,context){
+    getTile: function(mapName, level, x, y, callback, context, imageType){
+	    if (!imageType){
+		    imageType='png';
+	    }
         var operation = this._createTileOperation(mapName,level,x,y,imageType);
         this.startRequest(operation, callback, context);
     },

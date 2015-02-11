@@ -19,6 +19,32 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 		}
 	},
 	
+	addTo: function (map, outsideContainer) {
+		this.remove();
+		this._map = map;
+
+        
+		var container = this._container = this.onAdd(map);
+		L.DomUtil.addClass(container, 'leaflet-control');
+		if (outsideContainer){
+            outsideContainer.appendChild(container);
+		}
+		else{
+			var pos = this.getPosition();
+			var corner = map._controlCorners[pos];
+	
+			L.DomUtil.addClass(container, 'leaflet-control');
+	
+			if (pos.indexOf('bottom') !== -1) {
+				corner.insertBefore(container, corner.firstChild);
+			} else {
+				corner.appendChild(container);
+			}	
+		}
+
+		return this;
+	},
+	
 	_addLayer: function (layer, name, overlay) {
 		layer.on('add remove', this._onLayerChange, this);
 
@@ -80,7 +106,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 	
 	_initLayout: function () {
 		var className = 'leaflet-control-layers',
-		    container = this._container = L.DomUtil.create('div', className);
+		    container = this._container = L.DomUtil.create('div', this.options.cssOff ? '' : className);
 
 		// makes this work on IE touch devices by stopping it from firing a mouseout event when the touch is released
 		container.setAttribute('aria-haspopup', true);
@@ -183,7 +209,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 			opacity.type = 'textbox';
 			opacity.name = 'opacityInput';
 			opacity.className = 'leaflet-ss-cell leaflet-ss-control-layers-input';
-			opacity.value = 1;
+			opacity.value = (obj.layer.getOpacity)? obj.layer.getOpacity(): this.options.opacity;
 			opacity.layerId = L.stamp(obj.layer);
 			L.DomEvent.on(opacity, 'input', this._onOpacityChanged, this);
 			row.appendChild(opacity);

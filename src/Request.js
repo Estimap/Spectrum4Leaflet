@@ -10,19 +10,13 @@
 	L.SpectrumSpatial.Request = {
 	
 	    /**
-		 * Callback function for {Spectrum4Leaflet.Request}
+		 * Callback function for {L.SpectrumSpatial.Request}
 		 *
-		 * @callback Request.Callback
+		 * @callback L.SpectrumSpatial.Request.Callback
 		 * @param {Object} error Error object, with fieds code and message
 		 * @param {Object} response Response
 		 */
 	
-	
-	    /**
-	    * Creates XMLHttpRequest and binds callbacks
-	    * @private
-	    * @returns {XMLHttpRequest}
-	    */
 		_createRequest: function (callback, context){
 		    var httpRequest = new XMLHttpRequest();
 		
@@ -71,13 +65,13 @@
 	    /**
 	    * Runs get request
 	    * @param {string} url Url for request
-	    * @param {string} login Login 
-	    * @param {string} password Password 
 	    * @param {Request.Callback} callback function, when request is done
-	    * @param {Object} context Context for callback
+	    * @param {Object} [context] Context for callback
+	    * @param {string} [login] Login 
+	    * @param {string} [password] Password 
 	    * @returns {XMLHttpRequest}
 	    */
-	    get: function(url, login, password, callback, context){
+	    get: function(url, callback, context, login, password){
 	        var httpRequest = this._createRequest(callback,context);
 		    httpRequest.open('GET', url , true, login, password);
 	        httpRequest.send(null);
@@ -90,10 +84,15 @@
 	    * @param {string} callbackSeparator Special character to separate callback param from query param
 	    * @param {Request.Callback} callback function, when request is done
 	    * @param {Object} context Context for callback
+	    * @param {string} [callbackSeparator] Special character to separate callback param from query param
 	    * @returns {XMLHttpRequest}
 	    */
-	    jsonp: function(url, callbackSeparator, callback,context){
+	    jsonp: function(url, callback, context, callbackSeparator){
 		    var callbackId = 'c' + callbacks;
+	
+	        if (!callbackSeparator){
+		        callbackSeparator='';
+	        }
 	
 	        var script = L.DomUtil.create('script', null, document.body);
 	        script.type = 'text/javascript';
@@ -140,27 +139,38 @@
 	    },
 	    
 	    /**
+		* Request post options
+		* @typedef {Object} L.SpectrumSpatial.Request.PostOptions
+		* @property {string} [login]  Login
+		* @property {string} [password]  Password
+		* @property {Object} [postData] Data to post
+		* @property {string} [postType=application/json] Type of post data
+		* @property {string} [responseType] Type of response (only for XHR2)
+		*/
+	    
+	    /**
 	    * Runs post request
 	    * @param {string} url Url for request
-	    * @param {object} postdata Data to send in request body
-	    * @param {string} posttype Type of post data 
-	    * @param {string} responseType Type of returned data (only for XHR2)
-	    * @param {string} login Login 
-	    * @param {string} password Password 
 	    * @param {Request.Callback} Callback function, when request is done
 	    * @param {object} context Context for callback
+	    * @param {L.SpectrumSpatial.Request.PostOptions} [options] Options for function
 	    * @returns {XMLHttpRequest}
 	    */
-	    post: function(url, postdata, posttype, responseType, login, password, callback,context){
+	    post: function(url, callback, context, options ){	    
+		    options = options || {};	    
+		    if (!options.postType){
+			    options.postType = 'application/json';
+		    }
+
 	        var httpRequest = this._createRequest(callback,context);
-	        httpRequest.open('POST', url, true, login, password);
-	        httpRequest.setRequestHeader('Content-Type', posttype);
+	        httpRequest.open('POST', url, true, options.login, options.password);
+	        httpRequest.setRequestHeader('Content-Type', options.postType);
 	        
-	        if (responseType){
-		        httpRequest.responseType = responseType;
+	        if (options.responseType){
+		        httpRequest.responseType = options.responseType;
 	        }
 	        
-	        httpRequest.send(postdata);
+	        httpRequest.send(options.postData);
 	        return httpRequest;
 	    }
 	};

@@ -9,7 +9,7 @@ asyncTest('Services.MapService.listNamedLayers test', function() {
 
     var service = new L.SpectrumSpatial.Services.MapService('http://MappingService/');
     
-    service.listNamedLayers('en_US',callback,{});
+    service.listNamedLayers(callback,{},'en_US');
 
     function theTest() {         
         equal(returnJsonData.listNamedLayersResponse.namedLayersList[0], 
@@ -32,7 +32,7 @@ asyncTest('Services.MapService.describeNamedLayer test', function() {
 
     var service = new L.SpectrumSpatial.Services.MapService('http://MappingService/');
     
-    service.describeNamedLayer('/Samples/NamedLayers/LayerWithTableRangeTheme','en_US',callback,{});
+    service.describeNamedLayer('/Samples/NamedLayers/LayerWithTableRangeTheme',callback,{},'en_US');
 
     function theTest() {         
         equal(returnJsonData.layerDescription.name, 
@@ -78,7 +78,7 @@ asyncTest('Services.MapService.listNamedMaps test', function() {
 
     var service = new L.SpectrumSpatial.Services.MapService('http://MappingService/');
     
-    service.listNamedMaps('en_US',callback,{});
+    service.listNamedMaps(callback,{},'en_US');
 
     function theTest() {         
         equal(returnJsonData.Maps.length, 
@@ -101,7 +101,7 @@ asyncTest('Services.MapService.describeNamedMap test', function() {
 
     var service = new L.SpectrumSpatial.Services.MapService('http://MappingService/');
     
-    service.describeNamedMap('/Samples/NamedMaps/WorldMap','en_US',callback,{});
+    service.describeNamedMap('/Samples/NamedMaps/WorldMap',callback,{},'en_US');
 
     function theTest() {         
         equal(returnJsonData.MapDescription.Name, 
@@ -139,17 +139,37 @@ asyncTest('Services.MapService.describeNamedMaps test', function() {
 test( 'Services.MapService.getUrlRenderMap tests', function() {
 
    var service = new L.SpectrumSpatial.Services.MapService('http://MappingService/');
-   
+   var renderOptions = {
+	   mapName : 'Samples/NamedMaps/WorldMap',
+	   imageType : 'png',
+	   width:640,
+	   height:480,
+	   cx:-2.5,
+	   cy:38.5,
+	   zoom:'500 mi',
+	   srs:'epsg:4326',
+	   resolution:96,
+	   locale:'en_US'
+   };
    equal('http://MappingService/maps/Samples/NamedMaps/WorldMap/image.png;w=640;h=480;c=-2.5%2C38.5%2Cepsg%3A4326;z=500%20mi;r=96;l=en_US',
-          service.getUrlRenderMapByCenterZoom('Samples/NamedMaps/WorldMap','png',640,480,-2.5,38.5,'500 mi','epsg:4326',96,'en_US'),
+          service.getUrlRenderMapByCenterZoom(renderOptions),
           'getUrlRenderMapByCenterZoom' );
-          
+   
+   renderOptions.zoom = null;
+   renderOptions.scale = 10000000;
+   
    equal('http://MappingService/maps/Samples/NamedMaps/WorldMap/image.png;w=640;h=480;c=-2.5%2C38.5%2Cepsg%3A4326;s=10000000;r=96;l=en_US',
-          service.getUrlRenderMapByCenterScale('Samples/NamedMaps/WorldMap','png',640,480,-2.5,38.5,10000000,'epsg:4326',96,'en_US'),
+          service.getUrlRenderMapByCenterScale(renderOptions),
           'getUrlRenderMapByCenterScale');
           
+   renderOptions.scale = null;
+   renderOptions.cx = null;
+   renderOptions.cy = null;   
+   renderOptions.bounds = [-10,-10,10,10];    
+   renderOptions.resolution = 72;
+      
    equal('http://MappingService/maps/Samples/NamedMaps/WorldMap/image.png;w=640;h=480;b=-10%2C-10%2C10%2C10%2Cepsg%3A4326;r=72;l=en_US',
-          service.getUrlRenderMapByBounds('Samples/NamedMaps/WorldMap','png',640,480,[-10,-10,10,10],'epsg:4326',72,'en_US'),
+          service.getUrlRenderMapByBounds(renderOptions),
           'getUrlRenderMapByCenterZoom' );
 });
 
@@ -163,8 +183,14 @@ asyncTest('Services.MapService.getLegendForMap test', function() {
     };
 
     var service = new L.SpectrumSpatial.Services.MapService('http://MappingService/');
-    
-    service.getLegendForMap('/Samples/NamedMaps/MapWithLayer', 32,32,'gif', false, null,null ,callback,{});
+    var legendOptions = {
+	    mapName :'/Samples/NamedMaps/MapWithLayer',
+	    width:32,
+	    height:32,
+	    imageType:'gif',
+	    inlineSwatch:false
+    };
+    service.getLegendForMap(legendOptions ,callback,{});
 
     function theTest() {         
         equal(returnJsonData.layerName, 
@@ -178,10 +204,18 @@ asyncTest('Services.MapService.getLegendForMap test', function() {
 
 test( 'Services.MapService.getUrlSwatchForLayer tests', function() {
 
-   var service = new L.SpectrumSpatial.Services.MapService('http://MappingService/');
-   
-   equal('http://MappingService/maps/Samples/NamedMaps/WorldMap/legends/0/rows/0/swatch/32x32.png;r=96',
-          service.getUrlSwatchForLayer('Samples/NamedMaps/WorldMap',0,0,32,32,'png',96),
+    var service = new L.SpectrumSpatial.Services.MapService('http://MappingService/');
+    var swatchOptions = {
+	    mapName :'/Samples/NamedMaps/WorldMap',
+	    width:32,
+	    height:32,
+	    imageType:'png',
+	    legendIndex:0,
+	    rowIndex:0,
+	    resolution:96
+    };
+    equal('http://MappingService/maps/Samples/NamedMaps/WorldMap/legends/0/rows/0/swatch/32x32.png;r=96',
+          service.getUrlSwatchForLayer(swatchOptions),
           'getUrlSwatchForLayer' );
           
 });
