@@ -10,14 +10,15 @@ module.exports = function(grunt) {
       dist: {
         src:  [
 		     'src/Spectrum4Leaflet.js',
-		     'src/Util.js',
+		     'src/Utils.js',
 		     'src/Request.js',
 		     'src/services/Operation.js',
 		     'src/services/Service.js',
 		     'src/services/MapService.js',
 		     'src/services/TileService.js',
 		     'src/layers/MapServiceLayer.js',
-		     'src/layers/TileServiceLayer.js'
+		     'src/layers/TileServiceLayer.js',
+		     'src/controls/Layers.js'
 		],
         dest: 'dist/<%= pkg.name %>.js'
       }
@@ -33,7 +34,7 @@ module.exports = function(grunt) {
       }
     },
     qunit: {
-      files: ['spec/**/*.html']
+      files: ['test/**/*.html']
     },
     jshint: {
       files: ['Gruntfile.js', 'src/**/*.js'],

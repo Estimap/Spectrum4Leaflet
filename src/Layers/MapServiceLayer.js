@@ -30,7 +30,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
     * @class MapService layer class
     * @augments {L.Layer}
 	* @constructs L.SpectrumSpatial.Layers.MapServiceLayer
-    * @param {L.SpectrumSpatial.Service.MapService} service Map Service for layer
+    * @param {L.SpectrumSpatial.Services.MapService} service Map Service for layer
     * @param {string} mapName Name of the map to display on map service
     * @param {Object} postData Post data to map (only if browser supports XHR2)
     * @param {L.SpectrumSpatial.Layers.MapServiceLayer.Options} options Additional options of layer
@@ -53,6 +53,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
 
 	onRemove: function () {
 		L.DomUtil.remove(this._image);
+		delete this._image;
 	},	
 	
 	setService:function(service){
@@ -297,7 +298,9 @@ L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
 	},
 	
 	_updateZIndex: function(){
-		this._image.style.zIndex = this.options.zIndex;
+		if (this._image){
+			this._image.style.zIndex = this.options.zIndex;
+		}		
 	}	
 	
 });

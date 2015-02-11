@@ -35,7 +35,7 @@ L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
 	* @class TileService layer class
 	* @constructs L.SpectrumSpatial.Layers.TileServiceLayer
     * @augments {L.GridLayer}
-    * @param {L.SpectrumSpatial.Service.TileService} service Map Service for layer
+    * @param {L.SpectrumSpatial.Services.TileService} service Map Service for layer
     * @param {string} mapName Name of the tiled map to display on tile service
     * @param {L.SpectrumSpatial.Layers.TileServiceLayer.Options} options Additional options of layer
     */

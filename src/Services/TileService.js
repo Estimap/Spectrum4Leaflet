@@ -1,6 +1,9 @@
 /** 
 * @class Spectrum Spatial Tile Service wrapper
 * @augments L.SpectrumSpatial.Services.Service 
+* @constructs L.SpectrumSpatial.Services.TileService
+* @param {string} url Url of service
+* @param {Services.Service.Options} options Additional options of service
 */
 L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.extend(
 /** @lends L.SpectrumSpatial.Services.TileService# */

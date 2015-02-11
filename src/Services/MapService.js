@@ -1,10 +1,14 @@
 /** 
 * @class Spectrum Spatial Map Service wrapper
 * @augments L.SpectrumSpatial.Services.Service 
+* @constructs L.SpectrumSpatial.Services.MapService
+* @param {string} url Url of service
+* @param {Services.Service.Options} options Additional options of service
 */
 L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.extend(
 /** @lends L.SpectrumSpatial.Services.MapService# */
 {     
+
 
     /**
     * Lists all named layers which map service contains

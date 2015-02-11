@@ -1,0 +1,58 @@
+.leaflet-ss-row{
+	display: block;
+	clear:both;
+	position: relative;
+	padding:1px;
+}
+
+.leaflet-ss-cell{
+	float:left
+}
+
+/** Layers control */
+
+.leaflet-control-layers-separator {
+	width: 100%;
+}
+
+.leaflet-ss-control-layers-title{
+	margin-left:2px;
+}
+
+.leaflet-ss-control-layers-separator {
+	clear:both;
+	height: 0;
+	border-top: 1px solid #ddd;
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+.leaflet-ss-control-layers-btn{
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+}
+
+.leaflet-ss-control-layers-down{
+	background-image: url(images/arrowdown.png);
+}
+
+.leaflet-ss-control-layers-up{
+	background-image: url(images/arrowup.png);
+}
+
+.leaflet-retina  .leaflet-ss-control-layers-down{
+	background-image: url(images/arrowdown-2x.png);
+}
+
+.leaflet-retina  .leaflet-ss-control-layers-up{
+	background-image: url(images/arrowup-2x.png);
+}
+
+.leaflet-ss-control-layers-input{
+	margin-left:2px;
+	height:8px;
+	width:18px;
+	font-size:x-small;
+}
+
