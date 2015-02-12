@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MapServiceLayer example</title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="../lib/leaflet/leaflet.css" />
+	<link rel="stylesheet" href="../dist/Spectrum4Leaflet.css" />
+</head>
+<body>
+	<div id="map" style="width: 800px; height: 600px"></div>
+	<div id="layers"  style="position:absolute; left:820px; top:0px; width: 200px; height: 200px;"></div>
+    <script src="../lib/leaflet/leaflet-src.js"></script>
+    <script src="../dist/Spectrum4Leaflet.js"></script>
+	<script>
+
+		var map = L.map('map').setView([0, 0], 0);
+        
+		var service = L.SpectrumSpatial.Services.mapService('http://192.168.10.157:8080/rest/Spatial/MappingService/', { login:'admin', password:'admin'} );
+		
+		var overlay =  L.SpectrumSpatial.Layers.mapServiceLayer( service, '/Samples/NamedMaps/MapWithLayerAndPie');
+		
+		overlay.addTo(map);
+		
+		var control = new L.SpectrumSpatial.Controls.Legend(service, '/Samples/NamedMaps/MapWithLayerAndPie', { hasCartographic:false, cssOff:false,width:16, height:16 });
+		
+		control.addTo(map);
+
+	</script>
+</body>
+</html>

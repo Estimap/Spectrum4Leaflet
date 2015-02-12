@@ -4,7 +4,7 @@ L.SpectrumSpatial.Services.Operation = L.Class.extend(
 
   /**
   * Operation's options class
-  * @typedef {Object}  Services.Service.Options
+  * @typedef {Object}  L.SpectrumSpatial.Services.Operation.Options
   * @property {string} name Name of operation
   * @property {Object} getParams Params for get request
   * @property {Object} postParams Params for post request
@@ -15,9 +15,7 @@ L.SpectrumSpatial.Services.Operation = L.Class.extend(
   * @property {string} responseType Type of response data. Used for post response with image (only for XHR2)
   */
 
-  /**
-  * @property {Services.Service.Options}  options 
-  */
+
   options: {
       forcePost :false,
       paramsSeparator: ';',
@@ -31,7 +29,7 @@ L.SpectrumSpatial.Services.Operation = L.Class.extend(
   * @augments {L.Class} 
   * @constructs L.SpectrumSpatial.Services.Operation
   * @param {string} name Name of operation
-  * @param {Services.Service.Options} options Additional options of operation
+  * @param {L.SpectrumSpatial.Services.Operation.Options} options Additional options of operation
   */
   initialize: function(name,options) {
       this.options.getParams = {};

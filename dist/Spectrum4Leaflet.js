@@ -121,7 +121,7 @@ L.SpectrumSpatial.Utils = {
 		      if (httpRequest.readyState === 4) {
 		        try {
 		          var contentType = this.getResponseHeader('content-type');
-		          if (contentType == 'application/json'){
+		          if (contentType.indexOf('application/json') !== -1 ){
 			          response = JSON.parse(httpRequest.responseText);
 		          }
 		          else{
@@ -267,7 +267,7 @@ L.SpectrumSpatial.Utils = {
 
   /**
   * Operation's options class
-  * @typedef {Object}  Services.Service.Options
+  * @typedef {Object}  L.SpectrumSpatial.Services.Operation.Options
   * @property {string} name Name of operation
   * @property {Object} getParams Params for get request
   * @property {Object} postParams Params for post request
@@ -278,9 +278,7 @@ L.SpectrumSpatial.Utils = {
   * @property {string} responseType Type of response data. Used for post response with image (only for XHR2)
   */
 
-  /**
-  * @property {Services.Service.Options}  options 
-  */
+
   options: {
       forcePost :false,
       paramsSeparator: ';',
@@ -294,7 +292,7 @@ L.SpectrumSpatial.Utils = {
   * @augments {L.Class} 
   * @constructs L.SpectrumSpatial.Services.Operation
   * @param {string} name Name of operation
-  * @param {Services.Service.Options} options Additional options of operation
+  * @param {L.SpectrumSpatial.Services.Operation.Options} options Additional options of operation
   */
   initialize: function(name,options) {
       this.options.getParams = {};
@@ -381,9 +379,7 @@ L.SpectrumSpatial.Services.operation = function(name,options){
   * @property {boolean} [encodeUrlForProxy=false] - if true encode query url for using with proxy
   */
 
-  /**
-  * @property {L.SpectrumSpatial.Services.Service.Options}  options 
-  */
+
   options: {
       alwaysUseProxy:false,
       forceGet : false,
@@ -758,7 +754,7 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
 	    if (!options.imageType){
 		    options.imageType = 'png';
 	    }
-	    var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(options.mapName)+'/legend.json',
+	    var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(options.mapName)+'/legends.json',
 	                                                             { responseType: 'arraybuffer' });
 	    operation.options.getParams.w = options.width;
 	    operation.options.getParams.h = options.height;
@@ -766,7 +762,8 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
 	    this._addResolutionAndLocale(operation,options.resolution,options.locale);
 	    
 	    // I WANT TO KILL PB DEVELOPERS FOR THIS '?' IN QUERY
-	    if (!options.inlineSwatch){
+	    
+	    if (options.inlineSwatch!== undefined ){
 		    operation.options.getParams['?inlineSwatch'] = options.inlineSwatch;
 	    }
 	    if (options.postData){
@@ -1369,12 +1366,48 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service,mapName,postData,opt
 L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
   return new L.SpectrumSpatial.Layers.TileServiceLayer(service,mapName,options);
 };;L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
+/** @lends L.SpectrumSpatial.Controls.Layers.prototype */	
+
+    className: 'leaflet-ss-control-layers',
+    
+    /**
+    * Layers control options class
+    * @typedef {Object} L.SpectrumSpatial.Controls.Layers.Options
+    * @property {string} position Control position in map
+    * @property {boolean} cssOff If is true, control rednders without css class ( usefull when you draw outside of the map)
+    * @property {boolean} zIndexControls If true zIndex controls is enabled
+    * @property {boolean} opacityControls If true opacity controls is enabled
+    * @property {boolean} legendControls If true legend controls is enabled
+    * @property {L.SpectrumSpatial.Controls.Legend.Options} legendOptions Options for legend (if legend controls is enabled)
+    * @property {Object} legendContainer DOM element, if we want to draw legend outside of layers control
+    */
+    
+	options : {
+		zIndexControls:true,
+		opacityControls:true,
+		legendControls:true,
+		legendOptions : {},
+		legendContainer :null
+	},
 	
+	/**
+	* @class Layers control
+	* @augments {L.Control} 
+	* @constructs L.SpectrumSpatial.Controls.Layers
+	* @param {Object} baseLayers Object which contans base layers ( { "title":layer } )
+	* @param {Object} overlays Object which contans overlays layers ( { "title":layer } )
+	* @param {L.SpectrumSpatial.Controls.Layers.Options} [options] Options
+	*/
 	initialize: function (baseLayers, overlays, options) {
 		L.setOptions(this, options);
 
 		this._layers = {};
-		
+		if (!this.options.legendOptions){
+			this.options.legendOptions = {  };
+		}
+		if (this.options.legendOptions.cssOff === undefined){
+			this.options.legendOptions.cssOff = true;
+		}
 		this._minZIndex = 1;
 		this._maxZIndex = 0;
 		
@@ -1395,16 +1428,15 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 
         
 		var container = this._container = this.onAdd(map);
-		L.DomUtil.addClass(container, 'leaflet-control');
+		
 		if (outsideContainer){
             outsideContainer.appendChild(container);
 		}
 		else{
+			L.DomUtil.addClass(container, 'leaflet-control');
 			var pos = this.getPosition();
 			var corner = map._controlCorners[pos];
-	
-			L.DomUtil.addClass(container, 'leaflet-control');
-	
+
 			if (pos.indexOf('bottom') !== -1) {
 				corner.insertBefore(container, corner.firstChild);
 			} else {
@@ -1473,10 +1505,9 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 	},
 	
 	
-	
 	_initLayout: function () {
-		var className = 'leaflet-control-layers',
-		    container = this._container = L.DomUtil.create('div', this.options.cssOff ? '' : className);
+		
+		var container = this._container = L.DomUtil.create('div', this.options.cssOff ? '' : this.className);
 
 		// makes this work on IE touch devices by stopping it from firing a mouseout event when the touch is released
 		container.setAttribute('aria-haspopup', true);
@@ -1489,7 +1520,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 			L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation);
 		}
 
-		var form = this._form = L.DomUtil.create('form', className + '-list');
+		var form = this._form = L.DomUtil.create('form', this.className + '-list');
 
 		if (this.options.collapsed) {
 			if (!L.Browser.android) {
@@ -1499,7 +1530,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 				}, this);
 			}
 
-			var link = this._layersLink = L.DomUtil.create('a', className + '-toggle', container);
+			var link = this._layersLink = L.DomUtil.create('a', 'leaflet-control-layers-toggle' , container);
 			link.href = '#';
 			link.title = 'Layers';
 
@@ -1517,9 +1548,9 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 			this._expand();
 		}
 
-		this._baseLayersList = L.DomUtil.create('div', className + '-base', form);
-		this._separator = L.DomUtil.create('div', 'leaflet-ss-control-layers' + '-separator', form);
-		this._overlaysList = L.DomUtil.create('div', className + '-overlays', form);
+		this._baseLayersList = L.DomUtil.create('div', this.className + '-base', form);
+		this._separator = L.DomUtil.create('div', this.className + '-separator', form);
+		this._overlaysList = L.DomUtil.create('div', this.className + '-overlay', form);
 
 		container.appendChild(form);
 	},
@@ -1527,7 +1558,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 	// IE7 bugs out if you create a radio dynamically, so you have to do it this hacky way (see http://bit.ly/PqYLBe)
 	_createRadioElement: function (name, checked) {
 
-		var radioHtml = '<input type="radio" class="leaflet-ss-cell leaflet-control-layers-selector" name="' +
+		var radioHtml = '<input type="radio" class="leaflet-ss-cell leaflet-ss-control-layers-selector" name="' +
 				name + '"' + (checked ? ' checked="checked"' : '') + '/>';
 
 		var radioFragment = document.createElement('div');
@@ -1537,17 +1568,16 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 	},
 	
     _addItem: function (obj) {
-	    var row = document.createElement('div');
+	    var layerItem = L.DomUtil.create('div','leaflet-ss-rowcontainer');
+	    var row = L.DomUtil.create('div','leaflet-ss-row',layerItem);
 	    var checked = this._map.hasLayer(obj.layer);
 	    var input;
 	    
-	    row.className = 'leaflet-ss-row';
 
 		if (obj.overlay) {
-			input = document.createElement('input');
+			input = L.DomUtil.create('input', 'leaflet-ss-cell leaflet-control-layers-selector');
 			input.name = 'visibilityInput';
 			input.type = 'checkbox';
-			input.className = 'leaflet-ss-cell leaflet-control-layers-selector';
 			input.defaultChecked = checked;
 		} else {
 			input = this._createRadioElement('visibilityInput', checked);
@@ -1555,42 +1585,82 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 		input.layerId = L.stamp(obj.layer);
 		L.DomEvent.on(input, 'click', this._onVisibilityChanged, this);
 
-		var name = document.createElement('span');
+		var name = L.DomUtil.create('span','leaflet-ss-cell leaflet-ss-control-layers-title');
 		name.innerHTML = ' ' + obj.name;
-        name.className = 'leaflet-ss-cell leaflet-ss-control-layers-title';
         
 		row.appendChild(input);
 		
 		if (obj.overlay) {
-			var up = document.createElement('div');
-			up.layerId = input.layerId;
-			up.className = 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-up';
-			L.DomEvent.on(up, 'click', this._onUpClick, this);
 			
-			var down = document.createElement('div');
-			down.layerId = input.layerId;
-			down.className = 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-down';
-			L.DomEvent.on(down, 'click', this._onDownClick, this);
+			if (this.options.zIndexControls){
+				var up =  L.DomUtil.create('div', 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-up');
+				up.layerId = input.layerId;
+				L.DomEvent.on(up, 'click', this._onUpClick, this);
+				row.appendChild(up);
+				if (obj.layer.getZIndex()===this._minZIndex){
+					L.DomUtil.addClass(up, 'leaflet-ss-disabled');
+				}
+				
+				
+				var down = L.DomUtil.create('div','leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-down');
+				down.layerId = input.layerId;
+				L.DomEvent.on(down, 'click', this._onDownClick, this);
+				row.appendChild(down);
+				if (obj.layer.getZIndex()===this._maxZIndex){
+					L.DomUtil.addClass(down, 'leaflet-ss-disabled');
+				}
+			}  
 			
-			row.appendChild(up);
-			row.appendChild(down);
-			
-			var opacity = document.createElement('input');
-			opacity.type = 'textbox';
-			opacity.name = 'opacityInput';
-			opacity.className = 'leaflet-ss-cell leaflet-ss-control-layers-input';
-			opacity.value = (obj.layer.getOpacity)? obj.layer.getOpacity(): this.options.opacity;
-			opacity.layerId = L.stamp(obj.layer);
-			L.DomEvent.on(opacity, 'input', this._onOpacityChanged, this);
-			row.appendChild(opacity);
+            if (this.options.legendControls){
+	            var legend = L.DomUtil.create('div','leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-legend');
+				legend.layerId = input.layerId;
+				L.DomEvent.on(legend, 'click', this._onLegendClick, this);
+				row.appendChild(legend);	
+				if (this.options.legendContainer){
+					obj.legendContainer = this.options.legendContainer;
+				}
+				else{
+					obj.legendContainer = document.createElement('div','leaflet-ss-row');
+			        layerItem.appendChild(obj.legendContainer);
+				}
+            }
+			if (this.options.opacityControls){
+				var opacity = L.DomUtil.create('input','leaflet-ss-cell leaflet-ss-control-layers-input');
+				opacity.type = 'textbox';
+				opacity.name = 'opacityInput';
+				opacity.value = (obj.layer.getOpacity)? obj.layer.getOpacity(): this.options.opacity;
+				opacity.layerId = L.stamp(obj.layer);
+				L.DomEvent.on(opacity, 'input', this._onOpacityChanged, this);
+				row.appendChild(opacity);
+			}
 		}
 
 		row.appendChild(name);
 		
 		var container = obj.overlay ? this._overlaysList : this._baseLayersList;
-		container.appendChild(row);
-
-		return row;
+		container.appendChild(layerItem);
+		
+        obj.container = layerItem;
+		return layerItem;
+	},
+	
+	_onLegendClick: function(e) {
+		var layerId = e.currentTarget.layerId;
+		var lo = this._layers[layerId];
+		var legend;
+		if (!this.options.legendContainer) {
+			if (lo.legendContainer.hasChildNodes()){
+				L.DomUtil.empty(lo.legendContainer);
+			}
+			else{
+			    legend = new L.SpectrumSpatial.Controls.Legend(lo.layer._service,lo.layer._mapName,this.options.legendOptions);
+			    legend.addTo(this._map , this.options.legendContainer ? this.options.legendContainer : lo.legendContainer);				
+			}		
+		}
+		else{			
+		    legend = new L.SpectrumSpatial.Controls.Legend(lo.layer._service,lo.layer._mapName,this.options.legendOptions);
+			legend.addTo(this._map , this.options.legendContainer ? this.options.legendContainer : lo.legendContainer);
+		}
 	},
 	
 	_onUpClick: function(e) {
@@ -1678,6 +1748,156 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 		}
 		
 		this._handlingClick = false;
+	},
+	
+	_expand: function () {
+		L.DomUtil.addClass(this._container, this.className + '-expanded');
+	},
+
+	_collapse: function () {
+		L.DomUtil.removeClass(this._container, this.className + '-expanded');
 	}
 	
 });
+
+L.SpectrumSpatial.Controls.layers = function(baselayers, overlays,options){
+	return new L.SpectrumSpatial.Controls.Layers(baselayers, overlays,options);
+};;L.SpectrumSpatial.Controls.Legend = L.Control.extend({
+/** @lends L.SpectrumSpatial.Controls.Legend.prototype */	
+	
+	className: 'leaflet-ss-control-legend',
+	
+	/**
+    * Legend's options class
+    * @typedef {Object} L.SpectrumSpatial.Controls.Legend.Options
+    * @property {string} position Control position in map
+    * @property {boolean} hasCartographic If is false, cartographic legend will be ignored
+    * @property {boolean} cssOff If is true, control rednders without css class ( usefull when you draw outside of the map)
+    * @property {number} width Width of the individual legend swatch in pixels
+    * @property {number} height Height of the individual legend swatch in pixels
+    * @property {string} [imageType=png] Type of image ( png, jpg etc.)
+    * @property {boolean} [inlineSwatch=true] Determines if the swatch images are returned as data or URL to the image location on the server
+    * @property {number} [resolution] Resolution
+    * @property {string} [locale] Locale
+    * @property {Object} [postData] If specified runs post request to render legend
+    */
+	
+	options: {
+		position: 'bottomright',
+		width:16,
+		height:16,
+		imageType:'png',
+		hasCartographic:true
+	},
+
+	/**
+	* @class Legend control
+	* @augments {L.Control} 
+	* @constructs L.SpectrumSpatial.Controls.Legend
+	* @param {L.SpectrumSpatial.Services.MapService} service Map service for legend
+	* @param {string} mapName Map's name for legend
+	* @param {L.SpectrumSpatial.Controls.Legend.Options} [options] Options
+	*/
+	initialize: function (service, mapName, options) {
+		L.setOptions(this, options);
+        this._service = service;
+        this.options.mapName = mapName;
+	},
+
+	/**
+	* Adds control to map
+	* @param {L.Map} map Map for control
+	* @param {Object} [outsideContainer] DOM element, if specified control renders in it, not in map
+	*/
+	addTo: function (map, outsideContainer) {
+		this.remove();
+		this._map = map;
+
+        
+		var container = this._container = this.onAdd(map);
+		
+		if (outsideContainer){
+			L.DomUtil.empty(outsideContainer);
+            outsideContainer.appendChild(container);
+		}
+		else{
+			L.DomUtil.addClass(container, 'leaflet-control');
+			var pos = this.getPosition();
+			var corner = map._controlCorners[pos];
+	
+			if (pos.indexOf('bottom') !== -1) {
+				corner.insertBefore(container, corner.firstChild);
+			} else {
+				corner.appendChild(container);
+			}	
+		}
+
+		return this;
+	},
+	
+	onAdd: function () {
+		this._initLayout();
+		this._requestLegend();
+		return this._container;
+	},
+	
+	_requestLegend: function(){
+		this._service.getLegendForMap(this.options,this._legendCallback, this);
+		L.DomUtil.empty(this._legendList);
+		var waitImage = L.DomUtil.create('div','leaflet-ss-wait');
+		this._legendList.appendChild(waitImage);
+	},
+	
+	_legendCallback: function(error,response){
+		if (!error){
+			this._legend = response.LegendResponse;	
+			this._update();
+		}
+	},
+	
+		
+	_update: function () {
+		if (!this._container) { return this; }
+        if (!this._legend) { return this; }
+        
+		L.DomUtil.empty(this._legendList);
+
+        for(var i in this._legend){
+	        obj = this._legend[i];
+	        
+	        if ((!this.options.hasCartographic) && (obj.type === 'CARTOGRAPHIC')) {
+		        continue;
+	        }
+	        
+	        var layerBlock = L.DomUtil.create('div','leaflet-ss-control-legend-layer');
+	        var title = L.DomUtil.create('div','leaflet-ss-row leaflet-ss-control-legend-title');
+	        title.innerHTML = obj.title;
+	        layerBlock.appendChild(title);
+	        
+	        for (var j in obj.rows){
+		        row = obj.rows[j];
+		        var divRow = L.DomUtil.create('div', 'leaflet-ss-row');
+		        var swatchDiv = L.DomUtil.create('div', 'leaflet-ss-cell');
+		        var swatch = L.DomUtil.create('img','',swatchDiv);
+		        swatch.src = row.swatch;
+		        var description = L.DomUtil.create('div', 'leaflet-ss-cell');
+		        description.innerHTML = row.description;
+		        divRow.appendChild(swatchDiv);
+		        divRow.appendChild(description);
+		        layerBlock.appendChild(divRow);
+	        }
+	        this._legendList.appendChild(layerBlock);
+        }        
+		return this;
+	},
+	
+	
+	_initLayout: function () {
+		var container = this._container = L.DomUtil.create('div', this.options.cssOff ? '' : this.className);
+		this._legendList = L.DomUtil.create('div', this.className + '-list', container);
+	},
+});
+
+L.SpectrumSpatial.Controls.legend = function(service, mapName, options){
+	return new L.SpectrumSpatial.Controls.Legend(service, mapName, options);
+};

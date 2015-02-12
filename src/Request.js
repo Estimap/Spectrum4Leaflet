@@ -36,7 +36,7 @@
 		      if (httpRequest.readyState === 4) {
 		        try {
 		          var contentType = this.getResponseHeader('content-type');
-		          if (contentType == 'application/json'){
+		          if (contentType.indexOf('application/json') !== -1 ){
 			          response = JSON.parse(httpRequest.responseText);
 		          }
 		          else{

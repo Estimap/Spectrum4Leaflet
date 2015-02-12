@@ -18,7 +18,8 @@ module.exports = function(grunt) {
 		     'src/services/TileService.js',
 		     'src/layers/MapServiceLayer.js',
 		     'src/layers/TileServiceLayer.js',
-		     'src/controls/Layers.js'
+		     'src/controls/Layers.js',
+		     'src/controls/Legend.js'
 		],
         dest: 'dist/<%= pkg.name %>.js'
       }

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: TileServiceLayer</title>
+    <title>JSDoc: Class: Legend</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: TileServiceLayer</h1>
+    <h1 class="page-title">Class: Legend</h1>
     
     
 
@@ -27,12 +27,12 @@
     
 <header>
     <h2>
-        <span class="ancestors"><a href="L.html">L</a><a href="L.SpectrumSpatial.html">.SpectrumSpatial</a><a href="L.SpectrumSpatial.Layers.html">.Layers</a>.</span>
+        <span class="ancestors"><a href="L.html">L</a><a href="L.SpectrumSpatial.html">.SpectrumSpatial</a><a href="L.SpectrumSpatial.Controls.html">.Controls</a>.</span>
     
-    TileServiceLayer
+    Legend
     </h2>
     
-        <div class="class-description">TileService layer class</div>
+        <div class="class-description">Legend control</div>
     
 </header>  
 
@@ -43,7 +43,7 @@
     
         
 <dt>
-    <h4 class="name" id="TileServiceLayer"><span class="type-signature"></span>new TileServiceLayer<span class="signature">(service, mapName, options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Legend"><span class="type-signature"></span>new Legend<span class="signature">(service, mapName, <span class="optional">options</span>)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -69,6 +69,8 @@
 		<th>Type</th>
 		
 		
+		<th>Argument</th>
+		
 		
 		
 		
@@ -87,17 +89,25 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="L.SpectrumSpatial.Services.TileService.html">L.SpectrumSpatial.Services.TileService</a></span>
+<span class="param-type"><a href="L.SpectrumSpatial.Services.MapService.html">L.SpectrumSpatial.Services.MapService</a></span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Map Service for layer</td>
+            
+            <td class="description last">Map service for legend</td>
         </tr>
 	
 	
@@ -117,10 +127,18 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Name of the tiled map to display on tile service</td>
+            
+            <td class="description last">Map's name for legend</td>
         </tr>
 	
 	
@@ -133,17 +151,27 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html#Options">L.SpectrumSpatial.Layers.TileServiceLayer.Options</a></span>
+<span class="param-type"><a href="L.SpectrumSpatial.Controls.Legend.html#Options">L.SpectrumSpatial.Controls.Legend.Options</a></span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Additional options of layer</td>
+            
+            <td class="description last">Options</td>
         </tr>
 	
 	
@@ -174,7 +202,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TileServiceLayer.js.html">layers/TileServiceLayer.js</a>, <a href="TileServiceLayer.js.html#line39">line 39</a>
+        <a href="Legend.js.html">controls/Legend.js</a>, <a href="Legend.js.html#line37">line 37</a>
     </li></ul></dd>
     
     
@@ -206,7 +234,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li>L.GridLayer</li>
+            <li>L.Control</li>
         </ul>
     
     
@@ -235,7 +263,7 @@
 <dd>
     
     <div class="description">
-        TileServiceLayer options class
+        Legend's options class
     </div>
     
     
@@ -269,7 +297,11 @@
 		<th>Type</th>
 		
 		
+		<th>Argument</th>
 		
+		
+		
+		<th>Default</th>
 		
 		
 		<th class="last">Description</th>
@@ -281,53 +313,7 @@
 	
         <tr>
             
-                <td class="name"><code>maxZoom</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Maximum zoom level</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>minZoom</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Minimum zoom level</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>errorTileUrl</code></td>
+                <td class="name"><code>position</code></td>
             
             
             <td class="type">
@@ -340,17 +326,93 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Url of image to display when tile loading failed</td>
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Control position in map</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>zoomOffset</code></td>
+                <td class="name"><code>hasCartographic</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">If is false, cartographic legend will be ignored</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>cssOff</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">If is true, control rednders without css class ( usefull when you draw outside of the map)</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>width</code></td>
             
             
             <td class="type">
@@ -363,17 +425,27 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last"></td>
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Width of the individual legend swatch in pixels</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>maxNativeZoom</code></td>
+                <td class="name"><code>height</code></td>
             
             
             <td class="type">
@@ -386,17 +458,64 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last"></td>
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Height of the individual legend swatch in pixels</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>tms</code></td>
+                <td class="name"><code>imageType</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    png
+                
+                </td>
+            
+            
+            <td class="description last">Type of image ( png, jpg etc.)</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>inlineSwatch</code></td>
             
             
             <td class="type">
@@ -409,79 +528,129 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last"></td>
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+            
+            <td class="description last">Determines if the swatch images are returned as data or URL to the image location on the server</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>zoomReverse</code></td>
+                <td class="name"><code>resolution</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">number</span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last"></td>
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Resolution</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>detectRetina</code></td>
+                <td class="name"><code>locale</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">string</span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last"></td>
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Locale</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>crossOrigin</code></td>
+                <td class="name"><code>postData</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">Object</span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last"></td>
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">If specified runs post request to render legend</td>
         </tr>
 	
 	
@@ -509,7 +678,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TileServiceLayer.js.html">layers/TileServiceLayer.js</a>, <a href="TileServiceLayer.js.html#line4">line 4</a>
+        <a href="Legend.js.html">controls/Legend.js</a>, <a href="Legend.js.html#line6">line 6</a>
     </li></ul></dd>
     
     

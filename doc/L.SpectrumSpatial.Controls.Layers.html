@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: TileServiceLayer</title>
+    <title>JSDoc: Class: Layers</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: TileServiceLayer</h1>
+    <h1 class="page-title">Class: Layers</h1>
     
     
 
@@ -27,12 +27,12 @@
     
 <header>
     <h2>
-        <span class="ancestors"><a href="L.html">L</a><a href="L.SpectrumSpatial.html">.SpectrumSpatial</a><a href="L.SpectrumSpatial.Layers.html">.Layers</a>.</span>
+        <span class="ancestors"><a href="L.html">L</a><a href="L.SpectrumSpatial.html">.SpectrumSpatial</a><a href="L.SpectrumSpatial.Controls.html">.Controls</a>.</span>
     
-    TileServiceLayer
+    Layers
     </h2>
     
-        <div class="class-description">TileService layer class</div>
+        <div class="class-description">Layers control</div>
     
 </header>  
 
@@ -43,7 +43,7 @@
     
         
 <dt>
-    <h4 class="name" id="TileServiceLayer"><span class="type-signature"></span>new TileServiceLayer<span class="signature">(service, mapName, options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Layers"><span class="type-signature"></span>new Layers<span class="signature">(baseLayers, overlays, <span class="optional">options</span>)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -69,6 +69,8 @@
 		<th>Type</th>
 		
 		
+		<th>Argument</th>
+		
 		
 		
 		
@@ -81,46 +83,62 @@
 	
         <tr>
             
-                <td class="name"><code>service</code></td>
+                <td class="name"><code>baseLayers</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="L.SpectrumSpatial.Services.TileService.html">L.SpectrumSpatial.Services.TileService</a></span>
+<span class="param-type">Object</span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Map Service for layer</td>
+            
+            <td class="description last">Object which contans base layers ( { "title":layer } )</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>mapName</code></td>
+                <td class="name"><code>overlays</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">Object</span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Name of the tiled map to display on tile service</td>
+            
+            <td class="description last">Object which contans overlays layers ( { "title":layer } )</td>
         </tr>
 	
 	
@@ -133,17 +151,27 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html#Options">L.SpectrumSpatial.Layers.TileServiceLayer.Options</a></span>
+<span class="param-type"><a href="L.SpectrumSpatial.Controls.Layers.html#Options">L.SpectrumSpatial.Controls.Layers.Options</a></span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Additional options of layer</td>
+            
+            <td class="description last">Options</td>
         </tr>
 	
 	
@@ -174,7 +202,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TileServiceLayer.js.html">layers/TileServiceLayer.js</a>, <a href="TileServiceLayer.js.html#line39">line 39</a>
+        <a href="Layers.js.html">controls/Layers.js</a>, <a href="Layers.js.html#line34">line 34</a>
     </li></ul></dd>
     
     
@@ -206,7 +234,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li>L.GridLayer</li>
+            <li>L.Control</li>
         </ul>
     
     
@@ -235,7 +263,7 @@
 <dd>
     
     <div class="description">
-        TileServiceLayer options class
+        Layers control options class
     </div>
     
     
@@ -281,53 +309,7 @@
 	
         <tr>
             
-                <td class="name"><code>maxZoom</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Maximum zoom level</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>minZoom</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Minimum zoom level</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>errorTileUrl</code></td>
+                <td class="name"><code>position</code></td>
             
             
             <td class="type">
@@ -343,60 +325,14 @@
             
             
             
-            <td class="description last">Url of image to display when tile loading failed</td>
+            <td class="description last">Control position in map</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>zoomOffset</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>maxNativeZoom</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>tms</code></td>
+                <td class="name"><code>cssOff</code></td>
             
             
             <td class="type">
@@ -412,14 +348,14 @@
             
             
             
-            <td class="description last"></td>
+            <td class="description last">If is true, control rednders without css class ( usefull when you draw outside of the map)</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>zoomReverse</code></td>
+                <td class="name"><code>zIndexControls</code></td>
             
             
             <td class="type">
@@ -435,14 +371,14 @@
             
             
             
-            <td class="description last"></td>
+            <td class="description last">If true zIndex controls is enabled</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>detectRetina</code></td>
+                <td class="name"><code>opacityControls</code></td>
             
             
             <td class="type">
@@ -458,14 +394,14 @@
             
             
             
-            <td class="description last"></td>
+            <td class="description last">If true opacity controls is enabled</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>crossOrigin</code></td>
+                <td class="name"><code>legendControls</code></td>
             
             
             <td class="type">
@@ -481,7 +417,53 @@
             
             
             
-            <td class="description last"></td>
+            <td class="description last">If true legend controls is enabled</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>legendOptions</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="L.SpectrumSpatial.Controls.Legend.html#Options">L.SpectrumSpatial.Controls.Legend.Options</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Options for legend (if legend controls is enabled)</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>legendContainer</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">DOM element, if we want to draw legend outside of layers control</td>
         </tr>
 	
 	
@@ -509,7 +491,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TileServiceLayer.js.html">layers/TileServiceLayer.js</a>, <a href="TileServiceLayer.js.html#line4">line 4</a>
+        <a href="Layers.js.html">controls/Layers.js</a>, <a href="Layers.js.html#line6">line 6</a>
     </li></ul></dd>
     
     

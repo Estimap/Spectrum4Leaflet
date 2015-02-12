@@ -282,7 +282,7 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
 	    if (!options.imageType){
 		    options.imageType = 'png';
 	    }
-	    var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(options.mapName)+'/legend.json',
+	    var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(options.mapName)+'/legends.json',
 	                                                             { responseType: 'arraybuffer' });
 	    operation.options.getParams.w = options.width;
 	    operation.options.getParams.h = options.height;
@@ -290,7 +290,8 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
 	    this._addResolutionAndLocale(operation,options.resolution,options.locale);
 	    
 	    // I WANT TO KILL PB DEVELOPERS FOR THIS '?' IN QUERY
-	    if (!options.inlineSwatch){
+	    
+	    if (options.inlineSwatch!== undefined ){
 		    operation.options.getParams['?inlineSwatch'] = options.inlineSwatch;
 	    }
 	    if (options.postData){

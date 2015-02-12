@@ -12,9 +12,7 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
   * @property {boolean} [encodeUrlForProxy=false] - if true encode query url for using with proxy
   */
 
-  /**
-  * @property {L.SpectrumSpatial.Services.Service.Options}  options 
-  */
+
   options: {
       alwaysUseProxy:false,
       forceGet : false,

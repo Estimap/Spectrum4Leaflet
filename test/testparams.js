@@ -88,7 +88,7 @@ server.handle = function (request) {
 								  ]
 								} );
 	    break;
-	    case 'http://MappingService/maps/Samples/NamedMaps/MapWithLayer/legend.json;w=32;h=32;t=gif;?inlineSwatch=false':
+	    case 'http://MappingService/maps/Samples/NamedMaps/MapWithLayer/legends.json;w=32;h=32;t=gif;?inlineSwatch=false':
                recieve(request,        {
 									      'layerName': 'World Capitals',
 									      'rows': [      {
