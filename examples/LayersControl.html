@@ -11,6 +11,7 @@
 </head>
 <body>
 	<div id="map" style="width: 800px; height: 600px"></div>
+	<input type="button" value="add" onclick="add()"/>
 	<div id="layers"  style="position:absolute; left:820px; top:0px; width: 200px; height: 200px;"></div>
     <script src="../lib/leaflet/leaflet-src.js"></script>
     <script src="../dist/Spectrum4Leaflet.js"></script>
@@ -35,18 +36,25 @@
 		
 		var service = L.SpectrumSpatial.Services.mapService('http://192.168.10.157:8080/rest/Spatial/MappingService/' , { login:'admin', password:'admin' });
 		var overlay1 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, 'Samples/NamedMaps/MapWithPieLayer/');
-		var overlay2 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, 'Samples/NamedMaps/MapWithLayer/');
+		//var overlay2 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, 'Samples/NamedMaps/MapWithLayer/');
 		
 		overlay1.addTo(map);
 		
 		var overlayMaps = {
-		    'Overlay 1': overlay1,
-		    'Overlay 2': overlay2
+		    'Overlay 1': overlay1//,
+		   // 'Overlay 2': overlay2
 		};
 
 		
 		var control = new L.SpectrumSpatial.Controls.Layers(baseMaps, overlayMaps, {collapsed:false /* , legendContainer:document.getElementById('layers') */});
 		control.addTo(map);
+
+        
+        function add(){
+	        var overlay2 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, '/Samples/NamedMaps/MapWithLayer');
+	        overlay2.addTo(map);
+	        control.addOverlay(overlay2,'ov');
+        }
 
 	</script>
 </body>

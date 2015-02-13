@@ -63,17 +63,31 @@
 	    },
 	    
 	    /**
+		* Request get options
+		* @typedef {Object} L.SpectrumSpatial.Request.GetOptions
+		* @property {string} [login]  Login
+		* @property {string} [password]  Password
+		* @property {string} [responseType] Type of response (only for XHR2)
+		*/
+	    
+	    /**
 	    * Runs get request
 	    * @param {string} url Url for request
 	    * @param {Request.Callback} callback function, when request is done
 	    * @param {Object} [context] Context for callback
-	    * @param {string} [login] Login 
-	    * @param {string} [password] Password 
+	    * @param {L.SpectrumSpatial.Request.GetOptions} [options] Options 
 	    * @returns {XMLHttpRequest}
 	    */
-	    get: function(url, callback, context, login, password){
+	    get: function(url, callback, context, options){
+		    options = options || {};
 	        var httpRequest = this._createRequest(callback,context);
-		    httpRequest.open('GET', url , true, login, password);
+		    httpRequest.open('GET', url , true, options.login, options.password);
+		    if (options.login){
+		        httpRequest.setRequestHeader("Authorization", "Basic " + btoa(options.login + ":" + options.password));
+	        }
+	        if (options.responseType){
+		        httpRequest.responseType = options.responseType;
+	        }
 	        httpRequest.send(null);
 	        return httpRequest;
 	    },
@@ -164,6 +178,10 @@
 
 	        var httpRequest = this._createRequest(callback,context);
 	        httpRequest.open('POST', url, true, options.login, options.password);
+	        if (options.login){
+		        httpRequest.setRequestHeader("Authorization", "Basic " + btoa(options.login + ":" + options.password));
+	        }
+	        
 	        httpRequest.setRequestHeader('Content-Type', options.postType);
 	        
 	        if (options.responseType){

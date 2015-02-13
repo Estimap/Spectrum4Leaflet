@@ -6,13 +6,14 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
     /**
     * Layers control options class
     * @typedef {Object} L.SpectrumSpatial.Controls.Layers.Options
-    * @property {string} position Control position in map
-    * @property {boolean} cssOff If is true, control rednders without css class ( usefull when you draw outside of the map)
-    * @property {boolean} zIndexControls If true zIndex controls is enabled
-    * @property {boolean} opacityControls If true opacity controls is enabled
-    * @property {boolean} legendControls If true legend controls is enabled
-    * @property {L.SpectrumSpatial.Controls.Legend.Options} legendOptions Options for legend (if legend controls is enabled)
-    * @property {Object} legendContainer DOM element, if we want to draw legend outside of layers control
+    * @property {string} [position] Control position in map
+    * @property {boolean} [cssOff] If is true, control rednders without css class ( usefull when you draw outside of the map)
+    * @property {boolean} [autoZIndex] If true, Zindexes to overlays will be set automaticly 
+    * @property {boolean} [zIndexControls] If true zIndex controls is enabled
+    * @property {boolean} [opacityControls] If true opacity controls is enabled
+    * @property {boolean} [legendControls] If true legend controls is enabled
+    * @property {L.SpectrumSpatial.Controls.Legend.Options} [legendOptions] Options for legend (if legend controls is enabled)
+    * @property {Object} [legendContainer] DOM element, if we want to draw legend outside of layers control
     */
     
 	options : {
@@ -43,6 +44,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 		}
 		this._minZIndex = 1;
 		this._maxZIndex = 0;
+		
 		
 		this._handlingClick = false;
 
@@ -86,6 +88,18 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 		if (overlay && this.options.autoZIndex && layer.setZIndex) {
 			this._maxZIndex++;
 			layer.setZIndex(this._maxZIndex);
+		}
+		
+		if (overlay && !this.options.autoZIndex){
+			if (layer.getZIndex){
+				var z = layer.getZIndex();
+				if (this._minZIndex>z){
+					this._minZIndex = z;
+				}
+				if (this._maxZIndex<z){
+					this._maxZIndex = z;
+				}
+			}
 		}
 		
 		var id = L.stamp(layer);

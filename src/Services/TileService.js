@@ -71,7 +71,7 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
         if (mapName !== ''){
 	        mapName = '/'+mapName;
         }
-	    return new L.SpectrumSpatial.Services.Operation(mapName+'/'+level+'/' + x + ':' + y + '/tile.' + imageType );
+	    return new L.SpectrumSpatial.Services.Operation(mapName+'/'+level+'/' + x + ':' + y + '/tile.' + imageType, { responseType: 'arraybuffer' }  );
     }
     
     

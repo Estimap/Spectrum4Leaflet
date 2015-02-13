@@ -27,7 +27,7 @@ asyncTest('Request.get with login and password function', function() {
 	    returnJsonData = response;
     };
 
-    var request = L.SpectrumSpatial.Request.get('http://requesttestwithlogin/', callback, {},'admin' , 'admin');
+    var request = L.SpectrumSpatial.Request.get('http://requesttestwithlogin/', callback, {},{login :'admin' , password: 'admin'});
 
     function theTest() {         
         equal(returnJsonData.test, 'success' , 'Server should return {\'test\': \'success\'}');

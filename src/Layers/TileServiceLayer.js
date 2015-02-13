@@ -13,6 +13,7 @@ L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
     * @property {boolean} zoomReverse  
     * @property {boolean} detectRetina  
     * @property {boolean} crossOrigin 
+    * @property {string} imageType tile image type 
     */
 
 	options: {
@@ -24,7 +25,8 @@ L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
 		tms: false,
 		zoomReverse: false,
 		detectRetina: false,
-		crossOrigin: false
+		crossOrigin: false,
+		imageType: 'png'
 	},
 
 
@@ -80,9 +82,6 @@ L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
 	createTile: function (coords, done) {
 		var tile = document.createElement('img');
 
-		tile.onload = L.bind(this._tileOnLoad, this, done, tile);
-		tile.onerror = L.bind(this._tileOnError, this, done, tile);
-
 		if (this.options.crossOrigin) {
 			tile.crossOrigin = '';
 		}
@@ -92,10 +91,41 @@ L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
 		 http://www.w3.org/TR/WCAG20-TECHS/H67
 		*/
 		tile.alt = '';
+		tile.onerror = L.bind(this._tileOnError, this, done, tile);
+		
+		if (this._service.needAuthorization()){
+			this._service.getTile(this._mapName,
+		                          this._getZoomForUrl()+1,
+		                          coords.x + 1,
+		                          (this.options.tms ? this._globalTileRange.max.y - coords.y : coords.y) + 1,
+		                          this._postLoad,
+		                          { context : this, image: tile , done : done },
+		                          this.options.imageType);
+		}
+		else{
+			tile.onload = L.bind(this._tileOnLoad, this, done, tile);		   
+		    tile.src = this.getTileUrl(coords);
+		}
+		
 
-		tile.src = this.getTileUrl(coords);
 
 		return tile;
+	},
+	
+	_postLoad:function(error,response){
+	    var uInt8Array = new Uint8Array(response);
+	    var i = uInt8Array.length;
+	    var binaryString = new Array(i);
+	    while (i--)
+	    {
+	      binaryString[i] = String.fromCharCode(uInt8Array[i]);
+	    }
+	    var data = binaryString.join('');
+	
+	    var base64 = window.btoa(data);
+	    this.image.src ='data:image/png;base64,'+base64;
+	    
+	    this.context._tileOnLoad.call(this.context, this.done, this.tile);
 	},
 
 	getTileUrl: function (coords) {
@@ -104,7 +134,7 @@ L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
 		                          this._getZoomForUrl()+1,
 		                          coords.x + 1,
 		                          (this.options.tms ? this._globalTileRange.max.y - coords.y : coords.y) + 1  ,
-		                          'png');
+		                          this.options.imageType);
 	},
 
 	_tileOnLoad: function (done, tile) {

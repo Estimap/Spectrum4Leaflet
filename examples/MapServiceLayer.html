@@ -35,7 +35,7 @@
 		    var serviceUrl = document.getElementById("ssurl").value;
 		    var mapName =  document.getElementById("mapname").value;
 		    
-		    L.SpectrumSpatial.Layers.mapServiceLayer( L.SpectrumSpatial.mapService(serviceUrl,{ login:'admin', password:'admin' }), mapName).addTo(map);
+		    L.SpectrumSpatial.Layers.mapServiceLayer( L.SpectrumSpatial.Services.mapService(serviceUrl,{ login:'admin', password:'admin' }), mapName).addTo(map);
 		}
 
 	</script>

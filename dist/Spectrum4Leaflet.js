@@ -148,17 +148,31 @@ L.SpectrumSpatial.Utils = {
 	    },
 	    
 	    /**
+		* Request get options
+		* @typedef {Object} L.SpectrumSpatial.Request.GetOptions
+		* @property {string} [login]  Login
+		* @property {string} [password]  Password
+		* @property {string} [responseType] Type of response (only for XHR2)
+		*/
+	    
+	    /**
 	    * Runs get request
 	    * @param {string} url Url for request
 	    * @param {Request.Callback} callback function, when request is done
 	    * @param {Object} [context] Context for callback
-	    * @param {string} [login] Login 
-	    * @param {string} [password] Password 
+	    * @param {L.SpectrumSpatial.Request.GetOptions} [options] Options 
 	    * @returns {XMLHttpRequest}
 	    */
-	    get: function(url, callback, context, login, password){
+	    get: function(url, callback, context, options){
+		    options = options || {};
 	        var httpRequest = this._createRequest(callback,context);
-		    httpRequest.open('GET', url , true, login, password);
+		    httpRequest.open('GET', url , true, options.login, options.password);
+		    if (options.login){
+		        httpRequest.setRequestHeader("Authorization", "Basic " + btoa(options.login + ":" + options.password));
+	        }
+	        if (options.responseType){
+		        httpRequest.responseType = options.responseType;
+	        }
 	        httpRequest.send(null);
 	        return httpRequest;
 	    },
@@ -249,6 +263,10 @@ L.SpectrumSpatial.Utils = {
 
 	        var httpRequest = this._createRequest(callback,context);
 	        httpRequest.open('POST', url, true, options.login, options.password);
+	        if (options.login){
+		        httpRequest.setRequestHeader("Authorization", "Basic " + btoa(options.login + ":" + options.password));
+	        }
+	        
 	        httpRequest.setRequestHeader('Content-Type', options.postType);
 	        
 	        if (options.responseType){
@@ -405,6 +423,13 @@ L.SpectrumSpatial.Services.operation = function(name,options){
   */
   startRequest: function(operation, callback,context){
       var urlWithQuery = this.getUrl(operation);
+      var queryOptions = { 
+	                            postData: operation.getPostData(), 
+	                            postType: operation.getPostType(),
+	                            responseType: operation.getResponseType(),
+	                            login: this.options.login,
+	                            password: this.options.password
+	                        };
 	  if (operation.isPostOperation()){
 	      if (this.options.proxyUrl){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
@@ -412,21 +437,15 @@ L.SpectrumSpatial.Services.operation = function(name,options){
 		  return L.SpectrumSpatial.Request.post(urlWithQuery, 	                                       
 		                                        callback, 
 		                                        context,
-		                                        { 
-			                                        postData: operation.getPostData(), 
-		                                            postType: operation.getPostType(),
-		                                            responseType: operation.getResponseType(),
-		                                            login: this.options.login,
-		                                            password: this.options.password
-		                                        });
+		                                        queryOptions);
 	  }
 	  else{
 	      if (this.options.alwaysUseProxy){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
-		      return L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, this.options.login, this.options.password);
+		      return L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, queryOptions );
 	      }
 		  return ( this.options.forceGet | L.SpectrumSpatial.Support.CORS ) ? 
-		             L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, this.options.login, this.options.password):
+		             L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, queryOptions):
 		             L.SpectrumSpatial.Request.jsonp(urlWithQuery, callback, context, '?');
 	  }
   },
@@ -464,6 +483,11 @@ L.SpectrumSpatial.Services.operation = function(name,options){
   */
   checkEncodeUrl:function(url){
 	  return  this.options.encodeUrlForProxy ? encodeURIComponent(url) : url;
+  },
+  
+  
+  needAuthorization:function(){
+	  return (this.options.login);
   }
   
 });
@@ -881,7 +905,7 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
         if (mapName !== ''){
 	        mapName = '/'+mapName;
         }
-	    return new L.SpectrumSpatial.Services.Operation(mapName+'/'+level+'/' + x + ':' + y + '/tile.' + imageType );
+	    return new L.SpectrumSpatial.Services.Operation(mapName+'/'+level+'/' + x + ':' + y + '/tile.' + imageType, { responseType: 'arraybuffer' }  );
     }
     
     
@@ -935,6 +959,20 @@ L.SpectrumSpatial.Services.tileService = function(url,options){
 	    this._srs = map.options.crs;
 	    this._update = L.Util.throttle(this._update, this.options.updateInterval, this);
 	    map.on('moveend', this._update, this);
+	    this._service.listNamedLayers(function() {} , {});
+	    if (this.options.zIndex==='auto'){
+		    var maxZIndex = 0;
+		    for (var i in map._layers){
+			    var layer = map._layers[i];
+			    if (layer.getZIndex){
+				    var z = layer.getZIndex();
+				    if (maxZIndex<z){
+					    maxZIndex = z;
+				    }
+			    }
+		    }
+		    this.options.zIndex = maxZIndex+1;
+	    }
 	    
 	    this._update();
 	},
@@ -1110,7 +1148,7 @@ L.SpectrumSpatial.Services.tileService = function(url,options){
 		    postData : this._postData
 	    };
 		
-		if (this._postData){
+		if ((this._postData)|(this._service.needAuthorization())){
 			this._service.renderMapByBounds(
 							                renderOptions,
 							                this._postLoad,
@@ -1210,6 +1248,7 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service,mapName,postData,opt
     * @property {boolean} zoomReverse  
     * @property {boolean} detectRetina  
     * @property {boolean} crossOrigin 
+    * @property {string} imageType tile image type 
     */
 
 	options: {
@@ -1221,7 +1260,8 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service,mapName,postData,opt
 		tms: false,
 		zoomReverse: false,
 		detectRetina: false,
-		crossOrigin: false
+		crossOrigin: false,
+		imageType: 'png'
 	},
 
 
@@ -1277,9 +1317,6 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service,mapName,postData,opt
 	createTile: function (coords, done) {
 		var tile = document.createElement('img');
 
-		tile.onload = L.bind(this._tileOnLoad, this, done, tile);
-		tile.onerror = L.bind(this._tileOnError, this, done, tile);
-
 		if (this.options.crossOrigin) {
 			tile.crossOrigin = '';
 		}
@@ -1289,10 +1326,41 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service,mapName,postData,opt
 		 http://www.w3.org/TR/WCAG20-TECHS/H67
 		*/
 		tile.alt = '';
+		tile.onerror = L.bind(this._tileOnError, this, done, tile);
+		
+		if (this._service.needAuthorization()){
+			this._service.getTile(this._mapName,
+		                          this._getZoomForUrl()+1,
+		                          coords.x + 1,
+		                          (this.options.tms ? this._globalTileRange.max.y - coords.y : coords.y) + 1,
+		                          this._postLoad,
+		                          { context : this, image: tile , done : done },
+		                          this.options.imageType);
+		}
+		else{
+			tile.onload = L.bind(this._tileOnLoad, this, done, tile);		   
+		    tile.src = this.getTileUrl(coords);
+		}
+		
 
-		tile.src = this.getTileUrl(coords);
 
 		return tile;
+	},
+	
+	_postLoad:function(error,response){
+	    var uInt8Array = new Uint8Array(response);
+	    var i = uInt8Array.length;
+	    var binaryString = new Array(i);
+	    while (i--)
+	    {
+	      binaryString[i] = String.fromCharCode(uInt8Array[i]);
+	    }
+	    var data = binaryString.join('');
+	
+	    var base64 = window.btoa(data);
+	    this.image.src ='data:image/png;base64,'+base64;
+	    
+	    this.context._tileOnLoad.call(this.context, this.done, this.tile);
 	},
 
 	getTileUrl: function (coords) {
@@ -1301,7 +1369,7 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service,mapName,postData,opt
 		                          this._getZoomForUrl()+1,
 		                          coords.x + 1,
 		                          (this.options.tms ? this._globalTileRange.max.y - coords.y : coords.y) + 1  ,
-		                          'png');
+		                          this.options.imageType);
 	},
 
 	_tileOnLoad: function (done, tile) {
@@ -1373,13 +1441,14 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
     /**
     * Layers control options class
     * @typedef {Object} L.SpectrumSpatial.Controls.Layers.Options
-    * @property {string} position Control position in map
-    * @property {boolean} cssOff If is true, control rednders without css class ( usefull when you draw outside of the map)
-    * @property {boolean} zIndexControls If true zIndex controls is enabled
-    * @property {boolean} opacityControls If true opacity controls is enabled
-    * @property {boolean} legendControls If true legend controls is enabled
-    * @property {L.SpectrumSpatial.Controls.Legend.Options} legendOptions Options for legend (if legend controls is enabled)
-    * @property {Object} legendContainer DOM element, if we want to draw legend outside of layers control
+    * @property {string} [position] Control position in map
+    * @property {boolean} [cssOff] If is true, control rednders without css class ( usefull when you draw outside of the map)
+    * @property {boolean} [autoZIndex] If true, Zindexes to overlays will be set automaticly 
+    * @property {boolean} [zIndexControls] If true zIndex controls is enabled
+    * @property {boolean} [opacityControls] If true opacity controls is enabled
+    * @property {boolean} [legendControls] If true legend controls is enabled
+    * @property {L.SpectrumSpatial.Controls.Legend.Options} [legendOptions] Options for legend (if legend controls is enabled)
+    * @property {Object} [legendContainer] DOM element, if we want to draw legend outside of layers control
     */
     
 	options : {
@@ -1410,6 +1479,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 		}
 		this._minZIndex = 1;
 		this._maxZIndex = 0;
+		
 		
 		this._handlingClick = false;
 
@@ -1453,6 +1523,18 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 		if (overlay && this.options.autoZIndex && layer.setZIndex) {
 			this._maxZIndex++;
 			layer.setZIndex(this._maxZIndex);
+		}
+		
+		if (overlay && !this.options.autoZIndex){
+			if (layer.getZIndex){
+				var z = layer.getZIndex();
+				if (this._minZIndex>z){
+					this._minZIndex = z;
+				}
+				if (this._maxZIndex<z){
+					this._maxZIndex = z;
+				}
+			}
 		}
 		
 		var id = L.stamp(layer);

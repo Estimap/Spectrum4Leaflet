@@ -38,6 +38,13 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
   */
   startRequest: function(operation, callback,context){
       var urlWithQuery = this.getUrl(operation);
+      var queryOptions = { 
+	                            postData: operation.getPostData(), 
+	                            postType: operation.getPostType(),
+	                            responseType: operation.getResponseType(),
+	                            login: this.options.login,
+	                            password: this.options.password
+	                        };
 	  if (operation.isPostOperation()){
 	      if (this.options.proxyUrl){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
@@ -45,21 +52,15 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
 		  return L.SpectrumSpatial.Request.post(urlWithQuery, 	                                       
 		                                        callback, 
 		                                        context,
-		                                        { 
-			                                        postData: operation.getPostData(), 
-		                                            postType: operation.getPostType(),
-		                                            responseType: operation.getResponseType(),
-		                                            login: this.options.login,
-		                                            password: this.options.password
-		                                        });
+		                                        queryOptions);
 	  }
 	  else{
 	      if (this.options.alwaysUseProxy){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
-		      return L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, this.options.login, this.options.password);
+		      return L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, queryOptions );
 	      }
 		  return ( this.options.forceGet | L.SpectrumSpatial.Support.CORS ) ? 
-		             L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, this.options.login, this.options.password):
+		             L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, queryOptions):
 		             L.SpectrumSpatial.Request.jsonp(urlWithQuery, callback, context, '?');
 	  }
   },
@@ -97,6 +98,11 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
   */
   checkEncodeUrl:function(url){
 	  return  this.options.encodeUrlForProxy ? encodeURIComponent(url) : url;
+  },
+  
+  
+  needAuthorization:function(){
+	  return (this.options.login);
   }
   
 });
