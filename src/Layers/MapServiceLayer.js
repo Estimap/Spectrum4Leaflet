@@ -44,7 +44,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
 	    this._srs = map.options.crs;
 	    this._update = L.Util.throttle(this._update, this.options.updateInterval, this);
 	    map.on('moveend', this._update, this);
-	    this._service.listNamedLayers(function() {} , {});
+
 	    if (this.options.zIndex==='auto'){
 		    var maxZIndex = 0;
 		    for (var i in map._layers){
@@ -230,11 +230,11 @@ L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
 		    height: size.y,
 		    bounds :[ nw.x, nw.y, se.x,se.y ],
 		    srs:this._srs.code,
-		    postData : this._postData
+		    additionalParams : this._postData
 	    };
 		
-		if ((this._postData)|(this._service.needAuthorization())){
-			this._service.renderMapByBounds(
+		if ((this._postData!==undefined)|(this._service.needAuthorization())){
+			this._service.renderMap(
 							                renderOptions,
 							                this._postLoad,
 							                {
@@ -246,7 +246,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
 		}
 		else{
 		    newImage.onload = L.bind(this._afterLoad, this, { image: newImage, bounds:bounds, counter:this._requestCounter});
-			newImage.src = this._service.getUrlRenderMapByBounds(renderOptions);              
+			newImage.src = this._service.getUrlRenderMap(renderOptions);              
 		}
 		this.fire('loading');
 	},

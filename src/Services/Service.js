@@ -7,16 +7,17 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
   * @typedef {Object} L.SpectrumSpatial.Services.Service.Options
   * @property {string} [url] - Url of service
   * @property {string} [proxyUrl] - proxy url 
-  * @property {boolean} [alwaysUseProxy=false] - use proxy for get requests
-  * @property {boolean} [forceGet=false] always do not use jsonp
+  * @property {boolean} [alwaysUseProxy=false] use proxy for get requests
+  * @property {boolean} [forceGet=true] If true always use get request and do not use JSONP, if false and browser do not support CORS JSONP request will be executed
   * @property {boolean} [encodeUrlForProxy=false] - if true encode query url for using with proxy
   */
 
 
   options: {
       alwaysUseProxy:false,
-      forceGet : false,
-      encodeUrlForProxy:false
+      forceGet : true,
+      encodeUrlForProxy:false,
+      supportJSONP : false
   },
 
   /**
@@ -102,7 +103,7 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
   
   
   needAuthorization:function(){
-	  return (this.options.login);
+	  return (this.options.login!== undefined);
   }
   
 });

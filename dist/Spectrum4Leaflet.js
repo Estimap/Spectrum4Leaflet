@@ -84,199 +84,193 @@ L.SpectrumSpatial.Utils = {
 	}
 	
 };;(function(){
-	var callbacks = 0;
-	
-	window._Spectrum4LeafletCallbacks = {};
-	
-	/**
-	* @classdesc Simple Wraper on XMLHttpRequest, has simple get and post functions
-	* @constructor
-	*/
-	L.SpectrumSpatial.Request = {
-	
-	    /**
-		 * Callback function for {L.SpectrumSpatial.Request}
-		 *
-		 * @callback L.SpectrumSpatial.Request.Callback
-		 * @param {Object} error Error object, with fieds code and message
-		 * @param {Object} response Response
-		 */
-	
-		_createRequest: function (callback, context){
-		    var httpRequest = new XMLHttpRequest();
-		
-		    httpRequest.onerror = function(e) {
-		      callback.call(context, {
-		        error: {
-		          code: 500,
-		          message: 'XMLHttpRequest error'
-		        }
-		      }, null);
-		    };
-		
-		    httpRequest.onreadystatechange = function(){
-		      var response;
-		      var error;
-		
-		      if (httpRequest.readyState === 4) {
-		        try {
-		          var contentType = this.getResponseHeader('content-type');
-		          if (contentType.indexOf('application/json') !== -1 ){
-			          response = JSON.parse(httpRequest.responseText);
-		          }
-		          else{
-			          response = httpRequest.response;
-		          }   
-		        } catch(e) {
-		          response = null;
-		          error = {
-		            code: 500,
-		            message: 'Could not parse response as JSON.'
-		          };
-		        }
-		
-		        if (!error && response.error) {
-		          error = response.error;
-		          response = null;
-		        }
-		
-		        callback.call(context, error, response);
-		      }
-		    };
-		
-		    return httpRequest;
-	    },
-	    
-	    /**
-		* Request get options
-		* @typedef {Object} L.SpectrumSpatial.Request.GetOptions
-		* @property {string} [login]  Login
-		* @property {string} [password]  Password
-		* @property {string} [responseType] Type of response (only for XHR2)
-		*/
-	    
-	    /**
-	    * Runs get request
-	    * @param {string} url Url for request
-	    * @param {Request.Callback} callback function, when request is done
-	    * @param {Object} [context] Context for callback
-	    * @param {L.SpectrumSpatial.Request.GetOptions} [options] Options 
-	    * @returns {XMLHttpRequest}
-	    */
-	    get: function(url, callback, context, options){
-		    options = options || {};
-	        var httpRequest = this._createRequest(callback,context);
-		    httpRequest.open('GET', url , true, options.login, options.password);
-		    if (options.login){
-		        httpRequest.setRequestHeader("Authorization", "Basic " + btoa(options.login + ":" + options.password));
-	        }
-	        if (options.responseType){
-		        httpRequest.responseType = options.responseType;
-	        }
-	        httpRequest.send(null);
-	        return httpRequest;
-	    },
-	    
-	    /**
-	    * Runs get request by JSONP pattern 
-	    * @param {string} url Url for request
-	    * @param {string} callbackSeparator Special character to separate callback param from query param
-	    * @param {Request.Callback} callback function, when request is done
-	    * @param {Object} context Context for callback
-	    * @param {string} [callbackSeparator] Special character to separate callback param from query param
-	    * @returns {XMLHttpRequest}
-	    */
-	    jsonp: function(url, callback, context, callbackSeparator){
-		    var callbackId = 'c' + callbacks;
-	
-	        if (!callbackSeparator){
-		        callbackSeparator='';
-	        }
-	
-	        var script = L.DomUtil.create('script', null, document.body);
-	        script.type = 'text/javascript';
-	        script.src = url + callbackSeparator + 'callback=window._Spectrum4LeafletCallbacks.' + callbackId;
-	        script.id = callbackId;
-	
-	        window._Spectrum4LeafletCallbacks[callbackId] = function(response){
-	          if(window._Spectrum4LeafletCallbacks[callbackId] !== true){
-	            var error;
-	            var responseType = Object.prototype.toString.call(response);
-	
-	            if(!(responseType === '[object Object]' || responseType === '[object Array]')){
-	              error = {
-	                error: {
-	                  code: 500,
-	                  message: 'Expected array or object as JSONP response'
-	                }
-	              };
-	              response = null;
-	            }
-	
-	            if (!error && response.error) {
-	              error = response;
-	              response = null;
-	            }
-	
-	            callback.call(context, error, response);
-	            window._Spectrum4LeafletCallbacks[callbackId] = true;
-	          }
-	        };
-	
-	        callbacks++;
-	
-	        return {
-	          id: callbackId,
-	          url: script.src,
-	          abort: function(){
-	            window._Spectrum4LeafletCallbacks._callback[callbackId]({
-	              code: 0,
-	              message: 'Request aborted.'
-	            });
-	          }
-	        };
-	    },
-	    
-	    /**
-		* Request post options
-		* @typedef {Object} L.SpectrumSpatial.Request.PostOptions
-		* @property {string} [login]  Login
-		* @property {string} [password]  Password
-		* @property {Object} [postData] Data to post
-		* @property {string} [postType=application/json] Type of post data
-		* @property {string} [responseType] Type of response (only for XHR2)
-		*/
-	    
-	    /**
-	    * Runs post request
-	    * @param {string} url Url for request
-	    * @param {Request.Callback} Callback function, when request is done
-	    * @param {object} context Context for callback
-	    * @param {L.SpectrumSpatial.Request.PostOptions} [options] Options for function
-	    * @returns {XMLHttpRequest}
-	    */
-	    post: function(url, callback, context, options ){	    
-		    options = options || {};	    
-		    if (!options.postType){
-			    options.postType = 'application/json';
-		    }
+    var callbacks = 0;
+    
+    window._Spectrum4LeafletCallbacks = {};
+    
+    /**
+    * @classdesc Simple Wraper on XMLHttpRequest, has simple get and post functions
+    * @constructor
+    */
+    L.SpectrumSpatial.Request = {
+    
+        /**
+         * Callback function for {L.SpectrumSpatial.Request}
+         *
+         * @callback L.SpectrumSpatial.Request.Callback
+         * @param {Object} error Error object, with fieds code and message
+         * @param {Object} response Response
+         */
+    
+        _createRequest: function (callback, context){
+            var httpRequest = new XMLHttpRequest();
+        
+            httpRequest.onerror = function(e) {
+              callback.call(context, {
+                error: {
+                  code: 500,
+                  message: 'XMLHttpRequest error'
+                }
+              }, null);
+            };
+        
+            httpRequest.onreadystatechange = function(){
+              var response;
+              var error;
+        
+              if (httpRequest.readyState === 4) {
+                try {
+                  var contentType = this.getResponseHeader('content-type');
+                  if (contentType.indexOf('application/json') !== -1 ){
+                      response = JSON.parse(httpRequest.responseText);
+                  }
+                  else{
+                      response = httpRequest.response;
+                  }   
+                } catch(e) {
+                  response = null;
+                  error = {
+                    code: 500,
+                    message: 'Could not parse response as JSON.'
+                  };
+                }
+        
+                if (!error && response.error) {
+                  error = response.error;
+                  response = null;
+                }
+        
+                callback.call(context, error, response);
+              }
+            };
+        
+            return httpRequest;
+        },
+        
+        /**
+        * Request get options
+        * @typedef {Object} L.SpectrumSpatial.Request.GetOptions
+        * @property {string} [login]  Login
+        * @property {string} [password]  Password
+        * @property {string} [responseType] Type of response (only for XHR2)
+        */
+        
+        /**
+        * Runs get request
+        * @param {string} url Url for request
+        * @param {Request.Callback} callback function, when request is done
+        * @param {Object} [context] Context for callback
+        * @param {L.SpectrumSpatial.Request.GetOptions} [options] Options 
+        * @returns {XMLHttpRequest}
+        */
+        get: function(url, callback, context, options){
+            options = options || {};
+            var httpRequest = this._createRequest(callback,context);
+            httpRequest.open('GET', url , true, options.login, options.password);
+            if (options.responseType){
+                httpRequest.responseType = options.responseType;
+            }
+            httpRequest.send(null);
+            return httpRequest;
+        },
+        
+        /**
+        * Runs get request by JSONP pattern 
+        * @param {string} url Url for request
+        * @param {string} callbackSeparator Special character to separate callback param from query param
+        * @param {Request.Callback} callback function, when request is done
+        * @param {Object} context Context for callback
+        * @param {string} [callbackSeparator] Special character to separate callback param from query param
+        * @returns {XMLHttpRequest}
+        */
+        jsonp: function(url, callback, context, callbackSeparator){
+            var callbackId = 'c' + callbacks;
+    
+            if (!callbackSeparator){
+                callbackSeparator='';
+            }
+    
+            var script = L.DomUtil.create('script', null, document.body);
+            script.type = 'text/javascript';
+            script.src = url + callbackSeparator + 'callback=window._Spectrum4LeafletCallbacks.' + callbackId;
+            script.id = callbackId;
+    
+            window._Spectrum4LeafletCallbacks[callbackId] = function(response){
+              if(window._Spectrum4LeafletCallbacks[callbackId] !== true){
+                var error;
+                var responseType = Object.prototype.toString.call(response);
+    
+                if(!(responseType === '[object Object]' || responseType === '[object Array]')){
+                  error = {
+                    error: {
+                      code: 500,
+                      message: 'Expected array or object as JSONP response'
+                    }
+                  };
+                  response = null;
+                }
+    
+                if (!error && response.error) {
+                  error = response;
+                  response = null;
+                }
+    
+                callback.call(context, error, response);
+                window._Spectrum4LeafletCallbacks[callbackId] = true;
+              }
+            };
+    
+            callbacks++;
+    
+            return {
+              id: callbackId,
+              url: script.src,
+              abort: function(){
+                window._Spectrum4LeafletCallbacks._callback[callbackId]({
+                  code: 0,
+                  message: 'Request aborted.'
+                });
+              }
+            };
+        },
+        
+        /**
+        * Request post options
+        * @typedef {Object} L.SpectrumSpatial.Request.PostOptions
+        * @property {string} [login]  Login
+        * @property {string} [password]  Password
+        * @property {Object} [postData] Data to post
+        * @property {string} [postType=application/json] Type of post data
+        * @property {string} [responseType] Type of response (only for XHR2)
+        */
+        
+        /**
+        * Runs post request
+        * @param {string} url Url for request
+        * @param {Request.Callback} Callback function, when request is done
+        * @param {object} context Context for callback
+        * @param {L.SpectrumSpatial.Request.PostOptions} [options] Options for function
+        * @returns {XMLHttpRequest}
+        */
+        post: function(url, callback, context, options ){       
+            options = options || {};        
+            if (!options.postType){
+                options.postType = 'application/json';
+            }
 
-	        var httpRequest = this._createRequest(callback,context);
-	        httpRequest.open('POST', url, true, options.login, options.password);
-	        if (options.login){
-		        httpRequest.setRequestHeader("Authorization", "Basic " + btoa(options.login + ":" + options.password));
-	        }
-	        
-	        httpRequest.setRequestHeader('Content-Type', options.postType);
-	        
-	        if (options.responseType){
-		        httpRequest.responseType = options.responseType;
-	        }
-	        
-	        httpRequest.send(options.postData);
-	        return httpRequest;
-	    }
-	};
+            var httpRequest = this._createRequest(callback,context);
+            httpRequest.open('POST', url, true, options.login, options.password);
+            
+            httpRequest.setRequestHeader('Content-Type', options.postType);
+            
+            if (options.responseType){
+                httpRequest.responseType = options.responseType;
+            }
+            
+            httpRequest.send(options.postData);
+            return httpRequest;
+        }
+    };
 })();
 
 ;L.SpectrumSpatial.Services.Operation = L.Class.extend(
@@ -392,16 +386,17 @@ L.SpectrumSpatial.Services.operation = function(name,options){
   * @typedef {Object} L.SpectrumSpatial.Services.Service.Options
   * @property {string} [url] - Url of service
   * @property {string} [proxyUrl] - proxy url 
-  * @property {boolean} [alwaysUseProxy=false] - use proxy for get requests
-  * @property {boolean} [forceGet=false] always do not use jsonp
+  * @property {boolean} [alwaysUseProxy=false] use proxy for get requests
+  * @property {boolean} [forceGet=true] If true always use get request and do not use JSONP, if false and browser do not support CORS JSONP request will be executed
   * @property {boolean} [encodeUrlForProxy=false] - if true encode query url for using with proxy
   */
 
 
   options: {
       alwaysUseProxy:false,
-      forceGet : false,
-      encodeUrlForProxy:false
+      forceGet : true,
+      encodeUrlForProxy:false,
+      supportJSONP : false
   },
 
   /**
@@ -487,7 +482,7 @@ L.SpectrumSpatial.Services.operation = function(name,options){
   
   
   needAuthorization:function(){
-	  return (this.options.login);
+	  return (this.options.login!== undefined);
   }
   
 });
@@ -706,68 +701,26 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     },
     
     /**
-    * Runs rendering  map by bounds request
+    * Runs rendering map 
     * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
     * @param {Request.Callback} callback Callback of the function
     * @param {Object} context Context for callback
     */
-    renderMapByBounds: function(options, callback, context){
+    renderMap: function(options, callback, context){
 	    var operation = this._createRenderOperation(options);
 	    this.startRequest(operation, callback, context);
     },
     
     /**
-    * Returns url of image (redered map by bounds) for get request
+    * Returns url of image for get request
     * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
     * @returns {string}
     */
-    getUrlRenderMapByBounds: function(options){
+    getUrlRenderMap: function(options){
 	    var operation = this._createRenderOperation(options);
 	    return (this.options.alwaysUseProxy ? this.options.proxyUrl : '') +  this.checkEncodeUrl(this.getUrl(operation));
     },
-    
-    /**
-    * Runs rendering  map by center and scale request
-    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
-    * @param {Request.Callback} callback Callback of the function
-    * @param {Object} context Context for callback
-    */
-    renderMapByCenterScale: function(options, callback, context){
-	    var operation = this._createRenderOperation(options);
-	    this.startRequest(operation, callback, context);
-    },
-    
-    /**
-    * Returns url of image (map by center and scale)  for get request
-    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
-    * @returns {string}
-    */
-    getUrlRenderMapByCenterScale: function(options){
-	    var operation = this._createRenderOperation(options);
-	    return this.getUrl(operation);
-    },
-    
-    /**
-    * Runs rendering  map by center and zoom request
-    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
-    * @param {Request.Callback} callback Callback of the function
-    * @param {Object} context Context for callback
-    */
-    renderMapByCenterZoom: function(options, callback, context){
-	    var operation = this._createRenderOperation(options);
-	    this.startRequest(operation, callback, context);
-    },
-    
-    /**
-    * Returns url of image (map by center and zoom)  for get request
-    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
-    * @returns {string}
-    */
-    getUrlRenderMapByCenterZoom: function(options){
-	    var operation = this._createRenderOperation(options);
-	    return this.getUrl(operation);
-    },
-    
+        
     /**
     * Runs legend request
     * @param {L.SpectrumSpatial.Services.MapService.LegendOptions} options Options for legend
@@ -959,7 +912,7 @@ L.SpectrumSpatial.Services.tileService = function(url,options){
 	    this._srs = map.options.crs;
 	    this._update = L.Util.throttle(this._update, this.options.updateInterval, this);
 	    map.on('moveend', this._update, this);
-	    this._service.listNamedLayers(function() {} , {});
+
 	    if (this.options.zIndex==='auto'){
 		    var maxZIndex = 0;
 		    for (var i in map._layers){
@@ -1145,11 +1098,11 @@ L.SpectrumSpatial.Services.tileService = function(url,options){
 		    height: size.y,
 		    bounds :[ nw.x, nw.y, se.x,se.y ],
 		    srs:this._srs.code,
-		    postData : this._postData
+		    additionalParams : this._postData
 	    };
 		
-		if ((this._postData)|(this._service.needAuthorization())){
-			this._service.renderMapByBounds(
+		if ((this._postData!==undefined)|(this._service.needAuthorization())){
+			this._service.renderMap(
 							                renderOptions,
 							                this._postLoad,
 							                {
@@ -1161,7 +1114,7 @@ L.SpectrumSpatial.Services.tileService = function(url,options){
 		}
 		else{
 		    newImage.onload = L.bind(this._afterLoad, this, { image: newImage, bounds:bounds, counter:this._requestCounter});
-			newImage.src = this._service.getUrlRenderMapByBounds(renderOptions);              
+			newImage.src = this._service.getUrlRenderMap(renderOptions);              
 		}
 		this.fire('loading');
 	},

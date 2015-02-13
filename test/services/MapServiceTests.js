@@ -152,14 +152,14 @@ test( 'Services.MapService.getUrlRenderMap tests', function() {
 	   locale:'en_US'
    };
    equal('http://MappingService/maps/Samples/NamedMaps/WorldMap/image.png;w=640;h=480;c=-2.5%2C38.5%2Cepsg%3A4326;z=500%20mi;r=96;l=en_US',
-          service.getUrlRenderMapByCenterZoom(renderOptions),
+          service.getUrlRenderMap(renderOptions),
           'getUrlRenderMapByCenterZoom' );
    
    renderOptions.zoom = null;
    renderOptions.scale = 10000000;
    
    equal('http://MappingService/maps/Samples/NamedMaps/WorldMap/image.png;w=640;h=480;c=-2.5%2C38.5%2Cepsg%3A4326;s=10000000;r=96;l=en_US',
-          service.getUrlRenderMapByCenterScale(renderOptions),
+          service.getUrlRenderMap(renderOptions),
           'getUrlRenderMapByCenterScale');
           
    renderOptions.scale = null;
@@ -169,7 +169,7 @@ test( 'Services.MapService.getUrlRenderMap tests', function() {
    renderOptions.resolution = 72;
       
    equal('http://MappingService/maps/Samples/NamedMaps/WorldMap/image.png;w=640;h=480;b=-10%2C-10%2C10%2C10%2Cepsg%3A4326;r=72;l=en_US',
-          service.getUrlRenderMapByBounds(renderOptions),
+          service.getUrlRenderMap(renderOptions),
           'getUrlRenderMapByCenterZoom' );
 });
 

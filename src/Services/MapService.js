@@ -210,68 +210,26 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     },
     
     /**
-    * Runs rendering  map by bounds request
+    * Runs rendering map 
     * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
     * @param {Request.Callback} callback Callback of the function
     * @param {Object} context Context for callback
     */
-    renderMapByBounds: function(options, callback, context){
+    renderMap: function(options, callback, context){
 	    var operation = this._createRenderOperation(options);
 	    this.startRequest(operation, callback, context);
     },
     
     /**
-    * Returns url of image (redered map by bounds) for get request
+    * Returns url of image for get request
     * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
     * @returns {string}
     */
-    getUrlRenderMapByBounds: function(options){
+    getUrlRenderMap: function(options){
 	    var operation = this._createRenderOperation(options);
 	    return (this.options.alwaysUseProxy ? this.options.proxyUrl : '') +  this.checkEncodeUrl(this.getUrl(operation));
     },
-    
-    /**
-    * Runs rendering  map by center and scale request
-    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
-    * @param {Request.Callback} callback Callback of the function
-    * @param {Object} context Context for callback
-    */
-    renderMapByCenterScale: function(options, callback, context){
-	    var operation = this._createRenderOperation(options);
-	    this.startRequest(operation, callback, context);
-    },
-    
-    /**
-    * Returns url of image (map by center and scale)  for get request
-    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
-    * @returns {string}
-    */
-    getUrlRenderMapByCenterScale: function(options){
-	    var operation = this._createRenderOperation(options);
-	    return this.getUrl(operation);
-    },
-    
-    /**
-    * Runs rendering  map by center and zoom request
-    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
-    * @param {Request.Callback} callback Callback of the function
-    * @param {Object} context Context for callback
-    */
-    renderMapByCenterZoom: function(options, callback, context){
-	    var operation = this._createRenderOperation(options);
-	    this.startRequest(operation, callback, context);
-    },
-    
-    /**
-    * Returns url of image (map by center and zoom)  for get request
-    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
-    * @returns {string}
-    */
-    getUrlRenderMapByCenterZoom: function(options){
-	    var operation = this._createRenderOperation(options);
-	    return this.getUrl(operation);
-    },
-    
+        
     /**
     * Runs legend request
     * @param {L.SpectrumSpatial.Services.MapService.LegendOptions} options Options for legend

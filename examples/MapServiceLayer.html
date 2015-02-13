@@ -31,11 +31,48 @@
 			id: 'examples.map-i875mjb7'
 		}).addTo(map);
 		
+		var postdata = {
+   "layers":[
+      {
+         "type":"FeatureLayer",
+         "table":{
+            "type":"NamedTable",
+            "name":"/Samples/NamedTables/USA"
+         },
+         "themes":[
+            {
+               "type":"RangeTheme",
+               "endstyle":{
+                  "type":"MapBasicAreaStyle",
+                  "mapbasicbrush":{
+                     "pattern":"66",
+                     "foregroundcolor":"blue"
+                  }
+               },
+               "rangethemeproperties":{
+                  "type":"RangeThemeProperties",
+                  "expression":"Pop_2000",
+                  "rangetype":"EqualCount",
+                  "numranges":"6"
+               },
+               "startstyle":{
+                  "type":"MapBasicAreaStyle",
+                  "mapbasicbrush":{
+                     "pattern":"66",
+                     "foregroundcolor":"yellow"
+                  }
+               }
+            }
+         ]
+      }
+   ]
+};
+		
 		function addMapServiceLayer(){
 		    var serviceUrl = document.getElementById("ssurl").value;
 		    var mapName =  document.getElementById("mapname").value;
 		    
-		    L.SpectrumSpatial.Layers.mapServiceLayer( L.SpectrumSpatial.Services.mapService(serviceUrl,{ login:'admin', password:'admin' }), mapName).addTo(map);
+		    L.SpectrumSpatial.Layers.mapServiceLayer( L.SpectrumSpatial.Services.mapService(serviceUrl), mapName,null).addTo(map);
 		}
 
 	</script>
