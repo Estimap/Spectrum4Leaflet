@@ -31,6 +31,12 @@ L.SpectrumSpatial = {
   Controls:{},
   
   /**
+  * Projections
+  * @namespace
+  */
+  Projection:{},
+  
+  /**
   * Environment values
   * @namespace
   */
@@ -81,9 +87,65 @@ L.SpectrumSpatial.Utils = {
 	        var result = (a[funcname]() < b[funcname]()) ? -1 : (a[funcname]() > b[funcname]()) ? 1 : 0;
 	        return result * sortOrder;
 	    };
+	},
+	
+	/**
+	* Find all child elements with specified name in parent 
+	* @param {Object} parent Parent html element
+	* @param {name} name Name of the element to find
+	* @returns {Array.<HTMLElement>}
+    */
+	getElementsByName: function(parent,name){
+		var result = [];
+		if (!parent.childNodes){
+			return result;
+		}
+		for (var i=0; i<parent.childNodes.length;i++){
+			var node = parent.childNodes[i];
+			if (node.childNodes && node.childNodes.length>0){
+				result = result.concat(L.SpectrumSpatial.Utils.getElementsByName(node,name));
+			}
+			if (node.name && node.name===name){
+				result.push(node);
+			}
+		}
+		return result;
 	}
 	
-};;(function(){
+};;
+L.SpectrumSpatial.Projection.SimpleMercator = {
+
+	R: 6378137,
+	
+	epsg4326:proj4('EPSG:4326'),
+	
+	epsg41001:proj4('PROJCS["WGS84 / Simple Mercator",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS_1984", 6378137.0, 298.257223563]],PRIMEM["Greenwich", 0.0], UNIT["degree", 0.017453292519943295], AXIS["Longitude", EAST],  AXIS["Latitude", NORTH]], PROJECTION["Mercator_1SP"], PARAMETER["latitude_of_origin", 0.0],PARAMETER["central_meridian", 0.0],PARAMETER["scale_factor", 1.0],PARAMETER["false_easting", 0.0],PARAMETER["false_northing", 0.0], UNIT["m", 1.0],AXIS["x", EAST],AXIS["y", NORTH],AUTHORITY["EPSG","41001"]]'),
+
+	project: function (latlng) {
+		var p = proj4(L.SpectrumSpatial.Projection.SimpleMercator.epsg41001,[latlng.lng,latlng.lat]);
+
+		return new L.Point(p[0],p[1]);
+	},
+
+	unproject: function (point) {
+		var p = proj4(L.SpectrumSpatial.Projection.SimpleMercator.epsg41001,L.SpectrumSpatial.Projection.SimpleMercator.epsg4326,point);
+
+		return new L.LatLng(p.y,p.x);
+	},
+
+	bounds: (function () {
+		var d = 6378137 * Math.PI;
+		return L.bounds([-d, -d], [d, d]);
+	})()
+};;L.CRS.EPSG41001 = L.extend({}, L.CRS.Earth, {
+	code: 'EPSG:41001',
+	projection: L.SpectrumSpatial.Projection.SimpleMercator,
+
+	transformation: (function () {
+		var scale = 0.5 / (Math.PI * L.SpectrumSpatial.Projection.SimpleMercator.R);
+		return new L.Transformation(scale, 0.5, -scale, 0.5);
+	}())
+});;(function(){
     var callbacks = 0;
     
     window._Spectrum4LeafletCallbacks = {};
@@ -1661,7 +1723,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
             }
 			if (this.options.opacityControls){
 				var opacity = L.DomUtil.create('input','leaflet-ss-cell leaflet-ss-control-layers-input');
-				opacity.type = 'textbox';
+				opacity.type = 'text';
 				opacity.name = 'opacityInput';
 				opacity.value = (obj.layer.getOpacity)? obj.layer.getOpacity(): this.options.opacity;
 				opacity.layerId = L.stamp(obj.layer);
@@ -1734,8 +1796,8 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 	},
 	
 	_onVisibilityChanged: function () {
-		var inputs = document.getElementsByName('visibilityInput'),
-		    input, layer, hasLayer;
+		var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container,'visibilityInput');   //document.getElementsByName('visibilityInput'),
+		var   input, layer, hasLayer;
 		var addedLayers = [],
 		    removedLayers = [];
 
@@ -1768,7 +1830,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 	},
 	
 	_onOpacityChanged:function(){
-		var inputs = document.getElementsByName('opacityInput');
+		var inputs =L.SpectrumSpatial.Utils.getElementsByName(this._container,'opacityInput'); //document.getElementsByName('opacityInput');
 		var input, layer;
 		
 		this._handlingClick = true;

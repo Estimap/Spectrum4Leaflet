@@ -37,7 +37,6 @@
 	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
 	background: #fff;
 	border-radius: 5px;
-	overflow: scroll;
 }
 
 .leaflet-ss-control-layers .leaflet-ss-control-layers-list,

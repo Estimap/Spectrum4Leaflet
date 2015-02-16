@@ -30,3 +30,23 @@ test( 'Utils sorting operations tests', function() {
    equal(testarray[0].z, 3, 'first getZ() == 3');
    
 });
+
+test( 'Utils getElementsByName  tests', function() {
+   
+   var parent = document.createElement('div');
+   var child1 = document.createElement('div');
+   var child2 = document.createElement('div');
+   var child3 = document.createElement('div');
+   child3.name = 'testname';
+   
+   parent.appendChild(child1);
+   parent.appendChild(child2);
+   child2.appendChild(child3);
+   
+   document.body.appendChild(parent);
+   
+   var founded = L.SpectrumSpatial.Utils.getElementsByName(parent, 'testname','div');
+   
+   equal(founded.length, 1, '1 element with testname');
+   
+});

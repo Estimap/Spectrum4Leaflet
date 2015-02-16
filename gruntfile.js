@@ -11,6 +11,8 @@ module.exports = function(grunt) {
         src:  [
 		     'src/Spectrum4Leaflet.js',
 		     'src/Utils.js',
+		     'src/geo/projection/Projection.SimpleMercator.js',
+		     'src/geo/crs/CRS.EPSG41001.js',
 		     'src/Request.js',
 		     'src/services/Operation.js',
 		     'src/services/Service.js',

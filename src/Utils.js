@@ -38,6 +38,29 @@ L.SpectrumSpatial.Utils = {
 	        var result = (a[funcname]() < b[funcname]()) ? -1 : (a[funcname]() > b[funcname]()) ? 1 : 0;
 	        return result * sortOrder;
 	    };
+	},
+	
+	/**
+	* Find all child elements with specified name in parent 
+	* @param {Object} parent Parent html element
+	* @param {name} name Name of the element to find
+	* @returns {Array.<HTMLElement>}
+    */
+	getElementsByName: function(parent,name){
+		var result = [];
+		if (!parent.childNodes){
+			return result;
+		}
+		for (var i=0; i<parent.childNodes.length;i++){
+			var node = parent.childNodes[i];
+			if (node.childNodes && node.childNodes.length>0){
+				result = result.concat(L.SpectrumSpatial.Utils.getElementsByName(node,name));
+			}
+			if (node.name && node.name===name){
+				result.push(node);
+			}
+		}
+		return result;
 	}
 	
 };

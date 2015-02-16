@@ -273,7 +273,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
             }
 			if (this.options.opacityControls){
 				var opacity = L.DomUtil.create('input','leaflet-ss-cell leaflet-ss-control-layers-input');
-				opacity.type = 'textbox';
+				opacity.type = 'text';
 				opacity.name = 'opacityInput';
 				opacity.value = (obj.layer.getOpacity)? obj.layer.getOpacity(): this.options.opacity;
 				opacity.layerId = L.stamp(obj.layer);
@@ -346,8 +346,8 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 	},
 	
 	_onVisibilityChanged: function () {
-		var inputs = document.getElementsByName('visibilityInput'),
-		    input, layer, hasLayer;
+		var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container,'visibilityInput');   //document.getElementsByName('visibilityInput'),
+		var   input, layer, hasLayer;
 		var addedLayers = [],
 		    removedLayers = [];
 
@@ -380,7 +380,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 	},
 	
 	_onOpacityChanged:function(){
-		var inputs = document.getElementsByName('opacityInput');
+		var inputs =L.SpectrumSpatial.Utils.getElementsByName(this._container,'opacityInput'); //document.getElementsByName('opacityInput');
 		var input, layer;
 		
 		this._handlingClick = true;

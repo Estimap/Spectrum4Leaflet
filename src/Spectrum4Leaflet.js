@@ -31,6 +31,12 @@ L.SpectrumSpatial = {
   Controls:{},
   
   /**
+  * Projections
+  * @namespace
+  */
+  Projection:{},
+  
+  /**
   * Environment values
   * @namespace
   */
