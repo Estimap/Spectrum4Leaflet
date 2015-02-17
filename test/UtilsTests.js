@@ -50,3 +50,16 @@ test( 'Utils getElementsByName  tests', function() {
    equal(founded.length, 1, '1 element with testname');
    
 });
+
+test( 'Utils merge  tests', function() {
+	
+   var dest = { someParams : { a:'a' } };
+   var src = { b:'b', c:'c' };
+   
+   L.SpectrumSpatial.Utils.merge( dest.someParams,src );
+   
+   equal(dest.someParams.a, 'a', 'a=a');
+   equal(dest.someParams.b, 'b', 'b=b');
+   equal(dest.someParams.c, 'c', 'c=c');
+   
+});

@@ -14,6 +14,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
     * @property {boolean} [legendControls] If true legend controls is enabled
     * @property {L.SpectrumSpatial.Controls.Legend.Options} [legendOptions] Options for legend (if legend controls is enabled)
     * @property {Object} [legendContainer] DOM element, if we want to draw legend outside of layers control
+    * @property {boolean} [inverseOrder=false] If true, upper layer in control is upper on map ( max Z index)
     */
     
 	options : {
@@ -21,7 +22,8 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 		opacityControls:true,
 		legendControls:true,
 		legendOptions : {},
-		legendContainer :null
+		legendContainer :null,
+		inverseOrder:false
 	},
 	
 	/**
@@ -133,7 +135,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 			}	   
 		}
 		
-		overlays.sort(L.SpectrumSpatial.Utils.sortByProperty('z'));
+		overlays.sort(L.SpectrumSpatial.Utils.sortByProperty('z',(this.options.inverseOrder)? "desc" :  "asc" ));
 		
 		for (i in overlays) {
 			obj = overlays[i];
@@ -240,22 +242,8 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 		if (obj.overlay) {
 			
 			if (this.options.zIndexControls){
-				var up =  L.DomUtil.create('div', 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-up');
-				up.layerId = input.layerId;
-				L.DomEvent.on(up, 'click', this._onUpClick, this);
-				row.appendChild(up);
-				if (obj.layer.getZIndex()===this._minZIndex){
-					L.DomUtil.addClass(up, 'leaflet-ss-disabled');
-				}
-				
-				
-				var down = L.DomUtil.create('div','leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-down');
-				down.layerId = input.layerId;
-				L.DomEvent.on(down, 'click', this._onDownClick, this);
-				row.appendChild(down);
-				if (obj.layer.getZIndex()===this._maxZIndex){
-					L.DomUtil.addClass(down, 'leaflet-ss-disabled');
-				}
+				row.appendChild(this._createZIndexButton('up', obj.layer, input.layerId ));
+				row.appendChild(this._createZIndexButton('down', obj.layer, input.layerId ));
 			}  
 			
             if (this.options.legendControls){
@@ -291,6 +279,22 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 		return layerItem;
 	},
 	
+	_createZIndexButton:function(displayDirection, layer, layerId ){
+		var className = 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-' + displayDirection;
+		var realDirection = ((displayDirection === 'up' & this.options.inverseOrder) | 
+		                     (displayDirection === 'down' & !this.options.inverseOrder)) ? 'up':'down';
+		var clickFunction = ( realDirection ==='up' ) ? this._onUpClick : this._onDownClick;
+		var disableIndex = ( realDirection ==='up' )?  this._maxZIndex:this._minZIndex;
+		var btn = L.DomUtil.create('div', className);
+		btn.layerId = layerId;
+		L.DomEvent.on(btn, 'click', clickFunction , this);
+		if (layer.getZIndex()=== disableIndex){
+			L.DomUtil.addClass(btn, 'leaflet-ss-disabled');
+		}
+		
+		return btn;
+	},
+	
 	_onLegendClick: function(e) {
 		var layerId = e.currentTarget.layerId;
 		var lo = this._layers[layerId];
@@ -310,7 +314,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 		}
 	},
 	
-	_onUpClick: function(e) {
+	_onDownClick: function(e) {
 		var layerId = e.currentTarget.layerId;
 		var layer = this._layers[layerId].layer;
 		var curZ = layer.getZIndex();
@@ -322,7 +326,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 		}
 	},
 	
-	_onDownClick: function(e) {
+	_onUpClick: function(e) {
 		var layerId = e.currentTarget.layerId;
 		var layer = this._layers[layerId].layer;
 		var curZ = layer.getZIndex();

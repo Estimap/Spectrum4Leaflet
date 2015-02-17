@@ -36,17 +36,17 @@
 		
 		var service = L.SpectrumSpatial.Services.mapService('http://192.168.1.2/rest/EnterpriseMapping/MappingService/' , { login:'admin', password:'admin' });
 		var overlay1 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, 'Samples/NamedMaps/MapWithPieLayer/');
-		//var overlay2 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, 'Samples/NamedMaps/MapWithLayer/');
-		
+		var overlay2 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, '/Samples/NamedMaps/MapWithLayer');
+
 		overlay1.addTo(map);
 		
 		var overlayMaps = {
-		    'Overlay 1': overlay1//,
-		   // 'Overlay 2': overlay2
+		    'Overlay 1': overlay1,
+		    'Overlay 2':overlay2
 		};
 
 		
-		var control = new L.SpectrumSpatial.Controls.Layers(baseMaps, overlayMaps, {collapsed:false /* , legendContainer:document.getElementById('layers') */});
+		var control = new L.SpectrumSpatial.Controls.Layers(baseMaps, overlayMaps, {collapsed:false, inverseOrder:false});
 		control.addTo(map);
 
         

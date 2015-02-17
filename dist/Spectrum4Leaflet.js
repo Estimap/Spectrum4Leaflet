@@ -110,6 +110,15 @@ L.SpectrumSpatial.Utils = {
 			}
 		}
 		return result;
+	},
+	
+	merge:function(dest,src){
+		if (src){					
+			for (var i in src) {
+				dest[i] = src[i];
+			}
+		}
+		return dest;
 	}
 	
 };;if (!this.proj4){
@@ -934,6 +943,245 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
 
 L.SpectrumSpatial.Services.tileService = function(url,options){
   return new L.SpectrumSpatial.Services.TileService(url,options);
+};;/** 
+* @class Spectrum Spatial Feature Service wrapper
+* @augments L.SpectrumSpatial.Services.Service 
+* @constructs L.SpectrumSpatial.Services.FeatureService
+* @param {string} url Url of service
+* @param {Services.Service.Options} options Additional options of service
+*/
+L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.extend(
+/** @lends L.SpectrumSpatial.Services.FeatureService# */
+{
+    /**
+    * List all Available Tables
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {string} [locale] The locale in which to return the table information.
+    */
+    tableList : function(callback, context,locale){  
+        var operation = new L.SpectrumSpatial.Services.Operation('tables.json');
+        if (locale){
+		    operation.options.getParams.l = locale;
+	    }
+	    this.startRequest(operation, callback, context);
+    },
+    
+    /**
+    * Total number of all Available Tables
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {string} [locale] The locale in which to return the table information.
+    */
+    count : function(callback, context,locale){  
+        var operation = new L.SpectrumSpatial.Services.Operation('tables/count');
+        if (locale){
+		    operation.options.getParams.l = locale;
+	    }
+	    this.startRequest(operation, callback, context);
+    },
+    
+    /**
+    * Count features operation options
+	* @typedef {Object} L.SpectrumSpatial.Services.FeatureService.FeatureCountOptions
+    * @property {string} [q] The query method to perform. This must be searchAtPoint 
+    * @property {string} [point] The point used as the starting location for the search. For example: point=-75.651157,45.374245,EPSG:4326
+    * @property {string} [tolerance] The distance to search around the point. By default the tolerance is 300 meters
+    * @property {string} [geometryAttributeName] The geometry definition attribute from the table that should be used for processing the spatial query. This attribute is only required for tables that contain more than one geometry attribute definition.
+    * @property {string} [l] The locale in which to return the table information
+	*/
+    
+    /**
+    * Number of Features in a Table
+    * @param {string} tableName The name of the table to return feature metadata
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {L.SpectrumSpatial.Services.FeatureService.FeatureCountOptions} [options] Additional options
+    */
+    featureCount : function(tableName, callback, context, options){  
+        var operation = new L.SpectrumSpatial.Services.Operation('tables/'+this.clearParam(tableName)+'/features/count',
+																 { paramsSeparator: '&', queryStartCharacter:'&'});
+        L.SpectrumSpatial.merge(operation.getParams,options);
+	    this.startRequest(operation, callback, context);
+    },
+    
+    /**
+    * Describe a Table's Metadata
+    * @param {string} tableName The name of the table to return metadata
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {string} [locale] The locale in which to return the table information.
+    */
+    describe : function(tableName, callback, context, locale){  
+        var operation = new L.SpectrumSpatial.Services.Operation('tables/'+this.clearParam(tableName)+'/metadata.json');
+        if (locale){
+	        operation.getParams.l = locale;
+        }
+	    this.startRequest(operation, callback, context);
+    },
+    
+    /**
+    * Insert a Feature into a Table
+    * @param {string} tableName The name of the table to insert the features
+    * @param {Object} features Features to insert
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {integer} [commitInterval] The number of inserts that will be processed in a transaction
+    */
+    insert : function(tableName, features, callback, context, commitInterval){  
+        var operation = new L.SpectrumSpatial.Services.Operation('tables/'+this.clearParam(tableName)+'/features.json',
+																 { paramsSeparator: '&', queryStartCharacter:'?'});
+        operation.getParams.action = 'insert';
+        if (commitInterval){
+	        operation.getParams.commitInterval = commitInterval;
+        }
+        operation.postParams = features;
+	    this.startRequest(operation, callback, context);
+    },
+    
+    /**
+    * SearchAtPoint function's options
+	* @typedef {Object} L.SpectrumSpatial.Services.FeatureService.SearchAtPointOptions
+    * @property {string} [attributes] The attribute names of the table to be returned in the response.
+    * @property {string} [orderBy] The attribute name and direction to order the returned results
+    * @property {string} [tolerance] The distance to search around the point. By default the tolerance is 300 meters
+    * @property {string} [geometryAttributeName] The geometry definition attribute from the table that should be used for processing the spatial query  
+    * @property {string} [page] The page number to return   
+    * @property {string} [pageLength] The number of features returned on each page 
+    * @property {string} [l] The locale in which to return the table information
+	*/
+    
+    /**
+    * Search a Table for Features at a Point
+    * @param {string} tableName The name of the table to insert the features
+    * @param {Object} point Point. example { x:'1',y:'1'}
+    * @param {string} srs Reference system code. Example 'EPSG:4326'
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {L.SpectrumSpatial.Services.FeatureService.SearchAtPointOptions} [options] Additional options
+    */
+    searchAtPoint : function(tableName, point, srs, callback, context, options){  
+        var operation = new L.SpectrumSpatial.Services.Operation('tables/'+this.clearParam(tableName)+'/features.json');
+        operation.getParams.q = 'searchAtPoint';
+        operation.getParams.point = point.x + ',' + point.y + ',' + srs;
+        L.SpectrumSpatial.merge(operation.getParams,options);
+	    this.startRequest(operation, callback, context);
+    },
+    
+    /**
+    * SearchNearest function's options
+	* @typedef {Object} L.SpectrumSpatial.Services.FeatureService.SearchNearestOptions
+    * @property {string} [attributes] The attribute names of the table to be returned in the response.
+    * @property {string} [orderBy] The attribute name and direction to order the returned results
+    * @property {string} [withinDistance] The distance to search around the geometry. By default the search distance is 300 meters
+    * @property {string} [distanceAttributeName] The name of the distance attribute to be returned in the response.
+    * @property {string} [geometryAttributeName] The geometry definition attribute from the table that should be used for processing the spatial query  
+    * @property {string} [page] The page number to return   
+    * @property {string} [pageLength] The number of features returned on each page 
+    * @property {string} [l] The locale in which to return the table information
+    * @property {string} [maxFeatures] The total number of features returned in the response. By default this value is 1000 features
+	*/
+    
+    /**
+    * Search a Table for Features Nearest to a Geometry
+    * @param {string} tableName The name of the table to insert the features
+    * @param {Object} geometry Geometry
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {L.SpectrumSpatial.Services.FeatureService.SearchNearestOptions} [options] Additional options
+    */
+    searchNearest : function(tableName, geometry, callback, context, options){  
+        var operation = new L.SpectrumSpatial.Services.Operation('tables/'+this.clearParam(tableName)+'/features.json');
+        operation.getParams.q = 'searchNearest';
+        operation.getParams.geometry = JSON.stringify(geometry);
+        L.SpectrumSpatial.merge(operation.getParams,options);
+	    this.startRequest(operation, callback, context);
+    },
+    
+    /**
+    * Search a Table for Features Nearest to a Geometry
+    * @param {string} tableName The name of the table to insert the features
+    * @param {Object} geometry Geometry
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {L.SpectrumSpatial.Services.FeatureService.SearchNearestOptions} [options] Additional options
+    */
+    searchId : function(tableName, id, callback, context, attributes, locale){  
+        var operation = new L.SpectrumSpatial.Services.Operation('tables/'+this.clearParam(tableName)+'/features.json' + 
+															     ((attributes) ? (';attributes='+attributes) : '' ) +
+															     ((locale) ? (';l='+locale) : '' ) +
+																 '/'+ id );
+	    this.startRequest(operation, callback, context);
+    },
+    
+    /**
+    * SearchSQL function's options
+	* @typedef {Object} L.SpectrumSpatial.Services.FeatureService.SearchSQLOptions
+    * @property {string} [page] The page number to return   
+    * @property {string} [pageLength] The number of features returned on each page 
+    * @property {string} [l] The locale in which to return the table information
+	*/
+    
+    /**
+    * Search for Features Using SQL Queries
+    * @param {string} query The query to perform in SQL format.
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {L.SpectrumSpatial.Services.FeatureService.SearchSQLOptions} [options] Additional options
+    */
+    searchSQL : function( query , callback, context, options){  
+        var operation = new L.SpectrumSpatial.Services.Operation('tables/features.json');
+        operation.getParams.q = query;
+        L.SpectrumSpatial.merge(operation.getParams,options);
+	    this.startRequest(operation, callback, context);
+    },
+    
+    /**
+    * Update Features by Primary Key
+    * @param {string} tableName The name of the table for which you are updating features
+    * @param {Object} features Features to update
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {integer} [commitInterval] The number of inserts that will be processed in a transaction
+    */
+    update : function(tableName, features, callback, context, commitInterval){  
+        var operation = new L.SpectrumSpatial.Services.Operation('tables/'+this.clearParam(tableName)+'/features.json',
+																 { paramsSeparator: '&', queryStartCharacter:'?'});
+        operation.getParams.action = 'update';
+        if (commitInterval){
+	        operation.getParams.commitInterval = commitInterval;
+        }
+        operation.postParams = features;
+	    this.startRequest(operation, callback, context);
+    },
+    
+    /**
+    * Update Features Using SQL
+    * @param {string} query SQL query
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {Object} [boundParams] Bound parameters
+    * @param {string} [locale] The locale in which to return the table information
+    */
+    updateSQL : function(query, callback, context, boundParams, locale){  
+        var operation = new L.SpectrumSpatial.Services.Operation('tables/features.json',
+																 { paramsSeparator: '&', queryStartCharacter:'?'});
+        operation.getParams.update = query;
+        if (locale){
+	        operation.getParams.l = locale;
+        }
+        if (boundParams){
+	        operation.postParams = boundParams;
+        }
+        
+	    this.startRequest(operation, callback, context);
+    },
+    
+    
+});
+
+L.SpectrumSpatial.Services.featureService = function(url,options){
+  return new L.SpectrumSpatial.Services.FeatureService(url,options);
 };;L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
 /** @lends L.SpectrumSpatial.Layers.MapServiceLayer.prototype */
 
@@ -1470,6 +1718,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
     * @property {boolean} [legendControls] If true legend controls is enabled
     * @property {L.SpectrumSpatial.Controls.Legend.Options} [legendOptions] Options for legend (if legend controls is enabled)
     * @property {Object} [legendContainer] DOM element, if we want to draw legend outside of layers control
+    * @property {boolean} [inverseOrder=false] If true, upper layer in control is upper on map ( max Z index)
     */
     
 	options : {
@@ -1477,7 +1726,8 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 		opacityControls:true,
 		legendControls:true,
 		legendOptions : {},
-		legendContainer :null
+		legendContainer :null,
+		inverseOrder:false
 	},
 	
 	/**
@@ -1589,7 +1839,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 			}	   
 		}
 		
-		overlays.sort(L.SpectrumSpatial.Utils.sortByProperty('z'));
+		overlays.sort(L.SpectrumSpatial.Utils.sortByProperty('z',(this.options.inverseOrder)? "desc" :  "asc" ));
 		
 		for (i in overlays) {
 			obj = overlays[i];
@@ -1696,22 +1946,8 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 		if (obj.overlay) {
 			
 			if (this.options.zIndexControls){
-				var up =  L.DomUtil.create('div', 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-up');
-				up.layerId = input.layerId;
-				L.DomEvent.on(up, 'click', this._onUpClick, this);
-				row.appendChild(up);
-				if (obj.layer.getZIndex()===this._minZIndex){
-					L.DomUtil.addClass(up, 'leaflet-ss-disabled');
-				}
-				
-				
-				var down = L.DomUtil.create('div','leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-down');
-				down.layerId = input.layerId;
-				L.DomEvent.on(down, 'click', this._onDownClick, this);
-				row.appendChild(down);
-				if (obj.layer.getZIndex()===this._maxZIndex){
-					L.DomUtil.addClass(down, 'leaflet-ss-disabled');
-				}
+				row.appendChild(this._createZIndexButton('up', obj.layer, input.layerId ));
+				row.appendChild(this._createZIndexButton('down', obj.layer, input.layerId ));
 			}  
 			
             if (this.options.legendControls){
@@ -1747,6 +1983,22 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 		return layerItem;
 	},
 	
+	_createZIndexButton:function(displayDirection, layer, layerId ){
+		var className = 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-' + displayDirection;
+		var realDirection = ((displayDirection === 'up' & this.options.inverseOrder) | 
+		                     (displayDirection === 'down' & !this.options.inverseOrder)) ? 'up':'down';
+		var clickFunction = ( realDirection ==='up' ) ? this._onUpClick : this._onDownClick;
+		var disableIndex = ( realDirection ==='up' )?  this._maxZIndex:this._minZIndex;
+		var btn = L.DomUtil.create('div', className);
+		btn.layerId = layerId;
+		L.DomEvent.on(btn, 'click', clickFunction , this);
+		if (layer.getZIndex()=== disableIndex){
+			L.DomUtil.addClass(btn, 'leaflet-ss-disabled');
+		}
+		
+		return btn;
+	},
+	
 	_onLegendClick: function(e) {
 		var layerId = e.currentTarget.layerId;
 		var lo = this._layers[layerId];
@@ -1766,7 +2018,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 		}
 	},
 	
-	_onUpClick: function(e) {
+	_onDownClick: function(e) {
 		var layerId = e.currentTarget.layerId;
 		var layer = this._layers[layerId].layer;
 		var curZ = layer.getZIndex();
@@ -1778,7 +2030,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 		}
 	},
 	
-	_onDownClick: function(e) {
+	_onUpClick: function(e) {
 		var layerId = e.currentTarget.layerId;
 		var layer = this._layers[layerId].layer;
 		var curZ = layer.getZIndex();

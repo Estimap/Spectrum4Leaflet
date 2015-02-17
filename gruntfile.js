@@ -18,6 +18,7 @@ module.exports = function(grunt) {
 		     'src/services/Service.js',
 		     'src/services/MapService.js',
 		     'src/services/TileService.js',
+		     'src/services/FeatureService.js',
 		     'src/layers/MapServiceLayer.js',
 		     'src/layers/TileServiceLayer.js',
 		     'src/controls/Layers.js',
@@ -73,7 +74,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', ['jshint', 'qunit']);
   grunt.registerTask('dev', ['jshint', 'concat']);
-  grunt.registerTask('default', ['jshint', 'qunit', 'concat']);
+  grunt.registerTask('default', ['jshint', 'qunit', 'concat', 'uglify']);
   grunt.registerTask('production', ['jshint', 'qunit', 'concat', 'uglify','jsdoc']);
 
 };

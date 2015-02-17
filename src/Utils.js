@@ -61,6 +61,15 @@ L.SpectrumSpatial.Utils = {
 			}
 		}
 		return result;
+	},
+	
+	merge:function(dest,src){
+		if (src){					
+			for (var i in src) {
+				dest[i] = src[i];
+			}
+		}
+		return dest;
 	}
 	
 };
