@@ -34,16 +34,17 @@
   * @typedef {Object} L.SpectrumSpatial.Services.Service.Options
   * @property {string} [url] - Url of service
   * @property {string} [proxyUrl] - proxy url 
-  * @property {boolean} [alwaysUseProxy=false] - use proxy for get requests
-  * @property {boolean} [forceGet=false] always do not use jsonp
+  * @property {boolean} [alwaysUseProxy=false] use proxy for get requests
+  * @property {boolean} [forceGet=true] If true always use get request and do not use JSONP, if false and browser do not support CORS JSONP request will be executed
   * @property {boolean} [encodeUrlForProxy=false] - if true encode query url for using with proxy
   */
 
 
   options: {
       alwaysUseProxy:false,
-      forceGet : false,
-      encodeUrlForProxy:false
+      forceGet : true,
+      encodeUrlForProxy:false,
+      supportJSONP : false
   },
 
   /**
@@ -65,6 +66,13 @@
   */
   startRequest: function(operation, callback,context){
       var urlWithQuery = this.getUrl(operation);
+      var queryOptions = { 
+	                            postData: operation.getPostData(), 
+	                            postType: operation.getPostType(),
+	                            responseType: operation.getResponseType(),
+	                            login: this.options.login,
+	                            password: this.options.password
+	                        };
 	  if (operation.isPostOperation()){
 	      if (this.options.proxyUrl){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
@@ -72,21 +80,15 @@
 		  return L.SpectrumSpatial.Request.post(urlWithQuery, 	                                       
 		                                        callback, 
 		                                        context,
-		                                        { 
-			                                        postData: operation.getPostData(), 
-		                                            postType: operation.getPostType(),
-		                                            responseType: operation.getResponseType(),
-		                                            login: this.options.login,
-		                                            password: this.options.password
-		                                        });
+		                                        queryOptions);
 	  }
 	  else{
 	      if (this.options.alwaysUseProxy){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
-		      return L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, this.options.login, this.options.password);
+		      return L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, queryOptions );
 	      }
 		  return ( this.options.forceGet | L.SpectrumSpatial.Support.CORS ) ? 
-		             L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, this.options.login, this.options.password):
+		             L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, queryOptions):
 		             L.SpectrumSpatial.Request.jsonp(urlWithQuery, callback, context, '?');
 	  }
   },
@@ -124,6 +126,11 @@
   */
   checkEncodeUrl:function(url){
 	  return  this.options.encodeUrlForProxy ? encodeURIComponent(url) : url;
+  },
+  
+  
+  needAuthorization:function(){
+	  return (this.options.login!== undefined);
   }
   
 });
@@ -140,13 +147,13 @@ L.SpectrumSpatial.Services.service = function(url,options){
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTo">addTo</a></li><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Projection.html">Projection</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTo">addTo</a></li><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Thu Feb 12 2015 20:58:43 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Feb 17 2015 18:55:58 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -237,68 +237,26 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     },
     
     /**
-    * Runs rendering  map by bounds request
+    * Runs rendering map 
     * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
     * @param {Request.Callback} callback Callback of the function
     * @param {Object} context Context for callback
     */
-    renderMapByBounds: function(options, callback, context){
+    renderMap: function(options, callback, context){
 	    var operation = this._createRenderOperation(options);
 	    this.startRequest(operation, callback, context);
     },
     
     /**
-    * Returns url of image (redered map by bounds) for get request
+    * Returns url of image for get request
     * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
     * @returns {string}
     */
-    getUrlRenderMapByBounds: function(options){
+    getUrlRenderMap: function(options){
 	    var operation = this._createRenderOperation(options);
 	    return (this.options.alwaysUseProxy ? this.options.proxyUrl : '') +  this.checkEncodeUrl(this.getUrl(operation));
     },
-    
-    /**
-    * Runs rendering  map by center and scale request
-    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
-    * @param {Request.Callback} callback Callback of the function
-    * @param {Object} context Context for callback
-    */
-    renderMapByCenterScale: function(options, callback, context){
-	    var operation = this._createRenderOperation(options);
-	    this.startRequest(operation, callback, context);
-    },
-    
-    /**
-    * Returns url of image (map by center and scale)  for get request
-    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
-    * @returns {string}
-    */
-    getUrlRenderMapByCenterScale: function(options){
-	    var operation = this._createRenderOperation(options);
-	    return this.getUrl(operation);
-    },
-    
-    /**
-    * Runs rendering  map by center and zoom request
-    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
-    * @param {Request.Callback} callback Callback of the function
-    * @param {Object} context Context for callback
-    */
-    renderMapByCenterZoom: function(options, callback, context){
-	    var operation = this._createRenderOperation(options);
-	    this.startRequest(operation, callback, context);
-    },
-    
-    /**
-    * Returns url of image (map by center and zoom)  for get request
-    * @param {L.SpectrumSpatial.Services.MapService.RenderOptions} options Render options
-    * @returns {string}
-    */
-    getUrlRenderMapByCenterZoom: function(options){
-	    var operation = this._createRenderOperation(options);
-	    return this.getUrl(operation);
-    },
-    
+        
     /**
     * Runs legend request
     * @param {L.SpectrumSpatial.Services.MapService.LegendOptions} options Options for legend
@@ -373,13 +331,13 @@ L.SpectrumSpatial.Services.mapService = function(url,options){
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTo">addTo</a></li><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Projection.html">Projection</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTo">addTo</a></li><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Thu Feb 12 2015 20:58:43 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Feb 17 2015 18:55:58 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>

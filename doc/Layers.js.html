@@ -33,13 +33,14 @@
     /**
     * Layers control options class
     * @typedef {Object} L.SpectrumSpatial.Controls.Layers.Options
-    * @property {string} position Control position in map
-    * @property {boolean} cssOff If is true, control rednders without css class ( usefull when you draw outside of the map)
-    * @property {boolean} zIndexControls If true zIndex controls is enabled
-    * @property {boolean} opacityControls If true opacity controls is enabled
-    * @property {boolean} legendControls If true legend controls is enabled
-    * @property {L.SpectrumSpatial.Controls.Legend.Options} legendOptions Options for legend (if legend controls is enabled)
-    * @property {Object} legendContainer DOM element, if we want to draw legend outside of layers control
+    * @property {string} [position] Control position in map
+    * @property {boolean} [cssOff] If is true, control rednders without css class ( usefull when you draw outside of the map)
+    * @property {boolean} [autoZIndex] If true, Zindexes to overlays will be set automaticly 
+    * @property {boolean} [zIndexControls] If true zIndex controls is enabled
+    * @property {boolean} [opacityControls] If true opacity controls is enabled
+    * @property {boolean} [legendControls] If true legend controls is enabled
+    * @property {L.SpectrumSpatial.Controls.Legend.Options} [legendOptions] Options for legend (if legend controls is enabled)
+    * @property {Object} [legendContainer] DOM element, if we want to draw legend outside of layers control
     */
     
 	options : {
@@ -70,6 +71,7 @@
 		}
 		this._minZIndex = 1;
 		this._maxZIndex = 0;
+		
 		
 		this._handlingClick = false;
 
@@ -113,6 +115,18 @@
 		if (overlay && this.options.autoZIndex && layer.setZIndex) {
 			this._maxZIndex++;
 			layer.setZIndex(this._maxZIndex);
+		}
+		
+		if (overlay && !this.options.autoZIndex){
+			if (layer.getZIndex){
+				var z = layer.getZIndex();
+				if (this._minZIndex>z){
+					this._minZIndex = z;
+				}
+				if (this._maxZIndex&lt;z){
+					this._maxZIndex = z;
+				}
+			}
 		}
 		
 		var id = L.stamp(layer);
@@ -286,7 +300,7 @@
             }
 			if (this.options.opacityControls){
 				var opacity = L.DomUtil.create('input','leaflet-ss-cell leaflet-ss-control-layers-input');
-				opacity.type = 'textbox';
+				opacity.type = 'text';
 				opacity.name = 'opacityInput';
 				opacity.value = (obj.layer.getOpacity)? obj.layer.getOpacity(): this.options.opacity;
 				opacity.layerId = L.stamp(obj.layer);
@@ -359,8 +373,8 @@
 	},
 	
 	_onVisibilityChanged: function () {
-		var inputs = document.getElementsByName('visibilityInput'),
-		    input, layer, hasLayer;
+		var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container,'visibilityInput');   //document.getElementsByName('visibilityInput'),
+		var   input, layer, hasLayer;
 		var addedLayers = [],
 		    removedLayers = [];
 
@@ -393,7 +407,7 @@
 	},
 	
 	_onOpacityChanged:function(){
-		var inputs = document.getElementsByName('opacityInput');
+		var inputs =L.SpectrumSpatial.Utils.getElementsByName(this._container,'opacityInput'); //document.getElementsByName('opacityInput');
 		var input, layer;
 		
 		this._handlingClick = true;
@@ -432,13 +446,13 @@ L.SpectrumSpatial.Controls.layers = function(baselayers, overlays,options){
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTo">addTo</a></li><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Projection.html">Projection</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTo">addTo</a></li><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Thu Feb 12 2015 20:58:43 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Feb 17 2015 18:55:58 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>

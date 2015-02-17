@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>MapServiceLayer example</title>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../lib/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="../dist/Spectrum4Leaflet.css" />
+</head>
+<body>
+<table width="100%" border="1">
+    <tbody>
+    <tr>
+        <td width="50%">
+            <table width="100%" border="1">
+                <tbody>
+                <tr>
+                    <td width="70%" height="100%" ><div  id="map1"  style="width: 400px; height: 400px" ></div></td>
+                    <td width="30%"><div id="layer_1"></div></td>
+                </tr>
+                </tbody>
+            </table>
+
+        </td>
+        <td width="50%"><table width="100%" border="1">
+            <tbody>
+            <tr>
+                <td width="70%" height="100%" ><div  id="map2"  style="width: 400px; height: 400px" ></div></td>
+                <td width="30%"><div id="layer_2"></div></td>
+            </tr>
+            </tbody>
+        </table>
+        </td>
+    </tr>
+    <tr><td><input type="button" value="add" onclick="add()"/></td><td>&nbsp;</td></tr>
+    </tbody>
+</table>
+<!-- <script src="../lib/proj4js/proj4-src.js"></script> -->
+<script src="../lib/leaflet/leaflet.js"></script>
+<script src="../dist/Spectrum4Leaflet.js"></script>
+<script>
+
+    var map = L.map('map1').setView([0, 0], 0);
+
+    var map2 = L.map('map2').setView([0, 0], 0);
+    var baseMapbox = L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '',
+        id: 'examples.map-i875mjb7'
+    });
+
+    var baseOsm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {minZoom: 0, maxZoom: 18, attribution: ''});
+    baseOsm.addTo(map);
+    baseOsm.addTo(map2);
+    var baseMaps = {
+        'Mapbox': baseMapbox,
+        'OSM': baseOsm
+    };
+
+        var service = L.SpectrumSpatial.Services.mapService('http://192.168.1.2/rest/EnterpriseMapping/MappingService/' );
+    //var service = L.SpectrumSpatial.Services.mapService('http://localhost:8090/ProxyMitre/Spectrum/rest/Spatial/MappingService/' , { login:'admin', password:'admin' });
+    var overlay1 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, 'Samples/NamedMaps/MapWithLayer/');
+    //var overlay2 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, 'Samples/NamedMaps/MapWithLayer/');
+    var overlay2_1 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, 'Samples/NamedMaps/MapWithLayer/');
+    overlay1.addTo(map);
+    overlay2_1.addTo(map2);
+    var overlayMaps = {
+        'Overlay 1': overlay1//,
+        // 'Overlay 2': overlay2
+    };
+    var overlayMaps2 = {
+        'Overlay 1': overlay2_1//,
+        // 'Overlay 2': overlay2
+    };
+
+    var control = new L.SpectrumSpatial.Controls.Layers(baseMaps, overlayMaps, {collapsed:false  /*, legendContainer:document.getElementById('layer_1')*/ });
+    control.addTo(map,document.getElementById('layer_1'));
+
+    var control2 = new L.SpectrumSpatial.Controls.Layers(baseMaps, overlayMaps2, {collapsed:false  /*, legendContainer:document.getElementById('layer_1')*/ });
+    control2 .addTo(map2,document.getElementById('layer_2'));
+    function add(){
+        var overlay2 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, '/Samples/NamedMaps/MapWithPie');
+        overlay2.addTo(map);
+        control.addOverlay(overlay2,'ov');
+    }
+
+</script>
+</body>
+</html>

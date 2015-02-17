@@ -40,6 +40,7 @@
     * @property {boolean} zoomReverse  
     * @property {boolean} detectRetina  
     * @property {boolean} crossOrigin 
+    * @property {string} imageType tile image type 
     */
 
 	options: {
@@ -51,7 +52,8 @@
 		tms: false,
 		zoomReverse: false,
 		detectRetina: false,
-		crossOrigin: false
+		crossOrigin: false,
+		imageType: 'png'
 	},
 
 
@@ -107,9 +109,6 @@
 	createTile: function (coords, done) {
 		var tile = document.createElement('img');
 
-		tile.onload = L.bind(this._tileOnLoad, this, done, tile);
-		tile.onerror = L.bind(this._tileOnError, this, done, tile);
-
 		if (this.options.crossOrigin) {
 			tile.crossOrigin = '';
 		}
@@ -119,10 +118,41 @@
 		 http://www.w3.org/TR/WCAG20-TECHS/H67
 		*/
 		tile.alt = '';
+		tile.onerror = L.bind(this._tileOnError, this, done, tile);
+		
+		if (this._service.needAuthorization()){
+			this._service.getTile(this._mapName,
+		                          this._getZoomForUrl()+1,
+		                          coords.x + 1,
+		                          (this.options.tms ? this._globalTileRange.max.y - coords.y : coords.y) + 1,
+		                          this._postLoad,
+		                          { context : this, image: tile , done : done },
+		                          this.options.imageType);
+		}
+		else{
+			tile.onload = L.bind(this._tileOnLoad, this, done, tile);		   
+		    tile.src = this.getTileUrl(coords);
+		}
+		
 
-		tile.src = this.getTileUrl(coords);
 
 		return tile;
+	},
+	
+	_postLoad:function(error,response){
+	    var uInt8Array = new Uint8Array(response);
+	    var i = uInt8Array.length;
+	    var binaryString = new Array(i);
+	    while (i--)
+	    {
+	      binaryString[i] = String.fromCharCode(uInt8Array[i]);
+	    }
+	    var data = binaryString.join('');
+	
+	    var base64 = window.btoa(data);
+	    this.image.src ='data:image/png;base64,'+base64;
+	    
+	    this.context._tileOnLoad.call(this.context, this.done, this.tile);
 	},
 
 	getTileUrl: function (coords) {
@@ -131,7 +161,7 @@
 		                          this._getZoomForUrl()+1,
 		                          coords.x + 1,
 		                          (this.options.tms ? this._globalTileRange.max.y - coords.y : coords.y) + 1  ,
-		                          'png');
+		                          this.options.imageType);
 	},
 
 	_tileOnLoad: function (done, tile) {
@@ -205,13 +235,13 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTo">addTo</a></li><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Projection.html">Projection</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTo">addTo</a></li><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Thu Feb 12 2015 20:58:43 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Feb 17 2015 18:55:58 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>
