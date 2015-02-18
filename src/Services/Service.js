@@ -14,10 +14,9 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
 
 
   options: {
-      alwaysUseProxy:false,
-      forceGet : true,
-      encodeUrlForProxy:false,
-      supportJSONP : false
+      alwaysUseProxy: L.SpectrumSpatial.Defaults.alwaysUseProxy,
+      forceGet : L.SpectrumSpatial.Defaults.forceGet,
+      encodeUrlForProxy: L.SpectrumSpatial.Defaults.encodeUrlForProxy
   },
 
   /**
@@ -30,6 +29,11 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
   initialize: function (url, options) {
       options = options || {};
       options.url = url;
+      
+      if ((!this.options.proxyUrl) & (L.SpectrumSpatial.Defaults.proxyUrl)){
+	      this.options.proxyUrl = L.SpectrumSpatial.Defaults.proxyUrl;
+      }
+      
       L.Util.setOptions(this, options);
   },
   
@@ -56,7 +60,7 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
 		                                        queryOptions);
 	  }
 	  else{
-	      if (this.options.alwaysUseProxy){
+	      if ((this.options.alwaysUseProxy)|(this.options.proxyUrl!== undefined)){
 		      urlWithQuery = this.options.proxyUrl + this.checkEncodeUrl(urlWithQuery) ;
 		      return L.SpectrumSpatial.Request.get(urlWithQuery, callback, context, queryOptions );
 	      }

@@ -132,6 +132,39 @@ server.handle = function (request) {
                                                   'mapPadFactor':1,
                                                   'backgroundOpacity':0.5}});
 	    break;
+	    case 'http://FeatureService/tables.json;l=en_US':
+               recieve(request, {'Tables': ['FirstTable','SecondTable']});
+	    break;
+	    case 'http://FeatureService/tables/count;l=en_US':
+               recieve(request, {"TablesTotalCount":2});
+	    break;
+	    case 'http://FeatureService/tables/Samples/NamedTables/UK_REGNS/features/count?l=en_US':
+               recieve(request, {"Table":"/Samples/NamedTables/UK_REGNS","FeaturesTotalCount":11});
+	    break;
+	    case 'http://FeatureService/tables/Samples/NamedTables/UK_REGNS/metadata.json;l=en_US':
+               recieve(request, {"Metadata": [ { "type":"Geometry", "name":"Obj"} ]});
+	    break;
+	    case 'http://FeatureService/tables/Samples/NamedTables/WorldcapTable/features.json?q=searchAtPoint&point=1,2,EPSG:4326':
+               recieve(request, {"type":"FeatureCollection"});
+	    break;
+	    case 'http://FeatureService/tables/Samples/NamedTables/WorldcapTable/features.json?q=searchNearest&geometry={"type":"Point"}&withinDistance=5000 mi':
+               recieve(request, {"type":"FeatureCollection"});
+	    break;
+	    case 'http://FeatureService/tables/Samples/NamedTables/​WorldTable/features.json;l=en_US/43':
+               recieve(request, {"type":"FeatureCollection"});
+	    break;
+	    case 'http://FeatureService/tables/features.json?q=SELECT * FROM "/Samples/NamedTables/WorldTable" WHERE Country=\'CANADA\'':
+               recieve(request, {"type":"FeatureCollection"});
+	    break;
+	    case 'http://FeatureService/tables/MyTable/features.json?action=insert&commitInterval=2':
+               recieve(request, JSON.parse (request.requestText));
+	    break;
+	    case 'http://FeatureService/tables/MyTable/features.json?action=update&commitInterval=2':
+               recieve(request, JSON.parse (request.requestText));
+	    break;
+	    case 'http://FeatureService/tables/features.json?update=update MyTable set MyColumn = \'foo\'':
+               recieve(request, {"updated":2});
+	    break;
 	    default:
             recieve(request, 'I am Bender, please insert girder!','application/robot');
 	    break;

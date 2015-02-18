@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Global</title>
+    <title>JSDoc: Namespace: Defaults</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Global</h1>
+    <h1 class="page-title">Namespace: Defaults</h1>
     
     
 
@@ -27,7 +27,9 @@
     
 <header>
     <h2>
+        <span class="ancestors"><a href="L.html">L</a><a href="L.SpectrumSpatial.html">.SpectrumSpatial</a>.</span>
     
+    Defaults
     </h2>
     
 </header>  
@@ -38,80 +40,18 @@
     
     
         
+            <div class="description">Defaults values</div>
+        
         
         
 <dl class="details">
     
         
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-        
-        
-    
-    </div>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        <h3 class="subsection-title">Methods</h3>
+        <h5 class="subsection-title">Properties:</h5>
         
         <dl>
-            
-<dt>
-    <h4 class="name" id="addTo"><span class="type-signature"></span>addTo<span class="signature">(map, <span class="optional">outsideContainer</span>)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Adds control to map
-    </div>
-    
 
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
+<table class="props">
     <thead>
 	<tr>
 		
@@ -125,6 +65,8 @@
 		
 		
 		
+		<th>Default</th>
+		
 		
 		<th class="last">Description</th>
 	</tr>
@@ -135,44 +77,13 @@
 	
         <tr>
             
-                <td class="name"><code>map</code></td>
+                <td class="name"><code>proxyUrl</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">L.Map</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">Map for control</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>outsideContainer</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
+<span class="param-type">string</span>
 
 
             
@@ -185,23 +96,135 @@
                 
                     
                 
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    undefined
+                
+                </td>
+            
+            
+            <td class="description last">Proxy url for all services</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>alwaysUseProxy</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
                     
                 
                 </td>
             
             
             
+                <td class="default">
+                
+                    false
+                
+                </td>
             
-            <td class="description last">DOM element, if specified control renders in it, not in map</td>
+            
+            <td class="description last">All queries will be using proxy</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>forceGet</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+            
+            <td class="description last">Every time use get request (not JSONP)</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>encodeUrlForProxy</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+            
+            <td class="description last">If true proxy params will be url encoded</td>
         </tr>
 	
 	
 	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
+</table></dl>
+        
     
         
     
@@ -223,7 +246,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Legend.js.html">controls/Legend.js</a>, <a href="Legend.js.html#line48">line 48</a>
+        <a href="Spectrum4Leaflet.js.html">Spectrum4Leaflet.js</a>, <a href="Spectrum4Leaflet.js.html#line41">line 41</a>
     </li></ul></dd>
     
     
@@ -234,120 +257,11 @@
     
 </dl>
 
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
         
-            
-<dt>
-    <h4 class="name" id="CompareFunction"><span class="type-signature"></span>CompareFunction<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {number}</span></h4>
+        
     
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Function compares two object. If object A "greater" then object B returns 1, if on the contrary -1, if equal 0
     </div>
     
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>a</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Object A</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>b</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Object B</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
     
     
     
@@ -360,53 +274,6 @@
     
     
     
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Utils.js.html">Utils.js</a>, <a href="Utils.js.html#line7">line 7</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">number</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        </dl>
     
     
     
@@ -428,7 +295,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Feb 18 2015 23:29:47 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Feb 18 2015 23:29:48 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>

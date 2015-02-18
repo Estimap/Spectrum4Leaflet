@@ -63,6 +63,12 @@ L.SpectrumSpatial.Utils = {
 		return result;
 	},
 	
+	/**
+	* Merges two objects properties from source to destination
+	* @param {Object} dest Destination object (wiil be returned)
+	* @param {Object} src Source object 
+	* @returns {Object}
+    */
 	merge:function(dest,src){
 		if (src){					
 			for (var i in src) {

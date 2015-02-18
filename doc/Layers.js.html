@@ -41,6 +41,7 @@
     * @property {boolean} [legendControls] If true legend controls is enabled
     * @property {L.SpectrumSpatial.Controls.Legend.Options} [legendOptions] Options for legend (if legend controls is enabled)
     * @property {Object} [legendContainer] DOM element, if we want to draw legend outside of layers control
+    * @property {boolean} [inverseOrder=false] If true, upper layer in control is upper on map ( max Z index)
     */
     
 	options : {
@@ -48,7 +49,8 @@
 		opacityControls:true,
 		legendControls:true,
 		legendOptions : {},
-		legendContainer :null
+		legendContainer :null,
+		inverseOrder:false
 	},
 	
 	/**
@@ -160,7 +162,7 @@
 			}	   
 		}
 		
-		overlays.sort(L.SpectrumSpatial.Utils.sortByProperty('z'));
+		overlays.sort(L.SpectrumSpatial.Utils.sortByProperty('z',(this.options.inverseOrder)? "desc" :  "asc" ));
 		
 		for (i in overlays) {
 			obj = overlays[i];
@@ -267,22 +269,8 @@
 		if (obj.overlay) {
 			
 			if (this.options.zIndexControls){
-				var up =  L.DomUtil.create('div', 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-up');
-				up.layerId = input.layerId;
-				L.DomEvent.on(up, 'click', this._onUpClick, this);
-				row.appendChild(up);
-				if (obj.layer.getZIndex()===this._minZIndex){
-					L.DomUtil.addClass(up, 'leaflet-ss-disabled');
-				}
-				
-				
-				var down = L.DomUtil.create('div','leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-down');
-				down.layerId = input.layerId;
-				L.DomEvent.on(down, 'click', this._onDownClick, this);
-				row.appendChild(down);
-				if (obj.layer.getZIndex()===this._maxZIndex){
-					L.DomUtil.addClass(down, 'leaflet-ss-disabled');
-				}
+				row.appendChild(this._createZIndexButton('up', obj.layer, input.layerId ));
+				row.appendChild(this._createZIndexButton('down', obj.layer, input.layerId ));
 			}  
 			
             if (this.options.legendControls){
@@ -318,6 +306,22 @@
 		return layerItem;
 	},
 	
+	_createZIndexButton:function(displayDirection, layer, layerId ){
+		var className = 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-' + displayDirection;
+		var realDirection = ((displayDirection === 'up' & this.options.inverseOrder) | 
+		                     (displayDirection === 'down' & !this.options.inverseOrder)) ? 'up':'down';
+		var clickFunction = ( realDirection ==='up' ) ? this._onUpClick : this._onDownClick;
+		var disableIndex = ( realDirection ==='up' )?  this._maxZIndex:this._minZIndex;
+		var btn = L.DomUtil.create('div', className);
+		btn.layerId = layerId;
+		L.DomEvent.on(btn, 'click', clickFunction , this);
+		if (layer.getZIndex()=== disableIndex){
+			L.DomUtil.addClass(btn, 'leaflet-ss-disabled');
+		}
+		
+		return btn;
+	},
+	
 	_onLegendClick: function(e) {
 		var layerId = e.currentTarget.layerId;
 		var lo = this._layers[layerId];
@@ -337,7 +341,7 @@
 		}
 	},
 	
-	_onUpClick: function(e) {
+	_onDownClick: function(e) {
 		var layerId = e.currentTarget.layerId;
 		var layer = this._layers[layerId].layer;
 		var curZ = layer.getZIndex();
@@ -349,7 +353,7 @@
 		}
 	},
 	
-	_onDownClick: function(e) {
+	_onUpClick: function(e) {
 		var layerId = e.currentTarget.layerId;
 		var layer = this._layers[layerId].layer;
 		var curZ = layer.getZIndex();
@@ -446,13 +450,13 @@ L.SpectrumSpatial.Controls.layers = function(baselayers, overlays,options){
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Projection.html">Projection</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTo">addTo</a></li><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.FeatureService.html">FeatureService</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Defaults.html">Defaults</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Projection.html">Projection</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTo">addTo</a></li><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Feb 17 2015 18:55:58 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Feb 18 2015 23:29:47 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>

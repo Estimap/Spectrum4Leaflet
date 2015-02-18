@@ -240,8 +240,8 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
 	    if (!options.imageType){
 		    options.imageType = 'png';
 	    }
-	    var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(options.mapName)+'/legends.json',
-	                                                             { responseType: 'arraybuffer' });
+	    var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(options.mapName)+'/legends.json');
+	    
 	    operation.options.getParams.w = options.width;
 	    operation.options.getParams.h = options.height;
 	    operation.options.getParams.t = options.imageType;
@@ -254,6 +254,7 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
 	    }
 	    if (options.postData){
 		    operation.options.postParams = options.postData;
+		    operation.options.responseType =  'arraybuffer';
 	    }
 	    this.startRequest(operation, callback, context);
     },

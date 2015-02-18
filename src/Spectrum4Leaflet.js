@@ -31,6 +31,25 @@ L.SpectrumSpatial = {
   Controls:{},
   
   /**
+  * Defaults values
+  * @namespace
+  * @property {string} [proxyUrl=undefined] Proxy url for all services
+  * @property {boolean} [alwaysUseProxy=false] All queries will be using proxy
+  * @property {boolean} [forceGet=true] Every time use get request (not JSONP)
+  * @property {boolean} [encodeUrlForProxy=false] If true proxy params will be url encoded
+  */
+  Defaults:{
+	  
+	  proxyUrl:undefined,
+	  
+	  alwaysUseProxy:false,
+	  
+      forceGet : true,
+      
+      encodeUrlForProxy:false
+  },
+  
+  /**
   * Projections
   * @namespace
   */
@@ -41,7 +60,7 @@ L.SpectrumSpatial = {
   * @namespace
   */
   Support: {
-    CORS: !!(window.XMLHttpRequest && 'withCredentials' in new XMLHttpRequest())
+    CORS: ('withCredentials' in new XMLHttpRequest())
   }
 };
 
