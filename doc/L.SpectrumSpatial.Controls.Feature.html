@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: TileServiceLayer</title>
+    <title>JSDoc: Class: Feature</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: TileServiceLayer</h1>
+    <h1 class="page-title">Class: Feature</h1>
     
     
 
@@ -27,12 +27,12 @@
     
 <header>
     <h2>
-        <span class="ancestors"><a href="L.html">L</a><a href="L.SpectrumSpatial.html">.SpectrumSpatial</a><a href="L.SpectrumSpatial.Layers.html">.Layers</a>.</span>
+        <span class="ancestors"><a href="L.html">L</a><a href="L.SpectrumSpatial.html">.SpectrumSpatial</a><a href="L.SpectrumSpatial.Controls.html">.Controls</a>.</span>
     
-    TileServiceLayer
+    Feature
     </h2>
     
-        <div class="class-description">TileService layer class</div>
+        <div class="class-description">Feature control</div>
     
 </header>  
 
@@ -43,7 +43,7 @@
     
         
 <dt>
-    <h4 class="name" id="TileServiceLayer"><span class="type-signature"></span>new TileServiceLayer<span class="signature">(service, mapName, options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Feature"><span class="type-signature"></span>new Feature<span class="signature">(service, featureLayers, <span class="optional">options</span>)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -69,6 +69,8 @@
 		<th>Type</th>
 		
 		
+		<th>Argument</th>
+		
 		
 		
 		
@@ -87,40 +89,56 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="L.SpectrumSpatial.Services.TileService.html">L.SpectrumSpatial.Services.TileService</a></span>
+<span class="param-type"><a href="L.SpectrumSpatial.Services.FeatureService.html">L.SpectrumSpatial.Services.FeatureService</a></span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Map Service for layer</td>
+            
+            <td class="description last">Feature service</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>mapName</code></td>
+                <td class="name"><code>featureLayers</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">Array.&lt;<a href="L.SpectrumSpatial.Controls.Feature.html#FeatureLayer">L.SpectrumSpatial.Controls.Feature.FeatureLayer</a>></span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Name of the tiled map to display on tile service</td>
+            
+            <td class="description last">Described feature layers</td>
         </tr>
 	
 	
@@ -133,17 +151,27 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html#Options">L.SpectrumSpatial.Layers.TileServiceLayer.Options</a></span>
+<span class="param-type"><a href="L.SpectrumSpatial.Controls.Feature.html#Options">L.SpectrumSpatial.Controls.Feature.Options</a></span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Additional options of layer</td>
+            
+            <td class="description last">Options</td>
         </tr>
 	
 	
@@ -174,7 +202,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TileServiceLayer.js.html">layers/TileServiceLayer.js</a>, <a href="TileServiceLayer.js.html#line41">line 41</a>
+        <a href="Feature.js.html">controls/Feature.js</a>, <a href="Feature.js.html#line32">line 32</a>
     </li></ul></dd>
     
     
@@ -206,7 +234,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li>L.GridLayer</li>
+            <li>L.Control</li>
         </ul>
     
     
@@ -228,14 +256,14 @@
         <dl>
                 
 <dt>
-    <h4 class="name" id="Options">Options</h4>
+    <h4 class="name" id="FeatureLayer">FeatureLayer</h4>
     
     
 </dt>
 <dd>
     
     <div class="description">
-        TileServiceLayer options class
+        Type to describe feature layer to control
     </div>
     
     
@@ -281,53 +309,7 @@
 	
         <tr>
             
-                <td class="name"><code>maxZoom</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Maximum zoom level</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>minZoom</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Minimum zoom level</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>errorTileUrl</code></td>
+                <td class="name"><code>tableName</code></td>
             
             
             <td class="type">
@@ -343,152 +325,14 @@
             
             
             
-            <td class="description last">Url of image to display when tile loading failed</td>
+            <td class="description last">Name of the table in feature service</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>zoomOffset</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>maxNativeZoom</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>tms</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>zoomReverse</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>detectRetina</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>crossOrigin</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>imageType</code></td>
+                <td class="name"><code>title</code></td>
             
             
             <td class="type">
@@ -504,7 +348,30 @@
             
             
             
-            <td class="description last">tile image type</td>
+            <td class="description last">Title of table</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="L.SpectrumSpatial.Services.FeatureService.html#SearchAtPointOptions">L.SpectrumSpatial.Services.FeatureService.SearchAtPointOptions</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Options to query</td>
         </tr>
 	
 	
@@ -532,7 +399,132 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TileServiceLayer.js.html">layers/TileServiceLayer.js</a>, <a href="TileServiceLayer.js.html#line4">line 4</a>
+        <a href="Feature.js.html">controls/Feature.js</a>, <a href="Feature.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+            
+                
+<dt>
+    <h4 class="name" id="Options">Options</h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Feature control options class
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">Object</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+        <h5 class="subsection-title">Properties:</h5>
+        
+        <dl>
+
+<table class="props">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>useDefaultProjection</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Use EPSG:4326 coordinates in spatial queries</td>
+        </tr>
+	
+	
+	</tbody>
+</table></dl>
+        
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Feature.js.html">controls/Feature.js</a>, <a href="Feature.js.html#line6">line 6</a>
     </li></ul></dd>
     
     
