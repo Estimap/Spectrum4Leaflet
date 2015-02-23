@@ -14,9 +14,7 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
 
 
   options: {
-      alwaysUseProxy: L.SpectrumSpatial.Defaults.alwaysUseProxy,
-      forceGet : L.SpectrumSpatial.Defaults.forceGet,
-      encodeUrlForProxy: L.SpectrumSpatial.Defaults.encodeUrlForProxy
+
   },
 
   /**
@@ -27,11 +25,15 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
   * @param {L.SpectrumSpatial.Services.Service.Options} [options] Additional options of service
   */
   initialize: function (url, options) {
-      options = options || {};
-      options.url = url;
-      
-      if ((!this.options.proxyUrl) & (L.SpectrumSpatial.Defaults.proxyUrl)){
-	      this.options.proxyUrl = L.SpectrumSpatial.Defaults.proxyUrl;
+      options =  {
+	      alwaysUseProxy: L.SpectrumSpatial.Defaults.alwaysUseProxy,
+	      forceGet : L.SpectrumSpatial.Defaults.forceGet,
+	      encodeUrlForProxy: L.SpectrumSpatial.Defaults.encodeUrlForProxy,
+	      url : url
+	  };
+       
+      if ((options.proxyUrl===undefined) & (L.SpectrumSpatial.Defaults.proxyUrl!==undefined)){
+	      options.proxyUrl = L.SpectrumSpatial.Defaults.proxyUrl;
       }
       
       L.Util.setOptions(this, options);

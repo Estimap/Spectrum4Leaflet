@@ -76,6 +76,32 @@ L.SpectrumSpatial.Utils = {
 			}
 		}
 		return dest;
+	},
+	
+	/**
+	* Converts pixel's distance to distance in meters for point
+	* @param {L.Map} map Map
+	* @param {number} distanceInPixels Distance in pixels
+	* @param {Object} [point] point, if is undefined  map.getCenter() used 
+	* @returns {Object}
+    */
+	countPixelDistance:function(map,distanceInPixels, point){
+		if (!point){
+			point = map.getCenter();
+		}
+
+		var pointC = map.latLngToContainerPoint(point); 
+		var pointX = [pointC.x + distanceInPixels, pointC.y]; 
+		var pointY = [pointC.x, pointC.y + distanceInPixels]; 
+		
+		var latLngC = map.containerPointToLatLng(pointC);
+		var latLngX = map.containerPointToLatLng(pointX);
+		var latLngY = map.containerPointToLatLng(pointY);
+		
+		var distanceX = latLngC.distanceTo(latLngX);
+		var distanceY = latLngC.distanceTo(latLngY);
+		
+		return Math.max(distanceX,distanceY);
 	}
 	
 };

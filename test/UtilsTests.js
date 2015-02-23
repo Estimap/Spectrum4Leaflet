@@ -63,3 +63,15 @@ test( 'Utils merge  tests', function() {
    equal(dest.someParams.c, 'c', 'c=c');
    
 });
+
+test( 'Utils countPixelDistance  tests', function() {
+	var maptest = L.DomUtil.create('div'); 
+	maptest.id = 'testmap'; 
+	document.body.appendChild(maptest); 
+	var lmap = new L.Map('testmap'); 
+	lmap.setView([0, 0], 0); 
+	var distance = L.SpectrumSpatial.Utils.countPixelDistance(lmap, 10, { lat: 0, lng: 0});
+
+    equal(Math.round(distance), 1565430, 'distance  = 1565430 meters');
+   
+});

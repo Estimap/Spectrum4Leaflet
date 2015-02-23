@@ -28,9 +28,9 @@
 			id: 'examples.map-i875mjb7'
 		}).addTo(map);
         
-		var service = L.SpectrumSpatial.Services.featureService('http://192.168.1.2/rest/EnterpriseMapping/FeatureService/');
+		var service = L.SpectrumSpatial.Services.featureService('http://192.168.1.6/rest/EnterpriseMapping/FeatureService/');
 		
-		var control =  new L.SpectrumSpatial.Controls.Feature(service,  [{ tableName: 'Samples/NamedTables/WorldcapTable/' , title:'Столицы', options: { tolerance: '200 mi'} }]  );
+		var control =  new L.SpectrumSpatial.Controls.Feature(service,  [{ tableName: 'Samples/NamedTables/WorldcapTable/' , title:'Столицы', options: { /* tolerance: '200 mi' */} }] , { pixelTolerance: 10 }  );
 		control.addTo(map);
 		
 	</script>

@@ -145,6 +145,10 @@
 	background-image: url(images/feature-info.png);
 }
 
+.leaflet-ss-control-feature-activated{
+	background-color: #dcfff0;
+}
+
 .leaflet-retins .leaflet-ss-control-feature-info {
 	background-image: url(images/feature-info-2x.png);
 }
