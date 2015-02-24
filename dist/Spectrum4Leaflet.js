@@ -532,12 +532,12 @@ L.SpectrumSpatial.Services.operation = function(name,options){
   * @param {L.SpectrumSpatial.Services.Service.Options} [options] Additional options of service
   */
   initialize: function (url, options) {
-      options =  {
+      options = L.SpectrumSpatial.Utils.merge({
 	      alwaysUseProxy: L.SpectrumSpatial.Defaults.alwaysUseProxy,
 	      forceGet : L.SpectrumSpatial.Defaults.forceGet,
 	      encodeUrlForProxy: L.SpectrumSpatial.Defaults.encodeUrlForProxy,
 	      url : url
-	  };
+	  }, options);
        
       if ((options.proxyUrl===undefined) & (L.SpectrumSpatial.Defaults.proxyUrl!==undefined)){
 	      options.proxyUrl = L.SpectrumSpatial.Defaults.proxyUrl;
