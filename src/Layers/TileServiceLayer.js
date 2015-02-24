@@ -125,7 +125,7 @@ L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
 	    var base64 = window.btoa(data);
 	    this.image.src ='data:image/png;base64,'+base64;
 	    
-	    this.context._tileOnLoad.call(this.context, this.done, this.tile);
+	    this.context._tileOnLoad.call(this.context, this.done, this.image);
 	},
 
 	getTileUrl: function (coords) {
