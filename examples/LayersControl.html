@@ -34,7 +34,7 @@
 		    'OSM': baseOsm
 		};
 		
-		var service = L.SpectrumSpatial.Services.mapService('http://192.168.1.2/rest/EnterpriseMapping/MappingService/' , { login:'admin', password:'admin' });
+		var service = L.SpectrumSpatial.Services.mapService('http://192.168.10.157:8080/rest/Spatial/MappingService/' , { login:'admin', password:'admin' });
 		var overlay1 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, 'Samples/NamedMaps/MapWithPieLayer/');
 		var overlay2 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, '/Samples/NamedMaps/MapWithLayer');
 

@@ -20,7 +20,7 @@ L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
 		maxZoom: 18,
         minZoom: 0,
 		errorTileUrl: '',
-		zoomOffset: 0,
+		zoomOffset: 1,
 		maxNativeZoom: null, 
 		tms: false,
 		zoomReverse: false,
