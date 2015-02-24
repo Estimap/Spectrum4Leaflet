@@ -92,7 +92,7 @@ L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
 		*/
 		tile.alt = '';
 		tile.onerror = L.bind(this._tileOnError, this, done, tile);
-		
+		tile.onload = L.bind(this._tileOnLoad, this, done, tile);	
 		if (this._service.needAuthorization()){
 			this._service.getTile(this._mapName,
 		                          this._getZoomForUrl()+1,
@@ -103,7 +103,7 @@ L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
 		                          this.options.imageType);
 		}
 		else{
-			tile.onload = L.bind(this._tileOnLoad, this, done, tile);		   
+				   
 		    tile.src = this.getTileUrl(coords);
 		}
 		
@@ -125,7 +125,7 @@ L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
 	    var base64 = window.btoa(data);
 	    this.image.src ='data:image/png;base64,'+base64;
 	    
-	    this.context._tileOnLoad.call(this.context, this.done, this.image);
+	    //this.context._tileOnLoad.call(this.context, this.done, this.image);
 	},
 
 	getTileUrl: function (coords) {
