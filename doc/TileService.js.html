@@ -33,7 +33,7 @@
 * @param {Services.Service.Options} options Additional options of service
 */
 L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.extend(
-/** @lends L.SpectrumSpatial.Services.TileService# */
+/** @lends L.SpectrumSpatial.Services.TileService.prototype */
 {
     /**
     * Returns the list of available named tiles for the Map Tiling Service
@@ -42,7 +42,7 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
     */
     mapList : function(callback, context){  
         var operation = new L.SpectrumSpatial.Services.Operation('mapList.json');
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     /**
@@ -53,7 +53,7 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
     */
     description : function(mapName,callback, context){  
         var operation = new L.SpectrumSpatial.Services.Operation('/'+ this.clearParam(mapName) + '/description.json');
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },  
     
     /**
@@ -65,9 +65,9 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
     * @param {string} [imageType=png] Specifies the response image format. Must be png, gif, or jpeg.
     */
     getTileUrl: function(mapName,level,x,y,imageType){
-	    if (!imageType){
-		    imageType='png';
-	    }
+        if (!imageType){
+            imageType='png';
+        }
         var operation = this._createTileOperation(mapName,level,x,y,imageType);
         return (this.options.alwaysUseProxy ? this.options.proxyUrl : '') +  this.checkEncodeUrl(this.getUrl(operation));
     },
@@ -83,9 +83,9 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
     * @param {string} [imageType=png] Specifies the response image format. Must be png, gif, or jpeg.
     */
     getTile: function(mapName, level, x, y, callback, context, imageType){
-	    if (!imageType){
-		    imageType='png';
-	    }
+        if (!imageType){
+            imageType='png';
+        }
         var operation = this._createTileOperation(mapName,level,x,y,imageType);
         this.startRequest(operation, callback, context);
     },
@@ -96,9 +96,9 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
     _createTileOperation:function(mapName,level,x,y,imageType){
         mapName = this.clearParam(mapName);
         if (mapName !== ''){
-	        mapName = '/'+mapName;
+            mapName = '/'+mapName;
         }
-	    return new L.SpectrumSpatial.Services.Operation(mapName+'/'+level+'/' + x + ':' + y + '/tile.' + imageType, { responseType: 'arraybuffer' }  );
+        return new L.SpectrumSpatial.Services.Operation(mapName+'/'+level+'/' + x + ':' + y + '/tile.' + imageType, { responseType: 'arraybuffer' }  );
     }
     
     
@@ -116,13 +116,13 @@ L.SpectrumSpatial.Services.tileService = function(url,options){
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Feature.html">Feature</a></li><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.FeatureService.html">FeatureService</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Defaults.html">Defaults</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Projection.html">Projection</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTo">addTo</a></li><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Feature.html">Feature</a></li><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.FeatureService.html">FeatureService</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.CRS.html">CRS</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Defaults.html">Defaults</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Projections.html">Projections</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Feb 24 2015 01:22:20 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Feb 25 2015 20:52:25 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>

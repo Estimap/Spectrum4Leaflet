@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>MapServiceLayer example</title>
+	<title>Layers control example</title>
 	<meta charset="utf-8" />
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,49 +11,42 @@
 </head>
 <body>
 	<div id="map" style="width: 800px; height: 600px"></div>
+	<br/>
+	<label for="ssurl">Spectrum Spatial map service url</label>
+	<input type="text" id="ssurl"></input>
+	<br/>
+	<label for="mapname">Spectrum Spatial map name</label>
+	<input type="text" id="mapname"></input>
+	<br/>
+	<label for="title">Layer title</label>
+	<input type="text" id="title"></input>
+
 	<input type="button" value="add" onclick="add()"/>
 	<div id="layers"  style="position:absolute; left:820px; top:0px; width: 200px; height: 200px;"></div>
     <script src="../lib/leaflet/leaflet-src.js"></script>
     <script src="../dist/Spectrum4Leaflet.js"></script>
 	<script>
 
-		var map = L.map('map').setView([0, 0], 0);
-        
-             
-		var baseMapbox = L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
-			maxZoom: 18,
-			attribution: '',
-			id: 'examples.map-i875mjb7'
-		});
-		
-		var baseOsm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {minZoom: 0, maxZoom: 18, attribution: ''});
+		var map = L.map('map').setView([0, 0], 1);
+        	
+		var baseOsm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {minZoom: 0, maxZoom: 18, attribution: 'OpenStreetMap'});
 		baseOsm.addTo(map);
 		
 		var baseMaps = {
-		    'Mapbox': baseMapbox,
 		    'OSM': baseOsm
 		};
 		
-		var service = L.SpectrumSpatial.Services.mapService('http://192.168.10.157:8080/rest/Spatial/MappingService/' , { login:'admin', password:'admin' });
-		var overlay1 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, 'Samples/NamedMaps/MapWithPieLayer/');
-		var overlay2 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, '/Samples/NamedMaps/MapWithLayer');
-
-		overlay1.addTo(map);
-		
-		var overlayMaps = {
-		    'Overlay 1': overlay1,
-		    'Overlay 2':overlay2
-		};
-
-		
-		var control = new L.SpectrumSpatial.Controls.Layers(baseMaps, overlayMaps, {collapsed:false, inverseOrder:false});
+		var control = new L.SpectrumSpatial.Controls.Layers(baseMaps, null, {collapsed:false, inverseOrder:false});
 		control.addTo(map);
 
-        
         function add(){
-	        var overlay2 =  L.SpectrumSpatial.Layers.mapServiceLayer( service, '/Samples/NamedMaps/MapWithLayer');
-	        overlay2.addTo(map);
-	        control.addOverlay(overlay2,'ov');
+	        var serviceUrl = document.getElementById("ssurl").value;
+		    var mapName =  document.getElementById("mapname").value;
+		    var title =  document.getElementById("title").value;
+	        var service = L.SpectrumSpatial.Services.mapService(serviceUrl);
+	        var overlay =  L.SpectrumSpatial.Layers.mapServiceLayer( service, mapName);
+	        overlay.addTo(map);
+	        control.addOverlay(overlay,title);
         }
 
 	</script>

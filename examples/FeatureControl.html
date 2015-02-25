@@ -1,38 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>MapServiceLayer example</title>
+	<title>Feature control example</title>
 	<meta charset="utf-8" />
-
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 	<link rel="stylesheet" href="../lib/leaflet/leaflet.css" />
 	<link rel="stylesheet" href="../dist/Spectrum4Leaflet.css" />
-
 </head>
 <body>
 	<div id="map" style="width: 800px; height: 600px"></div>
-	
+	<br/>
+	<label for="ssurl">Spectrum Spatial feature service url</label>
+	<input type="text" id="ssurl"></input>
+	<br/>
+	<label for="tablename">Spectrum Spatial table name</label>
+	<input type="text" id="tablename"></input>
+	<br/>
+	<label for="title">Table title</label>
+	<input type="text" id="title"></input>
+
+	<input type="button" value="add" onclick="add()"/>
 	<div id="layers"  style="position:absolute; left:820px; top:0px; width: 200px; height: 200px;"></div>
     <script src="../lib/leaflet/leaflet-src.js"></script>
     <script src="../dist/Spectrum4Leaflet.js"></script>
 	<script>
 
-		var map = L.map('map').setView([0, 0], 0);
-		
-		L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
-			maxZoom: 18,
-			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-				'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-			id: 'examples.map-i875mjb7'
-		}).addTo(map);
+		var map = L.map('map').setView([0, 0], 1);
+		L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { minZoom: 0, maxZoom: 18, attribution: 'OpenStreetMap'}).addTo(map);
         
-		var service = L.SpectrumSpatial.Services.featureService('http://192.168.1.6/rest/EnterpriseMapping/FeatureService/');
-		
-		var control =  new L.SpectrumSpatial.Controls.Feature(service,  [{ tableName: 'Samples/NamedTables/WorldcapTable/' , title:'Столицы', options: { /* tolerance: '200 mi' */} }] , { pixelTolerance: 10 }  );
-		control.addTo(map);
-		
+        function add(){
+	        var serviceUrl = document.getElementById("ssurl").value;
+		    var tablename =  document.getElementById("tablename").value;
+		    var title =  document.getElementById("title").value;
+	        var service = L.SpectrumSpatial.Services.featureService(serviceUrl);        
+	        var control =  new L.SpectrumSpatial.Controls.Feature(service,  
+															      [{ tableName: tablename , title: title }], 
+															      { pixelTolerance: 10 });
+	        control.addTo(map);
+        }
+	
 	</script>
 </body>
 </html>

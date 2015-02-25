@@ -9,12 +9,12 @@
 	<link rel="stylesheet" href="../lib/leaflet/leaflet.css" />
 </head>
 <body>
-	<div id="map" style="width: 600px; height: 400px"></div>
+	<div id="map" style="width: 640px; height: 480px"></div>
 	<br/>
 	<label for="ssurl">Spectrum Spatial map service url</label>
 	<input type="text" id="ssurl"></input>
 	<br/>
-	<label for="ssurl">Spectrum Spatial map name</label>
+	<label for="mapname">Spectrum Spatial map name</label>
 	<input type="text" id="mapname"></input>
 	<input type="button" onclick="addMapServiceLayer()" value="Add" />
     <script src="../lib/leaflet/leaflet-src.js"></script>
@@ -23,56 +23,14 @@
 
 		var map = L.map('map').setView([0, 0], 0);
         
-		L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
-			maxZoom: 18,
-			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-				'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-			id: 'examples.map-i875mjb7'
-		}).addTo(map);
+		L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {minZoom: 0, maxZoom: 18, attribution: 'OpenStreetMap'}).addTo(map);
 		
-		var postdata = {
-   "layers":[
-      {
-         "type":"FeatureLayer",
-         "table":{
-            "type":"NamedTable",
-            "name":"/Samples/NamedTables/USA"
-         },
-         "themes":[
-            {
-               "type":"RangeTheme",
-               "endstyle":{
-                  "type":"MapBasicAreaStyle",
-                  "mapbasicbrush":{
-                     "pattern":"66",
-                     "foregroundcolor":"blue"
-                  }
-               },
-               "rangethemeproperties":{
-                  "type":"RangeThemeProperties",
-                  "expression":"Pop_2000",
-                  "rangetype":"EqualCount",
-                  "numranges":"6"
-               },
-               "startstyle":{
-                  "type":"MapBasicAreaStyle",
-                  "mapbasicbrush":{
-                     "pattern":"66",
-                     "foregroundcolor":"yellow"
-                  }
-               }
-            }
-         ]
-      }
-   ]
-};
 		
 		function addMapServiceLayer(){
 		    var serviceUrl = document.getElementById("ssurl").value;
 		    var mapName =  document.getElementById("mapname").value;
-		    
-		    L.SpectrumSpatial.Layers.mapServiceLayer( L.SpectrumSpatial.Services.mapService(serviceUrl), mapName,null).addTo(map);
+		 
+		    L.SpectrumSpatial.Layers.mapServiceLayer( L.SpectrumSpatial.Services.mapService(serviceUrl), mapName).addTo(map);
 		}
 
 	</script>

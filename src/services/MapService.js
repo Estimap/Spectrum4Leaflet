@@ -6,11 +6,11 @@
 * @param {L.SpectrumSpatial.Services.Service.Options} [options] Additional options of service
 */
 L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.extend(
-/** @lends L.SpectrumSpatial.Services.MapService# */
+/** @lends L.SpectrumSpatial.Services.MapService.prototype */
 {     
     /**
     * Render options
-	* @typedef {Object} L.SpectrumSpatial.Services.MapService.RenderOptions
+    * @typedef {Object} L.SpectrumSpatial.Services.MapService.RenderOptions
     * @property {string} mapName Name of map to render
     * @property {string} [imageType=png] Type of image ( png, jpg etc.) 
     * @property {number} width Width of rendered image
@@ -27,11 +27,11 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     * @property {string} [bc] The background color to use for the map image (RRGGBB)
     * @property {number} [bo] The opacity of the background color
     * @property {Object} [additionalParams] Additional parameters for post query
-	*/
-	
-	/**
+    */
+    
+    /**
     * Legend options
-	* @typedef {Object} L.SpectrumSpatial.Services.MapService.LegendOptions
+    * @typedef {Object} L.SpectrumSpatial.Services.MapService.LegendOptions
     * @property {string} mapName Name of map for legend 
     * @property {number} width Width of the individual legend swatch in pixels
     * @property {number} height Height of the individual legend swatch in pixels
@@ -40,11 +40,11 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     * @property {number} [resolution] Resolution
     * @property {string} [locale] Locale
     * @property {Object} [postData] If specified runs post request to render legend
-	*/
-	
-	/**
+    */
+    
+    /**
     * Legend's swatch options
-	* @typedef {Object} L.SpectrumSpatial.Services.MapService.SwatchOptions
+    * @typedef {Object} L.SpectrumSpatial.Services.MapService.SwatchOptions
     * @property {string} mapName Name of map for legend 
     * @property {number} legendIndex The legend to get the swatch from in the named map
     * @property {number} rowIndex The swatch location (row) within the legend
@@ -53,7 +53,7 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     * @property {string} [imageType=png] Type of image ( png, jpg etc.)
     * @property {number} [resolution] Resolution
     * @property {string} [locale] Locale
-	*/
+    */
 
     /**
     * Lists all named layers which map service contains
@@ -64,7 +64,7 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     listNamedLayers : function(callback, context, locale){  
         var operation = new L.SpectrumSpatial.Services.Operation('layers.json');
         this._addResolutionAndLocale(operation,null,locale);
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     /**
@@ -77,7 +77,7 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     describeNamedLayer : function(layerName, callback, context, locale){  
         var operation = new L.SpectrumSpatial.Services.Operation('layers/'+ this.clearParam(layerName) + '.json');
         this._addResolutionAndLocale(operation,null,locale);
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     /**
@@ -92,14 +92,14 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
         var layersString = layerNames.join(',');
         operation.options.getParams.q = 'describe';
         if (layersString.length<1000){
-	        
-	        operation.options.getParams.layers = layersString;
+            
+            operation.options.getParams.layers = layersString;
         } 
         else{
-	        operation.options.postParams = { 'Layers' : layerNames };
+            operation.options.postParams = { 'Layers' : layerNames };
         }
         
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     /**
@@ -111,7 +111,7 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     listNamedMaps : function(callback, context, locale){  
         var operation = new L.SpectrumSpatial.Services.Operation('maps.json');
         this._addResolutionAndLocale(operation,null,locale);
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     /**
@@ -124,7 +124,7 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     describeNamedMap : function(mapName, callback, context, locale ){  
         var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(mapName)+ '.json');
         this._addResolutionAndLocale(operation,null,locale);
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     /**
@@ -138,14 +138,14 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
         
         var mapsString = mapNames.join(',');
         if (mapsString.length<1000){
-	        operation.options.getParams.q = 'describe';
-	        operation.options.getParams.maps = mapsString;
+            operation.options.getParams.q = 'describe';
+            operation.options.getParams.maps = mapsString;
         } 
         else{
-	        operation.options.postParams = { 'Maps' : mapNames };
+            operation.options.postParams = { 'Maps' : mapNames };
         }
         
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     
@@ -153,60 +153,60 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
        
         var mapName = this.clearParam(options.mapName);
         if (mapName !== ''){
-	        mapName = '/'+mapName;
+            mapName = '/'+mapName;
         }
         
         if (!options.imageType){
-	        options.imageType = 'png';
+            options.imageType = 'png';
         }
         
-	    var operation = new L.SpectrumSpatial.Services.Operation('maps'+ mapName+'/image.' + options.imageType , { responseType: 'arraybuffer' } );
-	    operation.options.getParams.w = options.width;
-	    operation.options.getParams.h = options.height;
-	    if (options.bounds){
-		    operation.options.getParams.b= options.bounds.join(',')+ ',' + options.srs;
-	    }
-	    else{
-		    operation.options.getParams.c= options.cx+ ',' +options.cy + ',' + options.srs;
-	    }
-	    
-	    if (options.scale){
-		    operation.options.getParams.s = options.scale;
-	    }
-	    
-	    if (options.zoom){
-		    operation.options.getParams.z = options.zoom;
-	    }
-	    
-	    this._addResolutionAndLocale(operation, options.resolution, options.locale);
-	    
-	    if (options.rd){
-		    operation.options.getParams.rd = options.rd;
-	    }
-	    
-	    if (options.bc){
-		    operation.options.getParams.bc = options.bc;
-	    }
-	    
-	    if (options.bo){
-		    operation.options.getParams.bc = options.bc;
-	    }
-	    
-	    if (options.additionalParams){
-		    operation.options.postParams = options.additionalParams;
-	    }
-	    
-	    return operation;	    
+        var operation = new L.SpectrumSpatial.Services.Operation('maps'+ mapName+'/image.' + options.imageType , { responseType: 'arraybuffer' } );
+        operation.options.getParams.w = options.width;
+        operation.options.getParams.h = options.height;
+        if (options.bounds){
+            operation.options.getParams.b= options.bounds.join(',')+ ',' + options.srs;
+        }
+        else{
+            operation.options.getParams.c= options.cx+ ',' +options.cy + ',' + options.srs;
+        }
+        
+        if (options.scale){
+            operation.options.getParams.s = options.scale;
+        }
+        
+        if (options.zoom){
+            operation.options.getParams.z = options.zoom;
+        }
+        
+        this._addResolutionAndLocale(operation, options.resolution, options.locale);
+        
+        if (options.rd){
+            operation.options.getParams.rd = options.rd;
+        }
+        
+        if (options.bc){
+            operation.options.getParams.bc = options.bc;
+        }
+        
+        if (options.bo){
+            operation.options.getParams.bc = options.bc;
+        }
+        
+        if (options.additionalParams){
+            operation.options.postParams = options.additionalParams;
+        }
+        
+        return operation;       
     },
  
     _addResolutionAndLocale: function(operation,resolution, locale){
-	    if (resolution){
-		    operation.options.getParams.r = resolution;
-	    }
-	    
-	    if (locale){
-		    operation.options.getParams.l = locale;
-	    }
+        if (resolution){
+            operation.options.getParams.r = resolution;
+        }
+        
+        if (locale){
+            operation.options.getParams.l = locale;
+        }
     },
     
     /**
@@ -216,8 +216,8 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     * @param {Object} context Context for callback
     */
     renderMap: function(options, callback, context){
-	    var operation = this._createRenderOperation(options);
-	    this.startRequest(operation, callback, context);
+        var operation = this._createRenderOperation(options);
+        this.startRequest(operation, callback, context);
     },
     
     /**
@@ -226,8 +226,8 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     * @returns {string}
     */
     getUrlRenderMap: function(options){
-	    var operation = this._createRenderOperation(options);
-	    return (this.options.alwaysUseProxy ? this.options.proxyUrl : '') +  this.checkEncodeUrl(this.getUrl(operation));
+        var operation = this._createRenderOperation(options);
+        return (this.options.alwaysUseProxy ? this.options.proxyUrl : '') +  this.checkEncodeUrl(this.getUrl(operation));
     },
         
     /**
@@ -237,39 +237,39 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     * @param {Object} context Context for callback
     */
     getLegendForMap: function(options, callback, context){
-	    if (!options.imageType){
-		    options.imageType = 'png';
-	    }
-	    var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(options.mapName)+'/legends.json');
-	    
-	    operation.options.getParams.w = options.width;
-	    operation.options.getParams.h = options.height;
-	    operation.options.getParams.t = options.imageType;
-	    this._addResolutionAndLocale(operation,options.resolution,options.locale);
-	    
-	    // I WANT TO KILL PB DEVELOPERS FOR THIS '?' IN QUERY
-	    
-	    if (options.inlineSwatch!== undefined ){
-		    operation.options.getParams['?inlineSwatch'] = options.inlineSwatch;
-	    }
-	    if (options.postData){
-		    operation.options.postParams = options.postData;
-		    operation.options.responseType =  'arraybuffer';
-	    }
-	    this.startRequest(operation, callback, context);
+        if (!options.imageType){
+            options.imageType = 'png';
+        }
+        var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(options.mapName)+'/legends.json');
+        
+        operation.options.getParams.w = options.width;
+        operation.options.getParams.h = options.height;
+        operation.options.getParams.t = options.imageType;
+        this._addResolutionAndLocale(operation,options.resolution,options.locale);
+        
+        // I WANT TO KILL PB DEVELOPERS FOR THIS '?' IN QUERY
+        
+        if (options.inlineSwatch!== undefined ){
+            operation.options.getParams['?inlineSwatch'] = options.inlineSwatch;
+        }
+        if (options.postData){
+            operation.options.postParams = options.postData;
+            operation.options.responseType =  'arraybuffer';
+        }
+        this.startRequest(operation, callback, context);
     },
     
     _createSwatchOperation: function(options){
-	    if (!options.imageType){
-		    options.imageType = 'png';
-	    }
-	    var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(options.mapName)+
-	                                                            '/legends/'+options.legendIndex + 
-	                                                             '/rows/' + options.rowIndex + 
-	                                                             '/swatch/' + options.width + 'x' + options.height + '.' + options.imageType);
-	                                                             
-	    this._addResolutionAndLocale(operation,options.resolution,options.locale);
-	    return operation;
+        if (!options.imageType){
+            options.imageType = 'png';
+        }
+        var operation = new L.SpectrumSpatial.Services.Operation('maps/'+ this.clearParam(options.mapName)+
+                                                                '/legends/'+options.legendIndex + 
+                                                                 '/rows/' + options.rowIndex + 
+                                                                 '/swatch/' + options.width + 'x' + options.height + '.' + options.imageType);
+                                                                 
+        this._addResolutionAndLocale(operation,options.resolution,options.locale);
+        return operation;
     },
     
     /**
@@ -279,7 +279,7 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     * @param {Object} context Context for callback
     */
     getSwatchForLayer: function(options, callback, context){
-	    this.startRequest( this._createSwatchOperation(options), callback, context);
+        this.startRequest( this._createSwatchOperation(options), callback, context);
     },
     
     /**
@@ -288,7 +288,7 @@ L.SpectrumSpatial.Services.MapService = L.SpectrumSpatial.Services.Service.exten
     * @returns {string}
     */
     getUrlSwatchForLayer: function(options){
-	    return this.getUrl(this._createSwatchOperation(options));
+        return this.getUrl(this._createSwatchOperation(options));
     }
     
 });

@@ -6,7 +6,7 @@
 * @param {Services.Service.Options} options Additional options of service
 */
 L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.extend(
-/** @lends L.SpectrumSpatial.Services.TileService# */
+/** @lends L.SpectrumSpatial.Services.TileService.prototype */
 {
     /**
     * Returns the list of available named tiles for the Map Tiling Service
@@ -15,7 +15,7 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
     */
     mapList : function(callback, context){  
         var operation = new L.SpectrumSpatial.Services.Operation('mapList.json');
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     /**
@@ -26,7 +26,7 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
     */
     description : function(mapName,callback, context){  
         var operation = new L.SpectrumSpatial.Services.Operation('/'+ this.clearParam(mapName) + '/description.json');
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },  
     
     /**
@@ -38,9 +38,9 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
     * @param {string} [imageType=png] Specifies the response image format. Must be png, gif, or jpeg.
     */
     getTileUrl: function(mapName,level,x,y,imageType){
-	    if (!imageType){
-		    imageType='png';
-	    }
+        if (!imageType){
+            imageType='png';
+        }
         var operation = this._createTileOperation(mapName,level,x,y,imageType);
         return (this.options.alwaysUseProxy ? this.options.proxyUrl : '') +  this.checkEncodeUrl(this.getUrl(operation));
     },
@@ -56,9 +56,9 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
     * @param {string} [imageType=png] Specifies the response image format. Must be png, gif, or jpeg.
     */
     getTile: function(mapName, level, x, y, callback, context, imageType){
-	    if (!imageType){
-		    imageType='png';
-	    }
+        if (!imageType){
+            imageType='png';
+        }
         var operation = this._createTileOperation(mapName,level,x,y,imageType);
         this.startRequest(operation, callback, context);
     },
@@ -69,9 +69,9 @@ L.SpectrumSpatial.Services.TileService = L.SpectrumSpatial.Services.Service.exte
     _createTileOperation:function(mapName,level,x,y,imageType){
         mapName = this.clearParam(mapName);
         if (mapName !== ''){
-	        mapName = '/'+mapName;
+            mapName = '/'+mapName;
         }
-	    return new L.SpectrumSpatial.Services.Operation(mapName+'/'+level+'/' + x + ':' + y + '/tile.' + imageType, { responseType: 'arraybuffer' }  );
+        return new L.SpectrumSpatial.Services.Operation(mapName+'/'+level+'/' + x + ':' + y + '/tile.' + imageType, { responseType: 'arraybuffer' }  );
     }
     
     

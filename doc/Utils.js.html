@@ -30,107 +30,107 @@
 * @namespace
 */
 L.SpectrumSpatial.Utils = {
-	
-	/**
-	 * Function compares two object. If object A "greater" then object B returns 1, if on the contrary -1, if equal 0
-	 * @function CompareFunction
-	 * @param {Object} a Object A
-	 * @param {Object} b Object B
-	 * @returns {number} 
-	 */
-	
-	/**
-	* Object array's sorting function (by specified property name)
-	* @param {string} property Property name
-	* @param {string=} [order=asc] Sorting order. Can be "asc" for ascending order or "desc" descending order.
-	* @returns {CompareFunction}
+    
+    /**
+     * Function compares two object. If object A "greater" then object B returns 1, if on the contrary -1, if equal 0
+     * @function CompareFunction
+     * @param {Object} a Object A
+     * @param {Object} b Object B
+     * @returns {number} 
+     */
+    
+    /**
+    * Object array's sorting function (by specified property name)
+    * @param {string} property Property name
+    * @param {string=} [order=asc] Sorting order. Can be "asc" for ascending order or "desc" descending order.
+    * @returns {CompareFunction}
     */
     sortByProperty :  function(property, order) {
-	    var sortOrder = (order === "desc") ? -1:1;
-	    return function (a,b) {
-	        var result = (a[property] &lt; b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
-	        return result * sortOrder;
-	    };
-	},
-	
-	/**
-	* Object array's sorting function (by specified function name)
-	* @param {string} funcname Function name
-	* @param {string=} [order=asc] Sorting order. Can be "asc" for ascending order or "desc" descending order.
-	* @returns {CompareFunction}
+        var sortOrder = (order === "desc") ? -1:1;
+        return function (a,b) {
+            var result = (a[property] &lt; b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+            return result * sortOrder;
+        };
+    },
+    
+    /**
+    * Object array's sorting function (by specified function name)
+    * @param {string} funcname Function name
+    * @param {string=} [order=asc] Sorting order. Can be "asc" for ascending order or "desc" descending order.
+    * @returns {CompareFunction}
     */
-	sortByFuncResult :  function(funcname, order) {
-	    var sortOrder = (order === "desc") ? -1:1;
-	    return function (a,b) {
-	        var result = (a[funcname]() &lt; b[funcname]()) ? -1 : (a[funcname]() > b[funcname]()) ? 1 : 0;
-	        return result * sortOrder;
-	    };
-	},
-	
-	/**
-	* Find all child elements with specified name in parent 
-	* @param {Object} parent Parent html element
-	* @param {name} name Name of the element to find
-	* @returns {Array.&lt;HTMLElement>}
+    sortByFuncResult :  function(funcname, order) {
+        var sortOrder = (order === "desc") ? -1:1;
+        return function (a,b) {
+            var result = (a[funcname]() &lt; b[funcname]()) ? -1 : (a[funcname]() > b[funcname]()) ? 1 : 0;
+            return result * sortOrder;
+        };
+    },
+    
+    /**
+    * Find all child elements with specified name in parent 
+    * @param {Object} parent Parent html element
+    * @param {name} name Name of the element to find
+    * @returns {Array.&lt;HTMLElement>}
     */
-	getElementsByName: function(parent,name){
-		var result = [];
-		if (!parent.childNodes){
-			return result;
-		}
-		for (var i=0; i&lt;parent.childNodes.length;i++){
-			var node = parent.childNodes[i];
-			if (node.childNodes && node.childNodes.length>0){
-				result = result.concat(L.SpectrumSpatial.Utils.getElementsByName(node,name));
-			}
-			if (node.name && node.name===name){
-				result.push(node);
-			}
-		}
-		return result;
-	},
-	
-	/**
-	* Merges two objects properties from source to destination
-	* @param {Object} dest Destination object (wiil be returned)
-	* @param {Object} src Source object 
-	* @returns {Object}
+    getElementsByName: function(parent,name){
+        var result = [];
+        if (!parent.childNodes){
+            return result;
+        }
+        for (var i=0; i&lt;parent.childNodes.length;i++){
+            var node = parent.childNodes[i];
+            if (node.childNodes && node.childNodes.length>0){
+                result = result.concat(L.SpectrumSpatial.Utils.getElementsByName(node,name));
+            }
+            if (node.name && node.name===name){
+                result.push(node);
+            }
+        }
+        return result;
+    },
+    
+    /**
+    * Merges two objects properties from source to destination
+    * @param {Object} dest Destination object (wiil be returned)
+    * @param {Object} src Source object 
+    * @returns {Object}
     */
-	merge:function(dest,src){
-		if (src){					
-			for (var i in src) {
-				dest[i] = src[i];
-			}
-		}
-		return dest;
-	},
-	
-	/**
-	* Converts pixel's distance to distance in meters for point
-	* @param {L.Map} map Map
-	* @param {number} distanceInPixels Distance in pixels
-	* @param {Object} [point] point, if is undefined  map.getCenter() used 
-	* @returns {Object}
+    merge:function(dest,src){
+        if (src){                   
+            for (var i in src) {
+                dest[i] = src[i];
+            }
+        }
+        return dest;
+    },
+    
+    /**
+    * Converts pixel's distance to distance in meters for point
+    * @param {L.Map} map Map
+    * @param {number} distanceInPixels Distance in pixels
+    * @param {Object} [point] point, if is undefined  map.getCenter() used 
+    * @returns {Object}
     */
-	countPixelDistance:function(map,distanceInPixels, point){
-		if (!point){
-			point = map.getCenter();
-		}
+    countPixelDistance:function(map,distanceInPixels, point){
+        if (!point){
+            point = map.getCenter();
+        }
 
-		var pointC = map.latLngToContainerPoint(point); 
-		var pointX = [pointC.x + distanceInPixels, pointC.y]; 
-		var pointY = [pointC.x, pointC.y + distanceInPixels]; 
-		
-		var latLngC = map.containerPointToLatLng(pointC);
-		var latLngX = map.containerPointToLatLng(pointX);
-		var latLngY = map.containerPointToLatLng(pointY);
-		
-		var distanceX = latLngC.distanceTo(latLngX);
-		var distanceY = latLngC.distanceTo(latLngY);
-		
-		return Math.max(distanceX,distanceY);
-	}
-	
+        var pointC = map.latLngToContainerPoint(point); 
+        var pointX = [pointC.x + distanceInPixels, pointC.y]; 
+        var pointY = [pointC.x, pointC.y + distanceInPixels]; 
+        
+        var latLngC = map.containerPointToLatLng(pointC);
+        var latLngX = map.containerPointToLatLng(pointX);
+        var latLngY = map.containerPointToLatLng(pointY);
+        
+        var distanceX = latLngC.distanceTo(latLngX);
+        var distanceY = latLngC.distanceTo(latLngY);
+        
+        return Math.max(distanceX,distanceY);
+    }
+    
 };</code></pre>
         </article>
     </section>
@@ -141,13 +141,13 @@ L.SpectrumSpatial.Utils = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Feature.html">Feature</a></li><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.FeatureService.html">FeatureService</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Defaults.html">Defaults</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Projection.html">Projection</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addTo">addTo</a></li><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Feature.html">Feature</a></li><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.FeatureService.html">FeatureService</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.CRS.html">CRS</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Defaults.html">Defaults</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Projections.html">Projections</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Feb 24 2015 01:22:20 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Wed Feb 25 2015 20:52:25 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>

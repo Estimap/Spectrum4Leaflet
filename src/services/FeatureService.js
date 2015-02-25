@@ -6,7 +6,7 @@
 * @param {Services.Service.Options} options Additional options of service
 */
 L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.extend(
-/** @lends L.SpectrumSpatial.Services.FeatureService# */
+/** @lends L.SpectrumSpatial.Services.FeatureService.prototype */
 {
     /**
     * List all Available Tables
@@ -17,9 +17,9 @@ L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.e
     tableList : function(callback, context,locale){  
         var operation = new L.SpectrumSpatial.Services.Operation('tables.json');
         if (locale){
-		    operation.options.getParams.l = locale;
-	    }
-	    this.startRequest(operation, callback, context);
+            operation.options.getParams.l = locale;
+        }
+        this.startRequest(operation, callback, context);
     },
     
     /**
@@ -31,20 +31,20 @@ L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.e
     count : function(callback, context,locale){  
         var operation = new L.SpectrumSpatial.Services.Operation('tables/count');
         if (locale){
-		    operation.options.getParams.l = locale;
-	    }
-	    this.startRequest(operation, callback, context);
+            operation.options.getParams.l = locale;
+        }
+        this.startRequest(operation, callback, context);
     },
     
     /**
     * Count features operation options
-	* @typedef {Object} L.SpectrumSpatial.Services.FeatureService.FeatureCountOptions
+    * @typedef {Object} L.SpectrumSpatial.Services.FeatureService.FeatureCountOptions
     * @property {string} [q] The query method to perform. This must be searchAtPoint 
     * @property {string} [point] The point used as the starting location for the search. For example: point=-75.651157,45.374245,EPSG:4326
     * @property {string} [tolerance] The distance to search around the point. By default the tolerance is 300 meters
     * @property {string} [geometryAttributeName] The geometry definition attribute from the table that should be used for processing the spatial query. This attribute is only required for tables that contain more than one geometry attribute definition.
     * @property {string} [l] The locale in which to return the table information
-	*/
+    */
     
     /**
     * Number of Features in a Table
@@ -55,9 +55,9 @@ L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.e
     */
     featureCount : function(tableName, callback, context, options){  
         var operation = new L.SpectrumSpatial.Services.Operation('tables/'+this.clearParam(tableName)+'/features/count',
-																 { paramsSeparator: '&', queryStartCharacter:'?'});
+                                                                 { paramsSeparator: '&', queryStartCharacter:'?'});
         L.SpectrumSpatial.Utils.merge(operation.options.getParams,options);
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     /**
@@ -70,9 +70,9 @@ L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.e
     describe : function(tableName, callback, context, locale){  
         var operation = new L.SpectrumSpatial.Services.Operation('tables/'+this.clearParam(tableName)+'/metadata.json');
         if (locale){
-	        operation.options.getParams.l = locale;
+            operation.options.getParams.l = locale;
         }
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     /**
@@ -85,18 +85,18 @@ L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.e
     */
     insert : function(tableName, features, callback, context, commitInterval){  
         var operation = new L.SpectrumSpatial.Services.Operation('tables/'+this.clearParam(tableName)+'/features.json',
-																 { paramsSeparator: '&', queryStartCharacter:'?'});
+                                                                 { paramsSeparator: '&', queryStartCharacter:'?'});
         operation.options.getParams.action = 'insert';
         if (commitInterval){
-	        operation.options.getParams.commitInterval = commitInterval;
+            operation.options.getParams.commitInterval = commitInterval;
         }
         operation.options.postParams = features;
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     /**
     * SearchAtPoint function's options
-	* @typedef {Object} L.SpectrumSpatial.Services.FeatureService.SearchAtPointOptions
+    * @typedef {Object} L.SpectrumSpatial.Services.FeatureService.SearchAtPointOptions
     * @property {string} [attributes] The attribute names of the table to be returned in the response.
     * @property {string} [orderBy] The attribute name and direction to order the returned results
     * @property {string} [tolerance] The distance to search around the point. By default the tolerance is 300 meters
@@ -104,7 +104,7 @@ L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.e
     * @property {string} [page] The page number to return   
     * @property {string} [pageLength] The number of features returned on each page 
     * @property {string} [l] The locale in which to return the table information
-	*/
+    */
     
     /**
     * Search a Table for Features at a Point
@@ -117,16 +117,16 @@ L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.e
     */
     searchAtPoint : function(tableName, point, srs, callback, context, options){  
         var operation = new L.SpectrumSpatial.Services.Operation('tables/'+this.clearParam(tableName)+'/features.json',
-																 { paramsSeparator: '&', queryStartCharacter:'?'});
+                                                                 { paramsSeparator: '&', queryStartCharacter:'?'});
         operation.options.getParams.q = 'searchAtPoint';
         operation.options.getParams.point = point.x + ',' + point.y + ',' + srs;
         L.SpectrumSpatial.Utils.merge(operation.options.getParams,options);
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     /**
     * SearchNearest function's options
-	* @typedef {Object} L.SpectrumSpatial.Services.FeatureService.SearchNearestOptions
+    * @typedef {Object} L.SpectrumSpatial.Services.FeatureService.SearchNearestOptions
     * @property {string} [attributes] The attribute names of the table to be returned in the response.
     * @property {string} [orderBy] The attribute name and direction to order the returned results
     * @property {string} [withinDistance] The distance to search around the geometry. By default the search distance is 300 meters
@@ -136,7 +136,7 @@ L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.e
     * @property {string} [pageLength] The number of features returned on each page 
     * @property {string} [l] The locale in which to return the table information
     * @property {string} [maxFeatures] The total number of features returned in the response. By default this value is 1000 features
-	*/
+    */
     
     /**
     * Search a Table for Features Nearest to a Geometry
@@ -148,11 +148,11 @@ L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.e
     */
     searchNearest : function(tableName, geometry, callback, context, options){  
         var operation = new L.SpectrumSpatial.Services.Operation('tables/'+this.clearParam(tableName)+'/features.json',
-																 { paramsSeparator: '&', queryStartCharacter:'?'});
+                                                                 { paramsSeparator: '&', queryStartCharacter:'?'});
         operation.options.getParams.q = 'searchNearest';
         operation.options.getParams.geometry = JSON.stringify(geometry);
         L.SpectrumSpatial.Utils.merge(operation.options.getParams,options);
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     /**
@@ -166,19 +166,19 @@ L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.e
     */
     searchId : function(tableName, id, callback, context, attributes, locale){  
         var operation = new L.SpectrumSpatial.Services.Operation('tables/'+this.clearParam(tableName)+'/features.json' + 
-															     ((attributes) ? (';attributes='+attributes) : '' ) +
-															     ((locale) ? (';l='+locale) : '' ) +
-																 '/'+ id );
-	    this.startRequest(operation, callback, context);
+                                                                 ((attributes) ? (';attributes='+attributes) : '' ) +
+                                                                 ((locale) ? (';l='+locale) : '' ) +
+                                                                 '/'+ id );
+        this.startRequest(operation, callback, context);
     },
     
     /**
     * SearchSQL function's options
-	* @typedef {Object} L.SpectrumSpatial.Services.FeatureService.SearchSQLOptions
+    * @typedef {Object} L.SpectrumSpatial.Services.FeatureService.SearchSQLOptions
     * @property {string} [page] The page number to return   
     * @property {string} [pageLength] The number of features returned on each page 
     * @property {string} [l] The locale in which to return the table information
-	*/
+    */
     
     /**
     * Search for Features Using SQL Queries
@@ -189,10 +189,10 @@ L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.e
     */
     searchSQL : function( query , callback, context, options){  
         var operation = new L.SpectrumSpatial.Services.Operation('tables/features.json',
-																 { paramsSeparator: '&', queryStartCharacter:'?'});
+                                                                 { paramsSeparator: '&', queryStartCharacter:'?'});
         operation.options.getParams.q = query;
         L.SpectrumSpatial.Utils.merge(operation.options.getParams,options);
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     /**
@@ -205,13 +205,13 @@ L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.e
     */
     update : function(tableName, features, callback, context, commitInterval){  
         var operation = new L.SpectrumSpatial.Services.Operation('tables/'+this.clearParam(tableName)+'/features.json',
-																 { paramsSeparator: '&', queryStartCharacter:'?'});
+                                                                 { paramsSeparator: '&', queryStartCharacter:'?'});
         operation.options.getParams.action = 'update';
         if (commitInterval){
-	        operation.options.getParams.commitInterval = commitInterval;
+            operation.options.getParams.commitInterval = commitInterval;
         }
         operation.options.postParams = features;
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     /**
@@ -224,16 +224,16 @@ L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.e
     */
     updateSQL : function(query, callback, context, boundParams, locale){  
         var operation = new L.SpectrumSpatial.Services.Operation('tables/features.json',
-																 { paramsSeparator: '&', queryStartCharacter:'?'});
+                                                                 { paramsSeparator: '&', queryStartCharacter:'?'});
         operation.options.getParams.update = query;
         if (locale){
-	        operation.options.getParams.l = locale;
+            operation.options.getParams.l = locale;
         }
         if (boundParams){
-	        operation.options.postParams = boundParams;
+            operation.options.postParams = boundParams;
         }
         
-	    this.startRequest(operation, callback, context);
+        this.startRequest(operation, callback, context);
     },
     
     
