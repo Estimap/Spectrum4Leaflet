@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>EPSG:41001 tiled map example</title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="../lib/leaflet/leaflet.css" />
+</head>
+<body>
+	<div id="map" style="width: 600px; height: 400px"></div>
+	<br/>
+	<label for="ssurl">Spectrum Spatial tile service url</label>
+	<input type="text" id="ssurl"></input>
+	<br/>
+	<label for="mapname">Spectrum Spatial tiled map name</label>
+	<input type="text" id="mapname"></input>
+	<input type="button" onclick="addMapServiceLayer()" value="Add" />
+    <script src="../lib/leaflet/leaflet-src.js"></script>
+    <script src="../dist/Spectrum4Leaflet.js"></script>
+	<script>
+
+		var map = L.map('map', { crs:  L.CRS.EPSG41001 } ).setView([0, 0], 0);
+        		
+		function addMapServiceLayer(){
+		    var serviceUrl = document.getElementById("ssurl").value;
+		    var mapName =  document.getElementById("mapname").value;
+		    
+		    L.SpectrumSpatial.Layers.tileServiceLayer(L.SpectrumSpatial.Services.tileService(serviceUrl), mapName).addTo(map);
+		}
+
+	</script>
+</body>
+</html>
+
