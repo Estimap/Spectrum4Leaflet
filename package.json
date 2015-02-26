@@ -4,7 +4,7 @@
   "description": "Leaflet plugin for Spectrum Spatial server",
   "author": "Sergey Voyteshonok <info@svoyt.com>",
   "dependencies": {
-    "leaflet": "^0.8.0"
+    "leaflet": "latest"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
@@ -20,7 +20,7 @@
     "url": "git://github.com/Estimap/Spectrum4Leaflet.git"
   },
   "keywords": [
-	"SpectrumSpatial",
+    "SpectrumSpatial",
     "gis",
     "map"
   ]
