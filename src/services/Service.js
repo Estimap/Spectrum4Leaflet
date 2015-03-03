@@ -40,13 +40,34 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
     },
     
     /**
+    * Starts soap request to service
+    * @param {string} message SOAP message
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @returns {XMLHttpRequest}
+    */
+    startSoap: function(message,callback, context){    
+	    var url = this.options.url;
+	    
+	    if (this.options.proxyUrl){
+            url = this.options.proxyUrl + this.checkEncodeUrl(url) ;
+        }   
+	    
+	    return L.SpectrumSpatial.Request.soap(url, message.replace(/'\r\n'/g, '') , callback, context);
+    },
+    
+    /**
     * Starts request to service
+    * @param {L.SpectrumSpatial.Services.Operation} operation Operation for request
+    * @param {Object} context Context for callback
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
     * @returns {XMLHttpRequest}
     */
     startRequest: function(operation, callback,context){
       var urlWithQuery = this.getUrl(operation);
       var queryOptions = { 
-                                postData: operation.getPostData(), 
+                                postData: operation.getPostData().replace(/'\r\n'/g, ''), 
                                 postType: operation.getPostType(),
                                 responseType: operation.getResponseType(),
                                 login: this.options.login,

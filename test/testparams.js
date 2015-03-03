@@ -9,7 +9,7 @@ function recieve(request, returnedObject, type){
 	    type = 'application/json';
 	}
 	request.setResponseHeader('Content-Type', type);
-	request.receive(200, JSON.stringify(returnedObject) );
+	request.receive(200, (type.indexOf('application/json')!==-1)? JSON.stringify(returnedObject): returnedObject );
 };
 
 var server = new MockHttpServer();
@@ -164,6 +164,16 @@ server.handle = function (request) {
 	    break;
 	    case 'http://FeatureService/tables/features.json?update=update MyTable set MyColumn = \'foo\'':
                recieve(request, {"updated":2});
+	    break;
+	    case 'http://NamedResourceService/':
+            if (request.method === 'POST'){
+               if (request.requestText.indexOf('ListNamedResourceRequest')!==-1){
+	               recieve(request, '<?xml version="1.0"?><list></list>' , 'text/xml');
+               }
+               if (request.requestText.indexOf('ReadNamedResourceRequest')!==-1){
+	               recieve(request, '<?xml version="1.0"?><Resource></Resource>' , 'text/xml');
+               }
+	        }
 	    break;
 	    default:
             recieve(request, 'I am Bender, please insert girder!','application/robot');

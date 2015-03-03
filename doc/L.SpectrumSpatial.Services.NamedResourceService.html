@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Service</title>
+    <title>JSDoc: Class: NamedResourceService</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: Service</h1>
+    <h1 class="page-title">Class: NamedResourceService</h1>
     
     
 
@@ -29,10 +29,10 @@
     <h2>
         <span class="ancestors"><a href="L.html">L</a><a href="L.SpectrumSpatial.html">.SpectrumSpatial</a><a href="L.SpectrumSpatial.Services.html">.Services</a>.</span>
     
-    Service
+    NamedResourceService
     </h2>
     
-        <div class="class-description">Base service class</div>
+        <div class="class-description">Spectrum Spatial Named Resource Service wrapper</div>
     
 </header>  
 
@@ -43,7 +43,7 @@
     
         
 <dt>
-    <h4 class="name" id="Service"><span class="type-signature"></span>new Service<span class="signature">(url, <span class="optional">options</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="NamedResourceService"><span class="type-signature"></span>new NamedResourceService<span class="signature">(url, options)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -68,8 +68,6 @@
 		
 		<th>Type</th>
 		
-		
-		<th>Argument</th>
 		
 		
 		
@@ -96,14 +94,6 @@
             </td>
             
             
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
             
             
             
@@ -120,22 +110,12 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="L.SpectrumSpatial.Services.Service.html#Options">L.SpectrumSpatial.Services.Service.Options</a></span>
+<span class="param-type">Services.Service.Options</span>
 
 
             
             </td>
             
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
             
             
             
@@ -171,7 +151,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Service.js.html">services/Service.js</a>, <a href="Service.js.html#line27">line 27</a>
+        <a href="NamedResourceService.js.html">services/NamedResourceService.js</a>, <a href="NamedResourceService.js.html#line8">line 8</a>
     </li></ul></dd>
     
     
@@ -203,7 +183,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li>L.Class</li>
+            <li><a href="L.SpectrumSpatial.Services.Service.html">L.SpectrumSpatial.Services.Service</a></li>
         </ul>
     
     
@@ -297,6 +277,11 @@
     
     
 
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="L.SpectrumSpatial.Services.Service.html#checkEncodeUrl">L.SpectrumSpatial.Services.Service#checkEncodeUrl</a>
+    </li></dd>
     
     
     
@@ -433,6 +418,11 @@
     
 
     
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="L.SpectrumSpatial.Services.Service.html#clearParam">L.SpectrumSpatial.Services.Service#clearParam</a>
+    </li></dd>
+    
     
     
     
@@ -568,6 +558,11 @@
     
 
     
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="L.SpectrumSpatial.Services.Service.html#getUrl">L.SpectrumSpatial.Services.Service#getUrl</a>
+    </li></dd>
+    
     
     
     
@@ -628,6 +623,197 @@
         
             
 <dt>
+    <h4 class="name" id="listNamedResources"><span class="type-signature"></span>listNamedResources<span class="signature">(callback, context, <span class="optional">options</span>)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Lists all named resources
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Request.Callback</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Callback of the function</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Context for callback</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="L.SpectrumSpatial.Services.NamedResourceService.html#ListOptions">L.SpectrumSpatial.Services.NamedResourceService.ListOptions</a></span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Options</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NamedResourceService.js.html">services/NamedResourceService.js</a>, <a href="NamedResourceService.js.html#line27">line 27</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="needAuthorization"><span class="type-signature"></span>needAuthorization<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
     
@@ -654,6 +840,11 @@
     
     
 
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="L.SpectrumSpatial.Services.Service.html#needAuthorization">L.SpectrumSpatial.Services.Service#needAuthorization</a>
+    </li></dd>
     
     
     
@@ -708,6 +899,261 @@
 </dl>
 
         
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="readNamedResource"><span class="type-signature"></span>readNamedResource<span class="signature">(path, callback, context, <span class="optional">id</span>, <span class="optional">locale</span>)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Reads named resource from specified path
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>path</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Path to named resource</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Request.Callback</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Callback of the function</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Context for callback</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Request's id</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>locale</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Locale</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="NamedResourceService.js.html">services/NamedResourceService.js</a>, <a href="NamedResourceService.js.html#line54">line 54</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
     
     
 </dd>
@@ -858,6 +1304,11 @@
     
     
 
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="L.SpectrumSpatial.Services.Service.html#startRequest">L.SpectrumSpatial.Services.Service#startRequest</a>
+    </li></dd>
     
     
     
@@ -1040,6 +1491,11 @@
     
 
     
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="L.SpectrumSpatial.Services.Service.html#startSoap">L.SpectrumSpatial.Services.Service#startSoap</a>
+    </li></dd>
+    
     
     
     
@@ -1106,14 +1562,14 @@
         <dl>
                 
 <dt>
-    <h4 class="name" id="Options">Options</h4>
+    <h4 class="name" id="ListOptions">ListOptions</h4>
     
     
 </dt>
 <dd>
     
     <div class="description">
-        Service's options class
+        List options
     </div>
     
     
@@ -1151,8 +1607,6 @@
 		
 		
 		
-		<th>Default</th>
-		
 		
 		<th class="last">Description</th>
 	</tr>
@@ -1163,7 +1617,7 @@
 	
         <tr>
             
-                <td class="name"><code>url</code></td>
+                <td class="name"><code>id</code></td>
             
             
             <td class="type">
@@ -1186,19 +1640,15 @@
             
             
             
-                <td class="default">
-                
-                </td>
             
-            
-            <td class="description last">Url of service</td>
+            <td class="description last">Id of request</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>proxyUrl</code></td>
+                <td class="name"><code>locale</code></td>
             
             
             <td class="type">
@@ -1221,25 +1671,21 @@
             
             
             
-                <td class="default">
-                
-                </td>
             
-            
-            <td class="description last">proxy url</td>
+            <td class="description last">Locale</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>alwaysUseProxy</code></td>
+                <td class="name"><code>resourceType</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">string</span>
 
 
             
@@ -1256,27 +1702,21 @@
             
             
             
-                <td class="default">
-                
-                    false
-                
-                </td>
             
-            
-            <td class="description last">use proxy for get requests</td>
+            <td class="description last">Type of named resource</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>forceGet</code></td>
+                <td class="name"><code>path</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">string</span>
 
 
             
@@ -1293,51 +1733,8 @@
             
             
             
-                <td class="default">
-                
-                    true
-                
-                </td>
             
-            
-            <td class="description last">If true always use get request and do not use JSONP, if false and browser do not support CORS JSONP request will be executed</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>encodeUrlForProxy</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-            
-            <td class="description last">if true encode query url for using with proxy</td>
+            <td class="description last">Path to list</td>
         </tr>
 	
 	
@@ -1365,7 +1762,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Service.js.html">services/Service.js</a>, <a href="Service.js.html#line5">line 5</a>
+        <a href="NamedResourceService.js.html">services/NamedResourceService.js</a>, <a href="NamedResourceService.js.html#line12">line 12</a>
     </li></ul></dd>
     
     
@@ -1400,7 +1797,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Mar 03 2015 20:05:22 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Tue Mar 03 2015 20:05:21 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>

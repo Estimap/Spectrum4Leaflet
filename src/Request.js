@@ -39,6 +39,9 @@
                   if (contentType.indexOf('application/json') !== -1 ){
                       response = JSON.parse(httpRequest.responseText);
                   }
+                  else if (contentType.indexOf('text/xml') !== -1 ){
+	                  response = httpRequest.responseXML;
+                  }
                   else{
                       response = httpRequest.response;
                   }   
@@ -184,6 +187,22 @@
             
             httpRequest.send(options.postData);
             return httpRequest;
+        },
+        
+        /**
+        * Runs soap request
+        * @param {string} url Url of service
+		* @param {string} message SOAP message
+        * @param {Request.Callback} Callback function, when request is done
+        * @param {object} context Context for callback
+        * @returns {XMLHttpRequest}
+        */
+        soap: function(url, message, callback, context ){
+	        var httpRequest = this._createRequest(callback,context);
+	        httpRequest.open("POST",url,true);
+		    httpRequest.setRequestHeader("Content-Type","text/xml; charset=utf-8");
+		    httpRequest.send(message);
+		    return httpRequest;
         }
     };
 })();

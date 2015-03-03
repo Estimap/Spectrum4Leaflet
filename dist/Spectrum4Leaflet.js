@@ -275,6 +275,9 @@ L.CRS.EPSG41001 = L.extend({}, L.CRS.Earth, {
                   if (contentType.indexOf('application/json') !== -1 ){
                       response = JSON.parse(httpRequest.responseText);
                   }
+                  else if (contentType.indexOf('text/xml') !== -1 ){
+	                  response = httpRequest.responseXML;
+                  }
                   else{
                       response = httpRequest.response;
                   }   
@@ -420,6 +423,22 @@ L.CRS.EPSG41001 = L.extend({}, L.CRS.Earth, {
             
             httpRequest.send(options.postData);
             return httpRequest;
+        },
+        
+        /**
+        * Runs soap request
+        * @param {string} url Url of service
+		* @param {string} message SOAP message
+        * @param {Request.Callback} Callback function, when request is done
+        * @param {object} context Context for callback
+        * @returns {XMLHttpRequest}
+        */
+        soap: function(url, message, callback, context ){
+	        var httpRequest = this._createRequest(callback,context);
+	        httpRequest.open("POST",url,true);
+		    httpRequest.setRequestHeader("Content-Type","text/xml; charset=utf-8");
+		    httpRequest.send(message);
+		    return httpRequest;
         }
     };
 })();
@@ -566,13 +585,34 @@ L.SpectrumSpatial.Services.operation = function(name,options){
     },
     
     /**
+    * Starts soap request to service
+    * @param {string} message SOAP message
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @returns {XMLHttpRequest}
+    */
+    startSoap: function(message,callback, context){    
+	    var url = this.options.url;
+	    
+	    if (this.options.proxyUrl){
+            url = this.options.proxyUrl + this.checkEncodeUrl(url) ;
+        }   
+	    
+	    return L.SpectrumSpatial.Request.soap(url, message.replace(/'\r\n'/g, '') , callback, context);
+    },
+    
+    /**
     * Starts request to service
+    * @param {L.SpectrumSpatial.Services.Operation} operation Operation for request
+    * @param {Object} context Context for callback
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
     * @returns {XMLHttpRequest}
     */
     startRequest: function(operation, callback,context){
       var urlWithQuery = this.getUrl(operation);
       var queryOptions = { 
-                                postData: operation.getPostData(), 
+                                postData: operation.getPostData().replace(/'\r\n'/g, ''), 
                                 postType: operation.getPostType(),
                                 responseType: operation.getResponseType(),
                                 login: this.options.login,
@@ -1266,7 +1306,92 @@ L.SpectrumSpatial.Services.FeatureService = L.SpectrumSpatial.Services.Service.e
 
 L.SpectrumSpatial.Services.featureService = function(url,options){
   return new L.SpectrumSpatial.Services.FeatureService(url,options);
-};;L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
+};;/** 
+* @class Spectrum Spatial Named Resource Service wrapper
+* @augments L.SpectrumSpatial.Services.Service 
+* @constructs L.SpectrumSpatial.Services.NamedResourceService
+* @param {string} url Url of service
+* @param {Services.Service.Options} options Additional options of service
+*/
+L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Service.extend(
+/** @lends L.SpectrumSpatial.Services.NamedResourceService.prototype */
+{
+	
+	/**
+    * List options
+    * @typedef {Object} L.SpectrumSpatial.Services.NamedResourceService.ListOptions
+    * @property {string} [id] Id of request
+    * @property {string} [locale] Locale
+    * @property {string} [resourceType] Type of named resource
+    * @property {string} [path] Path to list
+    */
+    
+    /**
+    * Lists all named resources
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {L.SpectrumSpatial.Services.NamedResourceService.ListOptions} [options] Options
+    */
+    listNamedResources: function(callback, context, options){
+	    options = options || {};
+	    var message = '<?xml version="1.0"?>' + 
+			          '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.mapinfo.com/midev/service/namedresource/v1">' +  
+						   '<soapenv:Header/>' +
+							   '<soapenv:Body>'+
+							      '<v1:ListNamedResourceRequest {id} {locale} {resourceType}>' +
+							      	'{v1:Path}'+
+							      '</v1:ListNamedResourceRequest>'+
+							   '</soapenv:Body>'+
+					  '</soapenv:Envelope>';		
+		message = this._applyParam(message, options.id, 'id');
+		message = this._applyParam(message, options.locale, 'locale');
+		message = this._applyParam(message, options.resourceType, 'resourceType');
+		message = this._applyParam(message, options.path, 'v1:Path', true);
+		
+		this.startSoap(message, callback, context);		
+    },
+    
+    /**
+    * Reads named resource from specified path
+    * @param {string} path Path to named resource
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {string} [id] Request's id
+    * @param {string} [locale] Locale
+    */
+    readNamedResource: function(path, callback, context, id, locale){
+	    var message = '<?xml version="1.0"?>' + 
+			          '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.mapinfo.com/midev/service/namedresource/v1">' +  
+						   '<soapenv:Header/>' +
+							   '<soapenv:Body>'+
+							      '<v1:ReadNamedResourceRequest {id} {locale}>' +
+							      	'{v1:Path}'+
+							      '</v1:ReadNamedResourceRequest>'+
+							   '</soapenv:Body>'+
+					  '</soapenv:Envelope>';		
+		message = this._applyParam(message, id, 'id');
+		message = this._applyParam(message, locale, 'locale');
+		message = this._applyParam(message, path, 'v1:Path', true);
+		this.startSoap(message, callback, context);		
+    },
+    
+    _applyParam: function(message, param, name, isNode){
+	    if (isNode){
+		    if (param){
+			    return message.replace('{'+name+'}', L.Util.template('<{name}>{value}</{name}>', { name:name, value:param }));
+		    }
+		    return message.replace('{'+name+'}', '');
+	    }
+	    
+	    
+	    if (param){
+		    return message.replace('{'+name+'}', name + '="' + param + '"');
+	    }
+	    return message.replace('{'+name+'}', '');
+    }
+    
+    
+});;L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
 /** @lends L.SpectrumSpatial.Layers.MapServiceLayer.prototype */
 
 

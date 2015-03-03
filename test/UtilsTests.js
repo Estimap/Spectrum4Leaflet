@@ -73,5 +73,5 @@ test( 'Utils countPixelDistance  tests', function() {
 	var distance = L.SpectrumSpatial.Utils.countPixelDistance(lmap, 10, { lat: 0, lng: 0});
 
     equal(Math.round(distance), 1565430, 'distance  = 1565430 meters');
-   
+    document.body.removeChild(maptest);
 });
