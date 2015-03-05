@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: TileServiceLayer</title>
+    <title>JSDoc: Class: Resources</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: TileServiceLayer</h1>
+    <h1 class="page-title">Class: Resources</h1>
     
     
 
@@ -27,12 +27,12 @@
     
 <header>
     <h2>
-        <span class="ancestors"><a href="L.html">L</a><a href="L.SpectrumSpatial.html">.SpectrumSpatial</a><a href="L.SpectrumSpatial.Layers.html">.Layers</a>.</span>
+        <span class="ancestors"><a href="L.html">L</a><a href="L.SpectrumSpatial.html">.SpectrumSpatial</a><a href="L.SpectrumSpatial.Controls.html">.Controls</a>.</span>
     
-    TileServiceLayer
+    Resources
     </h2>
     
-        <div class="class-description">TileService layer class</div>
+        <div class="class-description">Resources control</div>
     
 </header>  
 
@@ -43,7 +43,7 @@
     
         
 <dt>
-    <h4 class="name" id="TileServiceLayer"><span class="type-signature"></span>new TileServiceLayer<span class="signature">(service, mapName, options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Resources"><span class="type-signature"></span>new Resources<span class="signature">(service, <span class="optional">options</span>)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -69,6 +69,8 @@
 		<th>Type</th>
 		
 		
+		<th>Argument</th>
+		
 		
 		
 		
@@ -87,40 +89,25 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="L.SpectrumSpatial.Services.TileService.html">L.SpectrumSpatial.Services.TileService</a></span>
+<span class="param-type"><a href="L.SpectrumSpatial.Services.NamedResourceService.html">L.SpectrumSpatial.Services.NamedResourceService</a></span>
 
 
             
             </td>
             
             
-            
-            
-            
-            <td class="description last">Map Service for layer</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>mapName</code></td>
-            
-            
-            <td class="type">
-            
+                <td class="attributes">
                 
-<span class="param-type">string</span>
-
-
-            
-            </td>
-            
-            
+                    
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Name of the tiled map to display on tile service</td>
+            
+            <td class="description last">Named resource service</td>
         </tr>
 	
 	
@@ -133,17 +120,27 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html#Options">L.SpectrumSpatial.Layers.TileServiceLayer.Options</a></span>
+<span class="param-type"><a href="L.SpectrumSpatial.Controls.Resources.html#Options">L.SpectrumSpatial.Controls.Resources.Options</a></span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Additional options of layer</td>
+            
+            <td class="description last">Options</td>
         </tr>
 	
 	
@@ -174,7 +171,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TileServiceLayer.js.html">layers/TileServiceLayer.js</a>, <a href="TileServiceLayer.js.html#line41">line 41</a>
+        <a href="Resources.js.html">controls/Resources.js</a>, <a href="Resources.js.html#line30">line 30</a>
     </li></ul></dd>
     
     
@@ -206,7 +203,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li>L.GridLayer</li>
+            <li>L.Control</li>
         </ul>
     
     
@@ -220,6 +217,170 @@
     
     
     
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="addTo"><span class="type-signature"></span>addTo<span class="signature">(map, <span class="optional">outsideContainer</span>)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Adds control to map
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>map</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">L.Map</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Map for control</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>outsideContainer</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">DOM element, if spicified control will be rendered outside of map</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Resources.js.html">controls/Resources.js</a>, <a href="Resources.js.html#line41">line 41</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
     
     
     
@@ -235,7 +396,7 @@
 <dd>
     
     <div class="description">
-        TileServiceLayer options class
+        Resources options class
     </div>
     
     
@@ -269,6 +430,8 @@
 		<th>Type</th>
 		
 		
+		<th>Argument</th>
+		
 		
 		
 		
@@ -281,53 +444,69 @@
 	
         <tr>
             
-                <td class="name"><code>maxZoom</code></td>
+                <td class="name"><code>onItemClick</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">Object</span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Maximum zoom level</td>
+            
+            <td class="description last">On item click. like  function(resource) { resource.name; resource.type; resource.path }</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>minZoom</code></td>
+                <td class="name"><code>onItemClickContext</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">Object</span>
 
 
             
             </td>
             
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">Minimum zoom level</td>
+            
+            <td class="description last">Context for on item click function</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>errorTileUrl</code></td>
+                <td class="name"><code>maxHeight</code></td>
             
             
             <td class="type">
@@ -340,155 +519,25 @@
             </td>
             
             
-            
-            
-            
-            <td class="description last">Url of image to display when tile loading failed</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>zoomOffset</code></td>
-            
-            
-            <td class="type">
-            
+                <td class="attributes">
                 
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>maxNativeZoom</code></td>
-            
-            
-            <td class="type">
-            
+                    &lt;optional><br>
                 
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>tms</code></td>
-            
-            
-            <td class="type">
-            
+                    
                 
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
+                </td>
             
             
             
             
-            
-            <td class="description last"></td>
+            <td class="description last">Max height for control, if overflow - scrolls</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>zoomReverse</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>detectRetina</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>crossOrigin</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>imageType</code></td>
+                <td class="name"><code>maxWidth</code></td>
             
             
             <td class="type">
@@ -501,10 +550,142 @@
             </td>
             
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
             
             
             
-            <td class="description last">tile image type</td>
+            
+            <td class="description last">Max width for control, if overflow - scrolls</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>cssOff</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">If is true, control rednders without css class ( usefull when you draw outside of the map)</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>path</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Path to resource</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>resourceType</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Type of resources to show</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>locale</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Locale</td>
         </tr>
 	
 	
@@ -532,7 +713,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="TileServiceLayer.js.html">layers/TileServiceLayer.js</a>, <a href="TileServiceLayer.js.html#line4">line 4</a>
+        <a href="Resources.js.html">controls/Resources.js</a>, <a href="Resources.js.html#line6">line 6</a>
     </li></ul></dd>
     
     

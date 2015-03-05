@@ -13,7 +13,7 @@
 * @namespace
 */
 L.SpectrumSpatial = {
-    Version: '0.1.0',
+    Version: '0.1.1',
     
     /**
     * Spectrum's services
@@ -1375,6 +1375,96 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 		this.startSoap(message, callback, context);		
     },
     
+    /**
+    * The request to search named resources in the repository. The named resource defintion files in the repository are searched for the specified string. A list of all named resources that contain the search string is returned in the response.
+    * @param {string} contains Search criteria
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {L.SpectrumSpatial.Services.NamedResourceService.ListOptions} [options] Options
+    */
+    searchNamedResource: function(contains, callback, context, options){
+	    options = options || {};
+	    var message = '<?xml version="1.0"?>' + 
+			          '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.mapinfo.com/midev/service/namedresource/v1">' +  
+						   '<soapenv:Header/>' +
+							   '<soapenv:Body>'+
+							      '<v1:SearchNamedResourceRequest {id} {locale} {resourceType}>' +
+							        '{v1:Path}'+
+							      	'{v1:Contains}'+
+							      '</v1:SearchNamedResourceRequest>'+
+							   '</soapenv:Body>'+
+					  '</soapenv:Envelope>';		
+		message = this._applyParam(message, options.id, 'id');
+		message = this._applyParam(message, options.locale, 'locale');
+		message = this._applyParam(message, options.resourceType, 'resourceType');
+		message = this._applyParam(message, options.path, 'v1:Path', true);
+		message = this._applyParam(message, contains, 'v1:Contains', true);
+		
+		this.startSoap(message, callback, context);		
+    },
+    
+    /**
+    * Search references options
+    * @typedef {Object} L.SpectrumSpatial.Services.NamedResourceService.SearchReferencesOptions
+    * @property {string} [id] Id of request
+    * @property {string} [locale] Locale
+    * @property {string} [searchPath] Starting search path
+    */
+    
+    /**
+    * The request to search a named resource and return all resources that are referenced in that resource. A list of all named resources that are referenced, and all of the resources that those reference, are returned in the response.
+    * @param {string} namedResource Named resource path
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {L.SpectrumSpatial.Services.NamedResourceService.SearchReferencesOptions} [options] Options
+    */
+    searchReferences: function(namedResource, callback, context, options){
+	    options = options || {};
+	    var message = '<?xml version="1.0"?>' + 
+			          '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.mapinfo.com/midev/service/namedresource/v1">' +  
+						   '<soapenv:Header/>' +
+							   '<soapenv:Body>'+
+							      '<v1:SearchReferencesRequest {id} {locale} >' +
+							        '{v1:SearchPath}'+
+							      	'{v1:NamedResourcePath}'+
+							      '</v1:SearchReferencesRequest>'+
+							   '</soapenv:Body>'+
+					  '</soapenv:Envelope>';		
+		message = this._applyParam(message, options.id, 'id');
+		message = this._applyParam(message, options.locale, 'locale');
+		message = this._applyParam(message, options.searchPath, 'v1:SearchPath', true);
+		message = this._applyParam(message, namedResource, 'v1:NamedResourcePath ', true);
+		
+		this.startSoap(message, callback, context);		
+    },
+    
+    /**
+    * The request to search for all named resources in the repository that use the specified resource in the request. A list of all named resources that use the defined resource is returned in the response.
+    * @param {string} namedResource Named resource path
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {L.SpectrumSpatial.Services.NamedResourceService.SearchReferencesOptions} [options] Options
+    */
+    searchReferencedIn: function(namedResource, callback, context, options){
+	    options = options || {};
+	    var message = '<?xml version="1.0"?>' + 
+			          '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.mapinfo.com/midev/service/namedresource/v1">' +  
+						   '<soapenv:Header/>' +
+							   '<soapenv:Body>'+
+							      '<v1:SearchReferencedInRequest {id} {locale} >' +
+							        '{v1:SearchPath}'+
+							      	'{v1:NamedResourcePath}'+
+							      '</v1:SearchReferencedInRequest>'+
+							   '</soapenv:Body>'+
+					  '</soapenv:Envelope>';		
+		message = this._applyParam(message, options.id, 'id');
+		message = this._applyParam(message, options.locale, 'locale');
+		message = this._applyParam(message, options.searchPath, 'v1:SearchPath', true);
+		message = this._applyParam(message, namedResource, 'v1:NamedResourcePath ', true);
+		
+		this.startSoap(message, callback, context);		
+    },
+    
     _applyParam: function(message, param, name, isNode){
 	    if (isNode){
 		    if (param){
@@ -1920,6 +2010,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
     * Layers control options class
     * @typedef {Object} L.SpectrumSpatial.Controls.Layers.Options
     * @property {string} [maxHeight] Max height of control
+    * @property {string} [maxWidth] Max width of control
     * @property {string} [position] Control position in map
     * @property {boolean} [cssOff] If is true, control rednders without css class ( usefull when you draw outside of the map)
     * @property {boolean} [autoZIndex] If true, Zindexes to overlays will be set automaticly 
@@ -2093,6 +2184,9 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
         
         if (this.options.maxHeight){
 	        this._form.style.maxHeight = this.options.maxHeight;
+        }
+        if (this.options.maxWidth){
+	        this._form.style.maxWidth = this.options.maxWidth;
         }
 
         if (this.options.collapsed) {
@@ -2351,6 +2445,7 @@ L.SpectrumSpatial.Controls.layers = function(baselayers, overlays,options){
     * @property {number} width Width of the individual legend swatch in pixels
     * @property {number} height Height of the individual legend swatch in pixels
     * @property {string} [maxHeight] Max height of control
+    * @property {string} [maxWidth] Max width for control, if overflow - scrolls
     * @property {string} [imageType=png] Type of image ( png, jpg etc.)
     * @property {boolean} [inlineSwatch=true] Determines if the swatch images are returned as data or URL to the image location on the server
     * @property {number} [resolution] Resolution
@@ -2474,6 +2569,9 @@ L.SpectrumSpatial.Controls.layers = function(baselayers, overlays,options){
         this._legendList = L.DomUtil.create('div', this.className + '-list', container);
         if (this.options.maxHeight){
 	        this._legendList.style.maxHeight = this.options.maxHeight;
+        }
+        if (this.options.maxWidth){
+	        this._legendList.style.maxWidth = this.options.maxWidth;
         }
     },
 });
@@ -2711,6 +2809,7 @@ L.SpectrumSpatial.Controls.feature = function(service, featureLayers, options){
     * @property {Object} [onItemClick] On item click. like  function(resource) { resource.name; resource.type; resource.path }
     * @property {Object} [onItemClickContext] Context for on item click function
     * @property {string} [maxHeight] Max height for control, if overflow - scrolls
+    * @property {string} [maxWidth] Max width for control, if overflow - scrolls
     * @property {boolean} [cssOff] If is true, control rednders without css class ( usefull when you draw outside of the map)
     * @property {string} [path] Path to resource
     * @property {string} [resourceType] Type of resources to show
@@ -2907,6 +3006,9 @@ L.SpectrumSpatial.Controls.feature = function(service, featureLayers, options){
         this._resourcesList = L.DomUtil.create('div', this.className + '-list', container);
         if (this.options.maxHeight){
 	        this._resourcesList.style.maxHeight = this.options.maxHeight;
+        }
+        if (this.options.maxWidth){
+	        this._resourcesList.style.maxWidth = this.options.maxWidth;
         }
     },
 });

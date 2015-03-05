@@ -67,6 +67,96 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 		this.startSoap(message, callback, context);		
     },
     
+    /**
+    * The request to search named resources in the repository. The named resource defintion files in the repository are searched for the specified string. A list of all named resources that contain the search string is returned in the response.
+    * @param {string} contains Search criteria
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {L.SpectrumSpatial.Services.NamedResourceService.ListOptions} [options] Options
+    */
+    searchNamedResource: function(contains, callback, context, options){
+	    options = options || {};
+	    var message = '<?xml version="1.0"?>' + 
+			          '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.mapinfo.com/midev/service/namedresource/v1">' +  
+						   '<soapenv:Header/>' +
+							   '<soapenv:Body>'+
+							      '<v1:SearchNamedResourceRequest {id} {locale} {resourceType}>' +
+							        '{v1:Path}'+
+							      	'{v1:Contains}'+
+							      '</v1:SearchNamedResourceRequest>'+
+							   '</soapenv:Body>'+
+					  '</soapenv:Envelope>';		
+		message = this._applyParam(message, options.id, 'id');
+		message = this._applyParam(message, options.locale, 'locale');
+		message = this._applyParam(message, options.resourceType, 'resourceType');
+		message = this._applyParam(message, options.path, 'v1:Path', true);
+		message = this._applyParam(message, contains, 'v1:Contains', true);
+		
+		this.startSoap(message, callback, context);		
+    },
+    
+    /**
+    * Search references options
+    * @typedef {Object} L.SpectrumSpatial.Services.NamedResourceService.SearchReferencesOptions
+    * @property {string} [id] Id of request
+    * @property {string} [locale] Locale
+    * @property {string} [searchPath] Starting search path
+    */
+    
+    /**
+    * The request to search a named resource and return all resources that are referenced in that resource. A list of all named resources that are referenced, and all of the resources that those reference, are returned in the response.
+    * @param {string} namedResource Named resource path
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {L.SpectrumSpatial.Services.NamedResourceService.SearchReferencesOptions} [options] Options
+    */
+    searchReferences: function(namedResource, callback, context, options){
+	    options = options || {};
+	    var message = '<?xml version="1.0"?>' + 
+			          '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.mapinfo.com/midev/service/namedresource/v1">' +  
+						   '<soapenv:Header/>' +
+							   '<soapenv:Body>'+
+							      '<v1:SearchReferencesRequest {id} {locale} >' +
+							        '{v1:SearchPath}'+
+							      	'{v1:NamedResourcePath}'+
+							      '</v1:SearchReferencesRequest>'+
+							   '</soapenv:Body>'+
+					  '</soapenv:Envelope>';		
+		message = this._applyParam(message, options.id, 'id');
+		message = this._applyParam(message, options.locale, 'locale');
+		message = this._applyParam(message, options.searchPath, 'v1:SearchPath', true);
+		message = this._applyParam(message, namedResource, 'v1:NamedResourcePath ', true);
+		
+		this.startSoap(message, callback, context);		
+    },
+    
+    /**
+    * The request to search for all named resources in the repository that use the specified resource in the request. A list of all named resources that use the defined resource is returned in the response.
+    * @param {string} namedResource Named resource path
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {L.SpectrumSpatial.Services.NamedResourceService.SearchReferencesOptions} [options] Options
+    */
+    searchReferencedIn: function(namedResource, callback, context, options){
+	    options = options || {};
+	    var message = '<?xml version="1.0"?>' + 
+			          '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.mapinfo.com/midev/service/namedresource/v1">' +  
+						   '<soapenv:Header/>' +
+							   '<soapenv:Body>'+
+							      '<v1:SearchReferencedInRequest {id} {locale} >' +
+							        '{v1:SearchPath}'+
+							      	'{v1:NamedResourcePath}'+
+							      '</v1:SearchReferencedInRequest>'+
+							   '</soapenv:Body>'+
+					  '</soapenv:Envelope>';		
+		message = this._applyParam(message, options.id, 'id');
+		message = this._applyParam(message, options.locale, 'locale');
+		message = this._applyParam(message, options.searchPath, 'v1:SearchPath', true);
+		message = this._applyParam(message, namedResource, 'v1:NamedResourcePath ', true);
+		
+		this.startSoap(message, callback, context);		
+    },
+    
     _applyParam: function(message, param, name, isNode){
 	    if (isNode){
 		    if (param){
