@@ -6,6 +6,8 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
     /**
     * Layers control options class
     * @typedef {Object} L.SpectrumSpatial.Controls.Layers.Options
+    * @property {string} [maxHeight] Max height of control
+    * @property {string} [maxWidth] Max width of control
     * @property {string} [position] Control position in map
     * @property {boolean} [cssOff] If is true, control rednders without css class ( usefull when you draw outside of the map)
     * @property {boolean} [autoZIndex] If true, Zindexes to overlays will be set automaticly 
@@ -176,6 +178,13 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
         }
 
         var form = this._form = L.DomUtil.create('form', this.className + '-list');
+        
+        if (this.options.maxHeight){
+	        this._form.style.maxHeight = this.options.maxHeight;
+        }
+        if (this.options.maxWidth){
+	        this._form.style.maxWidth = this.options.maxWidth;
+        }
 
         if (this.options.collapsed) {
             if (!L.Browser.android) {

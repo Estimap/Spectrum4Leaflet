@@ -5,12 +5,14 @@ L.SpectrumSpatial.Controls.Legend = L.Control.extend({
     
     /**
     * Legend's options class
-    * @typedef {Object} L.SpectrumSpatial.Controls.Legend.Options
+    * @typedef {Object} L.SpectrumSpatial.Controls.Legend.Options 
     * @property {string} position Control position in map
     * @property {boolean} hasCartographic If is false, cartographic legend will be ignored
     * @property {boolean} cssOff If is true, control rednders without css class ( usefull when you draw outside of the map)
     * @property {number} width Width of the individual legend swatch in pixels
     * @property {number} height Height of the individual legend swatch in pixels
+    * @property {string} [maxHeight] Max height of control
+    * @property {string} [maxWidth] Max width for control, if overflow - scrolls
     * @property {string} [imageType=png] Type of image ( png, jpg etc.)
     * @property {boolean} [inlineSwatch=true] Determines if the swatch images are returned as data or URL to the image location on the server
     * @property {number} [resolution] Resolution
@@ -23,7 +25,7 @@ L.SpectrumSpatial.Controls.Legend = L.Control.extend({
         width:16,
         height:16,
         imageType:'png',
-        hasCartographic:true
+        hasCartographic:true,
     },
 
     /**
@@ -132,6 +134,12 @@ L.SpectrumSpatial.Controls.Legend = L.Control.extend({
     _initLayout: function () {
         var container = this._container = L.DomUtil.create('div', this.options.cssOff ? '' : this.className);
         this._legendList = L.DomUtil.create('div', this.className + '-list', container);
+        if (this.options.maxHeight){
+	        this._legendList.style.maxHeight = this.options.maxHeight;
+        }
+        if (this.options.maxWidth){
+	        this._legendList.style.maxWidth = this.options.maxWidth;
+        }
     },
 });
 

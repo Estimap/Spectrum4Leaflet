@@ -39,6 +39,10 @@
 	border-radius: 5px;
 }
 
+.leaflet-ss-control-layers-list {
+    overflow: scroll;
+}
+
 .leaflet-ss-control-layers .leaflet-ss-control-layers-list,
 .leaflet-ss-control-layers-expanded .leaflet-control-layers-toggle {
 	display: none;
@@ -116,7 +120,7 @@
 }
 
 .leaflet-ss-control-legend-list {
-	
+	overflow: scroll;
 }
 
 .leaflet-ss-control-legend-layer {
@@ -149,7 +153,56 @@
 	background-color: #dcfff0;
 }
 
-.leaflet-retins .leaflet-ss-control-feature-info {
+.leaflet-retina .leaflet-ss-control-feature-info {
 	background-image: url(images/feature-info-2x.png);
 }
+
+/** Resources control **/
+.leaflet-ss-control-resources {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	border-radius: 5px;
+    padding: 6px 6px 6px 6px;
+	color: #333;
+	background: #fff;
+}
+
+.leaflet-ss-control-resources-list {
+	overflow: scroll;
+}
+
+.leaflet-ss-control-resources-directory{
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	background-image: url(images/plus.png);
+}
+
+.leaflet-ss-control-resources-item{
+}
+
+.leaflet-retina .leaflet-ss-control-resources-directory {
+	background-image: url(images/plus-2x.png);
+}
+
+.leaflet-ss-control-resources-directory-expanded{
+	background-image: url(images/minus.png);
+}
+
+.leaflet-retina .leaflet-ss-control-resources-directory-expanded {
+	background-image: url(images/minus-2x.png);
+}
+
+
+.leaflet-ss-control-resources-node {
+	margin-left:16px;
+}
+
+.leaflet-ss-control-resources-node-collapsed {
+	display: none;
+}
+
+.leaflet-ss-control-resources-mainnode {
+	margin-left:0px;
+}
+
 
