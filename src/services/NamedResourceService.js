@@ -68,6 +68,78 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
     },
     
     /**
+    * The request to delete a named resource from the repository. You can only delete individual resource with this operation. You cannot delete entire nodes (folders) in the repository.
+    * @param {string} path Path to named resource
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {string} [id] Request's id
+    * @param {string} [locale] Locale
+    */
+    deleteNamedResource: function(path, callback, context, id, locale){
+	    var message = '<?xml version="1.0"?>' + 
+			          '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.mapinfo.com/midev/service/namedresource/v1">' +  
+						   '<soapenv:Header/>' +
+							   '<soapenv:Body>'+
+							      '<v1:DeleteNamedResourceRequest {id} {locale}>' +
+							      	'{v1:Path}'+
+							      '</v1:DeleteNamedResourceRequest>'+
+							   '</soapenv:Body>'+
+					  '</soapenv:Envelope>';		
+		message = this._applyParam(message, id, 'id');
+		message = this._applyParam(message, locale, 'locale');
+		message = this._applyParam(message, path, 'v1:Path', true);
+		this.startSoap(message, callback, context);		
+    },
+    
+    /**
+    * The request to import a new named resource into the repository.
+    * @param {string} resourceXmlText String representation of resource xml node
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {string} [id] Request's id
+    * @param {string} [locale] Locale
+    */
+    addNamedResource: function(resourceXmlText, callback, context, id, locale){
+	    var message = '<?xml version="1.0"?>' + 
+			          '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.mapinfo.com/midev/service/namedresource/v1">' +  
+						   '<soapenv:Header/>' +
+							   '<soapenv:Body>'+
+							      '<v1:AddNamedResourceRequest {id} {locale}>' +
+							      	'{v1:Resource}'+
+							      '</v1:AddNamedResourceRequest>'+
+							   '</soapenv:Body>'+
+					  '</soapenv:Envelope>';		
+		message = this._applyParam(message, id, 'id');
+		message = this._applyParam(message, locale, 'locale');
+		message = this._applyParam(message, resourceXmlText, 'v1:Resource', true);
+		this.startSoap(message, callback, context);		
+    },
+    
+    /**
+    * The request to update an existing named resource in to the repository. This operation will replace the existing resource in the repository with the resource defined in the request. The resource type of the resource defined in the request, must match the resource type of the existing resource in the repository.
+    * @param {string} resourceXmlText String representation of resource xml node
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {string} [id] Request's id
+    * @param {string} [locale] Locale
+    */
+    updateNamedResource: function(resourceXmlText, callback, context, id, locale){
+	    var message = '<?xml version="1.0"?>' + 
+			          '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.mapinfo.com/midev/service/namedresource/v1">' +  
+						   '<soapenv:Header/>' +
+							   '<soapenv:Body>'+
+							      '<v1:UpdateNamedResourceRequest {id} {locale}>' +
+							      	'{v1:Resource}'+
+							      '</v1:UpdateNamedResourceRequest>'+
+							   '</soapenv:Body>'+
+					  '</soapenv:Envelope>';		
+		message = this._applyParam(message, id, 'id');
+		message = this._applyParam(message, locale, 'locale');
+		message = this._applyParam(message, resourceXmlText, 'v1:Resource', true);
+		this.startSoap(message, callback, context);		
+    },
+    
+    /**
     * The request to search named resources in the repository. The named resource defintion files in the repository are searched for the specified string. A list of all named resources that contain the search string is returned in the response.
     * @param {string} contains Search criteria
     * @param {Request.Callback} callback Callback of the function
