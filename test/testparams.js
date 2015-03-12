@@ -173,6 +173,26 @@ server.handle = function (request) {
                if (request.requestText.indexOf('ReadNamedResourceRequest')!==-1){
 	               recieve(request, '<?xml version="1.0"?><Resource></Resource>' , 'text/xml');
                }
+               if (request.requestText.indexOf('DeleteNamedResourceRequest')!==-1){
+	               recieve(request, '<?xml version="1.0"?><Status>true</Status>' , 'text/xml');
+               }
+               if (request.requestText.indexOf('AddNamedResourceRequest')!==-1){
+	               recieve(request, '<?xml version="1.0"?><Status>true</Status>' , 'text/xml');
+               }
+               if (request.requestText.indexOf('UpdateNamedResourceRequest')!==-1){
+	               recieve(request, '<?xml version="1.0"?><Status>true</Status>' , 'text/xml');
+               }
+               if (request.requestText.indexOf('<v1:Contains>/Samples</v1:Contains>')!==-1){
+	               recieve(request, '<?xml version="1.0"?><Resource></Resource>' , 'text/xml');
+               }
+               if ((request.requestText.indexOf('SearchReferencesRequest')!==-1)&
+                  (request.requestText.indexOf('<v1:NamedResourcePath>/Samples/NamedMaps/MapWithLayer</v1:NamedResourcePath>')!==-1)){
+	               recieve(request, '<?xml version="1.0"?><Resource></Resource>' , 'text/xml');
+               }
+               if ((request.requestText.indexOf('SearchReferencedInRequest')!==-1)&
+                  (request.requestText.indexOf('<v1:NamedResourcePath>/Samples/NamedMaps/MapWithLayer</v1:NamedResourcePath>')!==-1)){
+	               recieve(request, '<?xml version="1.0"?><Resource></Resource>' , 'text/xml');
+               }
 	        }
 	    break;
 	    default:

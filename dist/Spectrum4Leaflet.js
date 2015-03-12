@@ -1505,7 +1505,7 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 		message = this._applyParam(message, options.id, 'id');
 		message = this._applyParam(message, options.locale, 'locale');
 		message = this._applyParam(message, options.searchPath, 'v1:SearchPath', true);
-		message = this._applyParam(message, namedResource, 'v1:NamedResourcePath ', true);
+		message = this._applyParam(message, namedResource, 'v1:NamedResourcePath', true);
 		
 		this.startSoap(message, callback, context);		
     },
@@ -1532,7 +1532,7 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 		message = this._applyParam(message, options.id, 'id');
 		message = this._applyParam(message, options.locale, 'locale');
 		message = this._applyParam(message, options.searchPath, 'v1:SearchPath', true);
-		message = this._applyParam(message, namedResource, 'v1:NamedResourcePath ', true);
+		message = this._applyParam(message, namedResource, 'v1:NamedResourcePath', true);
 		
 		this.startSoap(message, callback, context);		
     },
@@ -1551,9 +1551,11 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 	    }
 	    return message.replace('{'+name+'}', '');
     }
-    
-    
-});;L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
+});
+
+L.SpectrumSpatial.Services.namedResourceService = function(url,options){
+  return new L.SpectrumSpatial.Services.NamedResourceService(url,options);
+};;L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
 /** @lends L.SpectrumSpatial.Layers.MapServiceLayer.prototype */
 
 
