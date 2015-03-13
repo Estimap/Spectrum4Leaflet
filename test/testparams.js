@@ -195,6 +195,13 @@ server.handle = function (request) {
                }
 	        }
 	    break;
+	    case 'http://GeometryService/':
+            if (request.method === 'POST'){
+               if (request.requestText.indexOf('BufferRequest')!==-1){
+	               recieve(request, '<?xml version="1.0"?><BufferResponse></BufferResponse>' , 'text/xml');
+               }
+	        }
+	    break;
 	    default:
             recieve(request, 'I am Bender, please insert girder!','application/robot');
 	    break;

@@ -120,6 +120,29 @@ L.SpectrumSpatial.Services.Service = L.Class.extend(
     },
     
     /**
+    * Applies param to xml string 
+    * @param {string} message
+    * @param {Object} param Param value
+    * @param {string} name Param name
+    * @param {boolean} isNode if parameter is xml node
+    * @returns {string}
+    */
+    applyParamToXml: function(message, param, name, isNode){
+	    if (isNode){
+		    if (param){
+			    return message.replace('{'+name+'}', L.Util.template('<{name}>{value}</{name}>', { name:name, value:param }));
+		    }
+		    return message.replace('{'+name+'}', '');
+	    }
+	    
+	    
+	    if (param){
+		    return message.replace('{'+name+'}', name + '="' + param + '"');
+	    }
+	    return message.replace('{'+name+'}', '');
+    },
+    
+    /**
     * Encode specified url if options.encodeUrlForProxy is true
     * @param {string} url
     * @returns {string}

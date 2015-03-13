@@ -35,10 +35,10 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '</v1:ListNamedResourceRequest>'+
 							   '</soapenv:Body>'+
 					  '</soapenv:Envelope>';		
-		message = this._applyParam(message, options.id, 'id');
-		message = this._applyParam(message, options.locale, 'locale');
-		message = this._applyParam(message, options.resourceType, 'resourceType');
-		message = this._applyParam(message, options.path, 'v1:Path', true);
+		message = this.applyParamToXml(message, options.id, 'id');
+		message = this.applyParamToXml(message, options.locale, 'locale');
+		message = this.applyParamToXml(message, options.resourceType, 'resourceType');
+		message = this.applyParamToXml(message, options.path, 'v1:Path', true);
 		
 		this.startSoap(message, callback, context);		
     },
@@ -61,9 +61,9 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '</v1:ReadNamedResourceRequest>'+
 							   '</soapenv:Body>'+
 					  '</soapenv:Envelope>';		
-		message = this._applyParam(message, id, 'id');
-		message = this._applyParam(message, locale, 'locale');
-		message = this._applyParam(message, path, 'v1:Path', true);
+		message = this.applyParamToXml(message, id, 'id');
+		message = this.applyParamToXml(message, locale, 'locale');
+		message = this.applyParamToXml(message, path, 'v1:Path', true);
 		this.startSoap(message, callback, context);		
     },
     
@@ -85,9 +85,9 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '</v1:DeleteNamedResourceRequest>'+
 							   '</soapenv:Body>'+
 					  '</soapenv:Envelope>';		
-		message = this._applyParam(message, id, 'id');
-		message = this._applyParam(message, locale, 'locale');
-		message = this._applyParam(message, path, 'v1:Path', true);
+		message = this.applyParamToXml(message, id, 'id');
+		message = this.applyParamToXml(message, locale, 'locale');
+		message = this.applyParamToXml(message, path, 'v1:Path', true);
 		this.startSoap(message, callback, context);		
     },
     
@@ -109,9 +109,9 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '</v1:AddNamedResourceRequest>'+
 							   '</soapenv:Body>'+
 					  '</soapenv:Envelope>';		
-		message = this._applyParam(message, id, 'id');
-		message = this._applyParam(message, locale, 'locale');
-		message = this._applyParam(message, resourceXmlText, 'v1:Resource', true);
+		message = this.applyParamToXml(message, id, 'id');
+		message = this.applyParamToXml(message, locale, 'locale');
+		message = this.applyParamToXml(message, resourceXmlText, 'v1:Resource', true);
 		this.startSoap(message, callback, context);		
     },
     
@@ -133,9 +133,9 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '</v1:UpdateNamedResourceRequest>'+
 							   '</soapenv:Body>'+
 					  '</soapenv:Envelope>';		
-		message = this._applyParam(message, id, 'id');
-		message = this._applyParam(message, locale, 'locale');
-		message = this._applyParam(message, resourceXmlText, 'v1:Resource', true);
+		message = this.applyParamToXml(message, id, 'id');
+		message = this.applyParamToXml(message, locale, 'locale');
+		message = this.applyParamToXml(message, resourceXmlText, 'v1:Resource', true);
 		this.startSoap(message, callback, context);		
     },
     
@@ -158,11 +158,11 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '</v1:SearchNamedResourceRequest>'+
 							   '</soapenv:Body>'+
 					  '</soapenv:Envelope>';		
-		message = this._applyParam(message, options.id, 'id');
-		message = this._applyParam(message, options.locale, 'locale');
-		message = this._applyParam(message, options.resourceType, 'resourceType');
-		message = this._applyParam(message, options.path, 'v1:Path', true);
-		message = this._applyParam(message, contains, 'v1:Contains', true);
+		message = this.applyParamToXml(message, options.id, 'id');
+		message = this.applyParamToXml(message, options.locale, 'locale');
+		message = this.applyParamToXml(message, options.resourceType, 'resourceType');
+		message = this.applyParamToXml(message, options.path, 'v1:Path', true);
+		message = this.applyParamToXml(message, contains, 'v1:Contains', true);
 		
 		this.startSoap(message, callback, context);		
     },
@@ -194,10 +194,10 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '</v1:SearchReferencesRequest>'+
 							   '</soapenv:Body>'+
 					  '</soapenv:Envelope>';		
-		message = this._applyParam(message, options.id, 'id');
-		message = this._applyParam(message, options.locale, 'locale');
-		message = this._applyParam(message, options.searchPath, 'v1:SearchPath', true);
-		message = this._applyParam(message, namedResource, 'v1:NamedResourcePath', true);
+		message = this.applyParamToXml(message, options.id, 'id');
+		message = this.applyParamToXml(message, options.locale, 'locale');
+		message = this.applyParamToXml(message, options.searchPath, 'v1:SearchPath', true);
+		message = this.applyParamToXml(message, namedResource, 'v1:NamedResourcePath', true);
 		
 		this.startSoap(message, callback, context);		
     },
@@ -221,27 +221,12 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '</v1:SearchReferencedInRequest>'+
 							   '</soapenv:Body>'+
 					  '</soapenv:Envelope>';		
-		message = this._applyParam(message, options.id, 'id');
-		message = this._applyParam(message, options.locale, 'locale');
-		message = this._applyParam(message, options.searchPath, 'v1:SearchPath', true);
-		message = this._applyParam(message, namedResource, 'v1:NamedResourcePath', true);
+		message = this.applyParamToXml(message, options.id, 'id');
+		message = this.applyParamToXml(message, options.locale, 'locale');
+		message = this.applyParamToXml(message, options.searchPath, 'v1:SearchPath', true);
+		message = this.applyParamToXml(message, namedResource, 'v1:NamedResourcePath', true);
 		
 		this.startSoap(message, callback, context);		
-    },
-    
-    _applyParam: function(message, param, name, isNode){
-	    if (isNode){
-		    if (param){
-			    return message.replace('{'+name+'}', L.Util.template('<{name}>{value}</{name}>', { name:name, value:param }));
-		    }
-		    return message.replace('{'+name+'}', '');
-	    }
-	    
-	    
-	    if (param){
-		    return message.replace('{'+name+'}', name + '="' + param + '"');
-	    }
-	    return message.replace('{'+name+'}', '');
     }
 });
 

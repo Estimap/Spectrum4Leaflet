@@ -1,17 +1,3 @@
-test( 'Services.NamedResourceService._applyParam test', function() {
-   var service = new L.SpectrumSpatial.Services.NamedResourceService('http://NamedResourceService/');
-   var message = '<elem {id} ></elem>';
-   var id = undefined;
-   equal(service._applyParam(message,id,'id'),  '<elem  ></elem>', 'id is undefined');
-   id = 'id1';
-   equal(service._applyParam(message,id,'id'),  '<elem id="id1" ></elem>', 'id is id1');
-   
-   message = '<elem>{inner}</elem>';
-   var inner = undefined;
-   equal(service._applyParam(message,inner,'inner', true),  '<elem></elem>', 'inner is undefined');
-   inner = "data";
-   equal(service._applyParam(message,inner,'inner', true),  '<elem><inner>data</inner></elem>', 'inner has data');
-});
 
 asyncTest('Services.NamedResourceService.listNamedResources test', function() {
     expect(1);
