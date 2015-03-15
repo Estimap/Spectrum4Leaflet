@@ -10,7 +10,8 @@ module.exports = function(grunt) {
       dist: {
         src:  [
 		     'src/Spectrum4Leaflet.js',
-		     'src/Utils.js',
+		     'src/utils/Utils.js',
+		     'src/utils/Xml.js',
 		     'src/geo/projection/Projection.Mercator.js',
 		     'src/geo/crs/CRS.EPSG41001.js',
 		     'src/Request.js',
@@ -20,6 +21,7 @@ module.exports = function(grunt) {
 		     'src/services/TileService.js',
 		     'src/services/FeatureService.js',
 		     'src/services/NamedResourceService.js',
+		     'src/services/GeometryService.js',
 		     'src/layers/MapServiceLayer.js',
 		     'src/layers/TileServiceLayer.js',
 		     'src/controls/Layers.js',

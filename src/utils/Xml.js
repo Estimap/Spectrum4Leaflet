@@ -26,11 +26,13 @@ L.SpectrumSpatial.Utils.Xml = {
 			   L.SpectrumSpatial.Utils.Xml.fromPoint(envelope.max,ns);
 	},
 	
-	fromGeometry: function(geometry, type, srsName, ns1,ns2){
+	fromGeometry: function(geometry, type, srsName, ns1,ns2, geometryNodeName){
 		var data;
 		ns1 = L.SpectrumSpatial.Utils.Xml.checkNs(ns1);
 		ns2 = L.SpectrumSpatial.Utils.Xml.checkNs(ns2);
-		
+		if (!geometryNodeName){
+			geometryNodeName = 'Geometry';
+		}
 		switch(type){
 			case 'Point':
 			data = L.SpectrumSpatial.Utils.Xml.fromPoint(geometry,ns2);
@@ -39,13 +41,14 @@ L.SpectrumSpatial.Utils.Xml = {
 			data = L.SpectrumSpatial.Utils.Xml.fromEnvelope(geometry,ns2);
 			break;
 		}		
-		return L.Util.template('<{ns1}Geometry xsi:type="{ns2}{type}" srsName="{srsName}">{data}</{ns1}Geometry>', 
+		return L.Util.template('<{ns1}{nodeName} xsi:type="{ns2}{type}" srsName="{srsName}">{data}</{ns1}{nodeName}>', 
 								{   
 									ns1:ns1, 
 									ns2:ns2, 
 									type:type, 
 									data:data, 
-									srsName:srsName 
+									srsName:srsName,
+									nodeName: geometryNodeName
 								});
 	}
 };
