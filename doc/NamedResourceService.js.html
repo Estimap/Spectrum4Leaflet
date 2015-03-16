@@ -62,10 +62,10 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '&lt;/v1:ListNamedResourceRequest>'+
 							   '&lt;/soapenv:Body>'+
 					  '&lt;/soapenv:Envelope>';		
-		message = this._applyParam(message, options.id, 'id');
-		message = this._applyParam(message, options.locale, 'locale');
-		message = this._applyParam(message, options.resourceType, 'resourceType');
-		message = this._applyParam(message, options.path, 'v1:Path', true);
+		message = this.applyParamToXml(message, options.id, 'id');
+		message = this.applyParamToXml(message, options.locale, 'locale');
+		message = this.applyParamToXml(message, options.resourceType, 'resourceType');
+		message = this.applyParamToXml(message, options.path, 'v1:Path', true);
 		
 		this.startSoap(message, callback, context);		
     },
@@ -88,9 +88,9 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '&lt;/v1:ReadNamedResourceRequest>'+
 							   '&lt;/soapenv:Body>'+
 					  '&lt;/soapenv:Envelope>';		
-		message = this._applyParam(message, id, 'id');
-		message = this._applyParam(message, locale, 'locale');
-		message = this._applyParam(message, path, 'v1:Path', true);
+		message = this.applyParamToXml(message, id, 'id');
+		message = this.applyParamToXml(message, locale, 'locale');
+		message = this.applyParamToXml(message, path, 'v1:Path', true);
 		this.startSoap(message, callback, context);		
     },
     
@@ -112,9 +112,9 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '&lt;/v1:DeleteNamedResourceRequest>'+
 							   '&lt;/soapenv:Body>'+
 					  '&lt;/soapenv:Envelope>';		
-		message = this._applyParam(message, id, 'id');
-		message = this._applyParam(message, locale, 'locale');
-		message = this._applyParam(message, path, 'v1:Path', true);
+		message = this.applyParamToXml(message, id, 'id');
+		message = this.applyParamToXml(message, locale, 'locale');
+		message = this.applyParamToXml(message, path, 'v1:Path', true);
 		this.startSoap(message, callback, context);		
     },
     
@@ -136,9 +136,9 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '&lt;/v1:AddNamedResourceRequest>'+
 							   '&lt;/soapenv:Body>'+
 					  '&lt;/soapenv:Envelope>';		
-		message = this._applyParam(message, id, 'id');
-		message = this._applyParam(message, locale, 'locale');
-		message = this._applyParam(message, resourceXmlText, 'v1:Resource', true);
+		message = this.applyParamToXml(message, id, 'id');
+		message = this.applyParamToXml(message, locale, 'locale');
+		message = this.applyParamToXml(message, resourceXmlText, 'v1:Resource', true);
 		this.startSoap(message, callback, context);		
     },
     
@@ -160,9 +160,9 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '&lt;/v1:UpdateNamedResourceRequest>'+
 							   '&lt;/soapenv:Body>'+
 					  '&lt;/soapenv:Envelope>';		
-		message = this._applyParam(message, id, 'id');
-		message = this._applyParam(message, locale, 'locale');
-		message = this._applyParam(message, resourceXmlText, 'v1:Resource', true);
+		message = this.applyParamToXml(message, id, 'id');
+		message = this.applyParamToXml(message, locale, 'locale');
+		message = this.applyParamToXml(message, resourceXmlText, 'v1:Resource', true);
 		this.startSoap(message, callback, context);		
     },
     
@@ -185,11 +185,11 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '&lt;/v1:SearchNamedResourceRequest>'+
 							   '&lt;/soapenv:Body>'+
 					  '&lt;/soapenv:Envelope>';		
-		message = this._applyParam(message, options.id, 'id');
-		message = this._applyParam(message, options.locale, 'locale');
-		message = this._applyParam(message, options.resourceType, 'resourceType');
-		message = this._applyParam(message, options.path, 'v1:Path', true);
-		message = this._applyParam(message, contains, 'v1:Contains', true);
+		message = this.applyParamToXml(message, options.id, 'id');
+		message = this.applyParamToXml(message, options.locale, 'locale');
+		message = this.applyParamToXml(message, options.resourceType, 'resourceType');
+		message = this.applyParamToXml(message, options.path, 'v1:Path', true);
+		message = this.applyParamToXml(message, contains, 'v1:Contains', true);
 		
 		this.startSoap(message, callback, context);		
     },
@@ -221,10 +221,10 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '&lt;/v1:SearchReferencesRequest>'+
 							   '&lt;/soapenv:Body>'+
 					  '&lt;/soapenv:Envelope>';		
-		message = this._applyParam(message, options.id, 'id');
-		message = this._applyParam(message, options.locale, 'locale');
-		message = this._applyParam(message, options.searchPath, 'v1:SearchPath', true);
-		message = this._applyParam(message, namedResource, 'v1:NamedResourcePath ', true);
+		message = this.applyParamToXml(message, options.id, 'id');
+		message = this.applyParamToXml(message, options.locale, 'locale');
+		message = this.applyParamToXml(message, options.searchPath, 'v1:SearchPath', true);
+		message = this.applyParamToXml(message, namedResource, 'v1:NamedResourcePath', true);
 		
 		this.startSoap(message, callback, context);		
     },
@@ -248,31 +248,18 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 							      '&lt;/v1:SearchReferencedInRequest>'+
 							   '&lt;/soapenv:Body>'+
 					  '&lt;/soapenv:Envelope>';		
-		message = this._applyParam(message, options.id, 'id');
-		message = this._applyParam(message, options.locale, 'locale');
-		message = this._applyParam(message, options.searchPath, 'v1:SearchPath', true);
-		message = this._applyParam(message, namedResource, 'v1:NamedResourcePath ', true);
+		message = this.applyParamToXml(message, options.id, 'id');
+		message = this.applyParamToXml(message, options.locale, 'locale');
+		message = this.applyParamToXml(message, options.searchPath, 'v1:SearchPath', true);
+		message = this.applyParamToXml(message, namedResource, 'v1:NamedResourcePath', true);
 		
 		this.startSoap(message, callback, context);		
-    },
-    
-    _applyParam: function(message, param, name, isNode){
-	    if (isNode){
-		    if (param){
-			    return message.replace('{'+name+'}', L.Util.template('&lt;{name}>{value}&lt;/{name}>', { name:name, value:param }));
-		    }
-		    return message.replace('{'+name+'}', '');
-	    }
-	    
-	    
-	    if (param){
-		    return message.replace('{'+name+'}', name + '="' + param + '"');
-	    }
-	    return message.replace('{'+name+'}', '');
     }
-    
-    
-});</code></pre>
+});
+
+L.SpectrumSpatial.Services.namedResourceService = function(url,options){
+  return new L.SpectrumSpatial.Services.NamedResourceService(url,options);
+};</code></pre>
         </article>
     </section>
 
@@ -282,13 +269,13 @@ L.SpectrumSpatial.Services.NamedResourceService = L.SpectrumSpatial.Services.Ser
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Feature.html">Feature</a></li><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Controls.Resources.html">Resources</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.FeatureService.html">FeatureService</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.NamedResourceService.html">NamedResourceService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.CRS.html">CRS</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Defaults.html">Defaults</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Projections.html">Projections</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Feature.html">Feature</a></li><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Controls.Resources.html">Resources</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.FeatureService.html">FeatureService</a></li><li><a href="L.SpectrumSpatial.Services.GeometryService.html">GeometryService</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.NamedResourceService.html">NamedResourceService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.CRS.html">CRS</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Defaults.html">Defaults</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Projections.html">Projections</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li><li><a href="L.SpectrumSpatial.Utils.Xml.html">Xml</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Thu Mar 12 2015 14:24:05 GMT+0400 (MSK)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a> on Mon Mar 16 2015 18:44:06 GMT+0400 (MSK)
 </footer>
 
 <script> prettyPrint(); </script>
