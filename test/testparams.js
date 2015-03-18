@@ -4,6 +4,23 @@ var servicetimeout = 50;
 This code hides XMLHttpRequest to MockHttpRequest for tests
 */
 
+function parseXml(data){
+	var xmlDoc;
+    try {
+        if (window.DOMParser) {
+            var parser = new DOMParser();
+            xmlDoc = parser.parseFromString(data, "text/xml");
+        } else { // Internet Explorer
+            xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+            xmlDoc.async = "false";
+            xmlDoc.loadXML(data);
+        }
+    } catch (e) {
+        xmlDoc = null;
+    }
+    return xmlDoc;
+}
+
 function recieve(request, returnedObject, type){
 	if (!type){
 	    type = 'application/json';
@@ -196,9 +213,22 @@ server.handle = function (request) {
 	        }
 	    break;
 	    case 'http://GeometryService/':
-            if (request.method === 'POST'){
-               if (request.requestText.indexOf('BufferRequest')!==-1){
-	               recieve(request, '<?xml version="1.0"?><BufferResponse></BufferResponse>' , 'text/xml');
+            if (request.method === 'POST'){	           
+	           var xmlDoc = parseXml(request.requestText);      
+	           var requestNode = xmlDoc.documentElement.getElementsByTagName('Body')[0].childNodes[0];
+	           
+               if (requestNode.nodeName ==='v1:BufferRequest'){
+	               var geometry = requestNode.getElementsByTagName('Geometry')[0];
+	               if (geometry.attributes['xsi:type'].value === 'v11:Envelope'){
+		               recieve(request, '<?xml version="1.0"?><BufferResponse></BufferResponse>' , 'text/xml');
+	               }
+               }
+               
+               if ((requestNode.nodeName ==='v1:AreaRequest') && (requestNode.attributes['areaUnit'].value==='meters')){
+	               var geometry = requestNode.getElementsByTagName('Geometry')[0];
+	               if (geometry.attributes['xsi:type'].value === 'v11:Envelope'){
+		               recieve(request, '<?xml version="1.0"?><AreaResponse></AreaResponse>' , 'text/xml');
+	               }
                }
 	        }
 	    break;

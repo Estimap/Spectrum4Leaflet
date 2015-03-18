@@ -181,6 +181,11 @@ L.SpectrumSpatial.Utils = {
 */
 L.SpectrumSpatial.Utils.Xml = {
 	
+	/**
+	* Checking xml namespace, if null return '', if does not have ':', adds it
+	* @param {string} ns Namespace
+	* @returns {string}
+	*/
 	checkNs : function(ns){
 	   	if ((!ns) || (ns==='')){
 			ns = '';
@@ -193,16 +198,38 @@ L.SpectrumSpatial.Utils.Xml = {
 		return ns;
 	},
 	
+	/**
+	* Serializes point to xml string
+	* @param {Object} point Point to serialize
+	* @param {string} [ns] namespace
+	* @returns {string}
+	*/
 	fromPoint : function(point, ns){
 		ns = L.SpectrumSpatial.Utils.Xml.checkNs(ns);
 		return L.Util.template('<{ns}Pos><{ns}X>{x}</{ns}X><{ns}Y>{y}</{ns}Y></{ns}Pos>', { x: point.x, y:point.y, ns:ns });
 	},
 	
+	/**
+	* Serializes envelope to xml string
+	* @param {Object} envelope Envelope to serialize
+	* @param {string} [ns] namespace
+	* @returns {string}
+	*/
 	fromEnvelope: function(envelope,ns){
 		return L.SpectrumSpatial.Utils.Xml.fromPoint(envelope.min,ns)+
 			   L.SpectrumSpatial.Utils.Xml.fromPoint(envelope.max,ns);
 	},
 	
+	/**
+	* Serializes geometry to xml string
+	* @param {Object} geometry Geometry to serialize
+	* @param {string} type Type of geometry
+	* @param {string} srsName Spatial reference of geometry
+	* @param {string} ns1 namespace for geometry
+	* @param {string} ns2 namespace for geometry elements
+	* @param {string} [geometryNodeName=Geometry] Name of root element
+	* @returns {string}
+	*/
 	fromGeometry: function(geometry, type, srsName, ns1,ns2, geometryNodeName){
 		var data;
 		ns1 = L.SpectrumSpatial.Utils.Xml.checkNs(ns1);
@@ -1638,17 +1665,17 @@ L.SpectrumSpatial.Services.GeometryService = L.SpectrumSpatial.Services.Service.
 	    options = options || {};
 	    var message = '<?xml version="1.0"?>' + 
 			          '<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.mapinfo.com/midev/service/geometry/v1" xmlns:v11="http://www.mapinfo.com/midev/service/geometries/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'+
-			          '<S:Header/>' + 
-			          '<S:Body>' + 
-				          '<v1:{requestName} {id} {locale} {responseSrsName} {additionalParams} >' +
-					          '{requestParams}' +
-					      '</v1:{requestName}></S:Body></S:Envelope>';	
+				          '<S:Header/>' + 
+				          '<S:Body>' + 
+					          '<v1:{requestName} {id} {locale} {responseSrsName} {additionalParams} >' +
+						          '{requestParams}' +
+						      '</v1:{requestName}>' + 
+						  '</S:Body>' + 
+					  '</S:Envelope>';	
 	    message = this.applyParamToXml(message, options.id, 'id');
 		message = this.applyParamToXml(message, options.locale, 'locale');
 		message = this.applyParamToXml(message, options.responseSrsName, 'responseSrsName');
-		message = message.replace('{additionalParams}', additionalParams)
-		                 .replace('{requestName}', requestName)
-		                 .replace('{requestParams}', requestParams);
+		message = L.Util.template(message, { requestName:requestName,requestParams:requestParams, additionalParams:additionalParams  });
 	    this.startSoap(message, callback, context);	
     },
 	
@@ -1704,7 +1731,7 @@ L.SpectrumSpatial.Services.GeometryService = L.SpectrumSpatial.Services.Service.
 	    var argumentsmessage = '<v1:Distance {uom} >{distance}</v1:Distance>{geometry}';
 	   
 	    paramsmessage = this.applyParamToXml(paramsmessage, options.resolution, 'resolution'); 
-	    argumentsmessage = this.applyParamToXml(argumentsmessage, options.units, 'uow');
+	    argumentsmessage = this.applyParamToXml(argumentsmessage, options.units, 'uom');
 		argumentsmessage = argumentsmessage.replace('{distance}', distance).replace('{geometry}', geometry);
 	    
 	    this._createRequest('BufferRequest', argumentsmessage,paramsmessage, callback,context,options);	

@@ -20,17 +20,17 @@ L.SpectrumSpatial.Services.GeometryService = L.SpectrumSpatial.Services.Service.
 	    options = options || {};
 	    var message = '<?xml version="1.0"?>' + 
 			          '<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.mapinfo.com/midev/service/geometry/v1" xmlns:v11="http://www.mapinfo.com/midev/service/geometries/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'+
-			          '<S:Header/>' + 
-			          '<S:Body>' + 
-				          '<v1:{requestName} {id} {locale} {responseSrsName} {additionalParams} >' +
-					          '{requestParams}' +
-					      '</v1:{requestName}></S:Body></S:Envelope>';	
+				          '<S:Header/>' + 
+				          '<S:Body>' + 
+					          '<v1:{requestName} {id} {locale} {responseSrsName} {additionalParams} >' +
+						          '{requestParams}' +
+						      '</v1:{requestName}>' + 
+						  '</S:Body>' + 
+					  '</S:Envelope>';	
 	    message = this.applyParamToXml(message, options.id, 'id');
 		message = this.applyParamToXml(message, options.locale, 'locale');
 		message = this.applyParamToXml(message, options.responseSrsName, 'responseSrsName');
-		message = message.replace('{additionalParams}', additionalParams)
-		                 .replace('{requestName}', requestName)
-		                 .replace('{requestParams}', requestParams);
+		message = L.Util.template(message, { requestName:requestName,requestParams:requestParams, additionalParams:additionalParams  });
 	    this.startSoap(message, callback, context);	
     },
 	
@@ -86,7 +86,7 @@ L.SpectrumSpatial.Services.GeometryService = L.SpectrumSpatial.Services.Service.
 	    var argumentsmessage = '<v1:Distance {uom} >{distance}</v1:Distance>{geometry}';
 	   
 	    paramsmessage = this.applyParamToXml(paramsmessage, options.resolution, 'resolution'); 
-	    argumentsmessage = this.applyParamToXml(argumentsmessage, options.units, 'uow');
+	    argumentsmessage = this.applyParamToXml(argumentsmessage, options.units, 'uom');
 		argumentsmessage = argumentsmessage.replace('{distance}', distance).replace('{geometry}', geometry);
 	    
 	    this._createRequest('BufferRequest', argumentsmessage,paramsmessage, callback,context,options);	
