@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resources control example</title>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../lib/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="../dist/Spectrum4Leaflet.css" />
+</head>
+<body>
+    <div id="map" style="width: 640px; height: 480px"></div>
+    <br/>
+    <label for="ssurl">Spectrum Spatial named resource service url</label>
+    <input type="text" id="ssurl"></input>
+    <br/>
+    <label for="proxy">Proxy url</label>
+    <input type="text" id="proxy"></input>
+    <input type="button" onclick="addResourceControl()" value="Add" />
+    <script src="../lib/leaflet/leaflet-src.js"></script>
+    <script src="../dist/Spectrum4Leaflet.js"></script>
+    <script>
+
+        var map = L.map('map').setView([0, 0], 1);
+        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {minZoom: 0, maxZoom: 18, attribution: 'OpenStreetMap'}).addTo(map);
+
+        function addResourceControl(){
+            
+            var options ={};
+            if (document.getElementById("proxy").value!==''){
+                options.proxyUrl = document.getElementById("proxy").value;
+            }
+            
+            var service = new L.SpectrumSpatial.Services.NamedResourceService(document.getElementById("ssurl").value,
+                                                                              options
+                                                                              );
+            L.SpectrumSpatial.Controls.resources(service).addTo(map);               
+        }
+
+    </script>
+</body>
+</html>

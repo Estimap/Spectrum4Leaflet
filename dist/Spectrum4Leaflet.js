@@ -3429,7 +3429,7 @@ L.SpectrumSpatial.Controls.feature = function(service, featureLayers, options){
 		        if (!nrNode.firstChild){
 			        continue;
 		        }
-		        path = this._service.clearParam(nrNode.firstChild.innerHTML);
+		        path = this._service.clearParam(nrNode.firstChild.innerHTML || nrNode.firstChild.textContent);
 		        var resource = { 
 							        type:  (nrNode.attributes && nrNode.attributes.resourceType)? nrNode.attributes.resourceType.value : undefined,
 							        path : path

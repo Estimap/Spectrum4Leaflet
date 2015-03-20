@@ -16,14 +16,14 @@
 	<br/>
 	<label for="mapname">Spectrum Spatial tiled map name</label>
 	<input type="text" id="mapname"></input>
-	<input type="button" onclick="addMapServiceLayer()" value="Add" />
+	<input type="button" onclick="addTileServiceLayer()" value="Add" />
     <script src="../lib/leaflet/leaflet-src.js"></script>
     <script src="../dist/Spectrum4Leaflet.js"></script>
 	<script>
 
 		var map = L.map('map', { crs:  L.CRS.EPSG41001 } ).setView([0, 0], 0);
         		
-		function addMapServiceLayer(){
+		function addTileServiceLayer(){
 		    var serviceUrl = document.getElementById("ssurl").value;
 		    var mapName =  document.getElementById("mapname").value;
 		    

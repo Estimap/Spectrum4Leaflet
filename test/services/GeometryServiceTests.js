@@ -30,7 +30,22 @@
 	
 	asyncTest('Services.GeometryService.area test', function() {
 	    expect(1);
-
+	    
+	    service.area(geometryXmlText, 'meters', callback,{});
+	
+	    function theTest() {         
+	        equal(returnXmlData.documentElement.nodeName, 
+	              'AreaResponse' , 
+	              'Server should return AreaResponse');
+	        start();
+	    }
+	    	
+	    setTimeout(theTest, servicetimeout); 
+	});
+	
+	asyncTest('Services.GeometryService.area test', function() {
+	    expect(1);
+	    
 	    service.area(geometryXmlText, 'meters', callback,{});
 	
 	    function theTest() {         
