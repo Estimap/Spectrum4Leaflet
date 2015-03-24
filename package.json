@@ -1,6 +1,6 @@
 {
   "name": "Spectrum4Leaflet",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Leaflet plugin for Spectrum Spatial server",
   "author": "Sergey Voyteshonok <info@svoyt.com>",
   "dependencies": {

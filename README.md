@@ -13,6 +13,8 @@ This javascript API helps to you work with [Spectrum Spatial server](http://www.
 * MapService - all rest operations of map service
 * TileService - all rest operations of tile service 
 * FeatureService - all rest operations of feature service
+* NamedResourceService - all soap operations of feature service
+* GeometryService - all soap operations of geometry service
 
 ### Layers
 * MapServiceLayer - simple map layer object for Leaflet map
@@ -22,6 +24,7 @@ This javascript API helps to you work with [Spectrum Spatial server](http://www.
 * Layers - extended Leaflet Layers control, can change layer's zIndex, opacity and show legend
 * Legend - simple legend for MapServiceLayer
 * Feature - now has only one function - "search by point" in specified table of feature service
+* Resources - lists resources from named resource service
 
 ## Using
 In your html add reference on leaflet (dev version) and on Spectrum4Leaflet plugin and write down something like:
