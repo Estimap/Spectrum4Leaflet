@@ -112,7 +112,7 @@ L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
         return tile;
     },
     
-    _postLoad:function(error,response){
+    _postLoad:function(response, error){
         var uInt8Array = new Uint8Array(response);
         var i = uInt8Array.length;
         var binaryString = new Array(i);
@@ -124,8 +124,6 @@ L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
     
         var base64 = window.btoa(data);
         this.image.src ='data:image/png;base64,'+base64;
-        
-        //this.context._tileOnLoad.call(this.context, this.done, this.image);
     },
 
     getTileUrl: function (coords) {

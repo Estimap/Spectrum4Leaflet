@@ -121,7 +121,7 @@ L.SpectrumSpatial.Controls.Feature = L.Control.extend({
     
     
     
-    _serviceCallback:function(error,response){
+    _serviceCallback:function(response,error){
         
         var collector = this.collector;
         

@@ -365,8 +365,8 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
     },
     
     _onVisibilityChanged: function () {
-        var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container,'visibilityInput');   //document.getElementsByName('visibilityInput'),
-        var   input, layer, hasLayer;
+        var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container,'visibilityInput');
+        var input, layer, hasLayer;
         var addedLayers = [],
             removedLayers = [];
 
@@ -399,7 +399,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
     },
     
     _onOpacityChanged:function(){
-        var inputs =L.SpectrumSpatial.Utils.getElementsByName(this._container,'opacityInput'); //document.getElementsByName('opacityInput');
+        var inputs =L.SpectrumSpatial.Utils.getElementsByName(this._container,'opacityInput');
         var input, layer;
         
         this._handlingClick = true;

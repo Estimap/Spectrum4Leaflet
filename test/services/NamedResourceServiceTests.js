@@ -2,7 +2,7 @@
 	
 	var returnXmlData = null; 
 	
-	var callback = function(error, response) {
+	var callback = function(response, error) {
 	    returnXmlData = response;
 	};
 	

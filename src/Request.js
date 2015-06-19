@@ -13,8 +13,8 @@
          * Callback function for {L.SpectrumSpatial.Request}
          *
          * @callback L.SpectrumSpatial.Request.Callback
-         * @param {Object} error Error object, with fieds code and message
          * @param {Object} response Response
+         * @param {Object} error Error object, with fieds code and message
          */
     
         _createRequest: function (callback, context){
@@ -58,7 +58,7 @@
                   response = null;
                 }
         
-                callback.call(context, error, response);
+                callback.call(context, response, error);
               }
             };
         
@@ -133,7 +133,7 @@
                   response = null;
                 }
     
-                callback.call(context, error, response);
+                callback.call(context, response,error);
                 window._Spectrum4LeafletCallbacks[callbackId] = true;
               }
             };
@@ -144,7 +144,7 @@
               id: callbackId,
               url: script.src,
               abort: function(){
-                window._Spectrum4LeafletCallbacks._callback[callbackId]({
+                window._Spectrum4LeafletCallbacks._callback[callbackId](null,{
                   code: 0,
                   message: 'Request aborted.'
                 });

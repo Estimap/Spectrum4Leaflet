@@ -2,7 +2,7 @@
 	
 	var returnJsonData = null; 
 
-    var callback = function(error, response) {
+    var callback = function(response, error) {
 	    returnJsonData = response;
     };
 

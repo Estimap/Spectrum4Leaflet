@@ -329,8 +329,8 @@ L.CRS.EPSG41001 = L.extend({}, L.CRS.Earth, {
          * Callback function for {L.SpectrumSpatial.Request}
          *
          * @callback L.SpectrumSpatial.Request.Callback
-         * @param {Object} error Error object, with fieds code and message
          * @param {Object} response Response
+         * @param {Object} error Error object, with fieds code and message
          */
     
         _createRequest: function (callback, context){
@@ -374,7 +374,7 @@ L.CRS.EPSG41001 = L.extend({}, L.CRS.Earth, {
                   response = null;
                 }
         
-                callback.call(context, error, response);
+                callback.call(context, response, error);
               }
             };
         
@@ -449,7 +449,7 @@ L.CRS.EPSG41001 = L.extend({}, L.CRS.Earth, {
                   response = null;
                 }
     
-                callback.call(context, error, response);
+                callback.call(context, response,error);
                 window._Spectrum4LeafletCallbacks[callbackId] = true;
               }
             };
@@ -460,7 +460,7 @@ L.CRS.EPSG41001 = L.extend({}, L.CRS.Earth, {
               id: callbackId,
               url: script.src,
               abort: function(){
-                window._Spectrum4LeafletCallbacks._callback[callbackId]({
+                window._Spectrum4LeafletCallbacks._callback[callbackId](null,{
                   code: 0,
                   message: 'Request aborted.'
                 });
@@ -2455,7 +2455,7 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service,mapName,postData,opt
         return tile;
     },
     
-    _postLoad:function(error,response){
+    _postLoad:function(response, error){
         var uInt8Array = new Uint8Array(response);
         var i = uInt8Array.length;
         var binaryString = new Array(i);
@@ -2467,8 +2467,6 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service,mapName,postData,opt
     
         var base64 = window.btoa(data);
         this.image.src ='data:image/png;base64,'+base64;
-        
-        //this.context._tileOnLoad.call(this.context, this.done, this.image);
     },
 
     getTileUrl: function (coords) {
@@ -2908,8 +2906,8 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
     },
     
     _onVisibilityChanged: function () {
-        var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container,'visibilityInput');   //document.getElementsByName('visibilityInput'),
-        var   input, layer, hasLayer;
+        var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container,'visibilityInput');
+        var input, layer, hasLayer;
         var addedLayers = [],
             removedLayers = [];
 
@@ -2942,7 +2940,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
     },
     
     _onOpacityChanged:function(){
-        var inputs =L.SpectrumSpatial.Utils.getElementsByName(this._container,'opacityInput'); //document.getElementsByName('opacityInput');
+        var inputs =L.SpectrumSpatial.Utils.getElementsByName(this._container,'opacityInput');
         var input, layer;
         
         this._handlingClick = true;
@@ -3060,7 +3058,7 @@ L.SpectrumSpatial.Controls.layers = function(baselayers, overlays,options){
         this._legendList.appendChild(waitImage);
     },
     
-    _legendCallback: function(error,response){
+    _legendCallback: function(response,error){
         if (!error){
             this._legend = response.LegendResponse; 
             this._update();
@@ -3241,7 +3239,7 @@ L.SpectrumSpatial.Controls.legend = function(service, mapName, options){
     
     
     
-    _serviceCallback:function(error,response){
+    _serviceCallback:function(response,error){
         
         var collector = this.collector;
         
@@ -3417,7 +3415,7 @@ L.SpectrumSpatial.Controls.feature = function(service, featureLayers, options){
         this._resourcesList.appendChild(waitImage);
     },
     
-    _resourceCallback: function(error,response){
+    _resourceCallback: function(response,error){
         if (!error){
 	        
 	        // @TODO REWORK. TOO UGLY CODE

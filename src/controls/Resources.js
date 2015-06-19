@@ -77,7 +77,7 @@ L.SpectrumSpatial.Controls.Resources = L.Control.extend({
         this._resourcesList.appendChild(waitImage);
     },
     
-    _resourceCallback: function(error,response){
+    _resourceCallback: function(response,error){
         if (!error){
 	        
 	        // @TODO REWORK. TOO UGLY CODE

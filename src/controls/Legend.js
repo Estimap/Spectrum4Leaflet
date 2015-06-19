@@ -87,7 +87,7 @@ L.SpectrumSpatial.Controls.Legend = L.Control.extend({
         this._legendList.appendChild(waitImage);
     },
     
-    _legendCallback: function(error,response){
+    _legendCallback: function(response,error){
         if (!error){
             this._legend = response.LegendResponse; 
             this._update();
