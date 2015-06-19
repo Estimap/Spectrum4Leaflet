@@ -289,7 +289,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
         this._initInteraction();
     },
     
-    _postLoad:function(error,response){
+    _postLoad:function(response, error){
         var uInt8Array = new Uint8Array(response);
         var i = uInt8Array.length;
         var binaryString = new Array(i);
