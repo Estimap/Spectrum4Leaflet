@@ -22,6 +22,7 @@ module.exports = function(grunt) {
 		     'src/services/FeatureService.js',
 		     'src/services/NamedResourceService.js',
 		     'src/services/GeometryService.js',
+		     'src/services/RoutingService.js',
 		     'src/layers/MapServiceLayer.js',
 		     'src/layers/TileServiceLayer.js',
 		     'src/controls/Layers.js',

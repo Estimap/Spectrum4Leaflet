@@ -232,6 +232,23 @@ server.handle = function (request) {
                }
 	        }
 	    break;
+	    case 'http://RoutingService/databases/usroutedatabase.json?q=route&startPoint=-73.97,40.79,epsg:4326&endPoint=-73.98,40.74,epsg:4326':
+            recieve(request, {"time":7.67, "timeUnit":"min", "distance": 8865, "distanceUnit":"m"});
+	    break;
+	    case 'http://RoutingService/databases/usroutedatabase.json?q=travelBoundary&point=-77.092609,38.871256,epsg:4326&costs=5&costUnit=m':
+            recieve(request, {
+								"travelBoundary": {
+								  "costs": [
+									{
+										"cost": 5,
+										"costUnit": "m",
+										"geometry": {"type":"MultiPolygon","crs":{"type":"name","properties":{"name":"epsg: 4326"}},"coordinates":[]}
+									}
+								  ]
+								}
+					         }
+					);
+	    break;
 	    default:
             recieve(request, 'I am Bender, please insert girder!','application/robot');
 	    break;
