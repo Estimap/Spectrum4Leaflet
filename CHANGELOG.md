@@ -1,6 +1,12 @@
 Spectrum4Leaflet Changelog
 =================
 
+## 0.3.0
+* Added RoutingService
+* !IMPORTANT! Changed params order in Request.Callback
+* Minor bug fixing
+* Package added to bower repository
+
 ## 0.2.0
 
 ### Services
