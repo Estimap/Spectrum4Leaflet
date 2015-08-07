@@ -15,6 +15,7 @@ This javascript API helps to you work with [Spectrum Spatial server](http://www.
 * FeatureService - all rest operations of feature service
 * NamedResourceService - all soap operations of feature service
 * GeometryService - all soap operations of geometry service
+* RoutingService - rest operations of enterprise routing module
 
 ### Layers
 * MapServiceLayer - simple map layer object for Leaflet map
