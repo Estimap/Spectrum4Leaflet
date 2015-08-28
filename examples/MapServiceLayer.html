@@ -23,7 +23,7 @@
 
 		var map = L.map('map').setView([0, 0], 0);
         
-		L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {minZoom: 0, maxZoom: 18, attribution: 'OpenStreetMap'}).addTo(map);
+		L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {minZoom: 0, maxZoom: 18, attribution: 'OpenStreetMap'}).addTo(map);
 		
 		
 		function addMapServiceLayer(){

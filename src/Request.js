@@ -1,6 +1,14 @@
 (function(){
     var callbacks = 0;
     
+    var requestState = {
+	    notInitialized : 0,
+	    connectionEstablished : 1,
+	    received : 2,
+	    processing : 3,
+	    finished : 4  
+    };
+    
     window._Spectrum4LeafletCallbacks = {};
     
     /**
@@ -33,7 +41,7 @@
               var response;
               var error;
         
-              if (httpRequest.readyState === 4) {
+              if (httpRequest.readyState === requestState.finished) {
                 try {
                   var contentType = this.getResponseHeader('content-type');
                   if (contentType.indexOf('application/json') !== -1 ){
