@@ -498,7 +498,6 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
     },
 
     _updateOpacity: function() {
-        this.options.opacity = opacity;
         this._forAllSingleImages(
             function(img) {
                 L.DomUtil.setOpacity(img, this.options.opacity);
@@ -508,10 +507,9 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
     },
 
     _updateZIndex: function() {
-        this.options.zIndex = zIndex;
         this._forAllSingleImages(
             function(img) {
-                img.style.zIndex = zIndex;
+                img.style.zIndex = this.options.zIndex;
             }
         );
     },
