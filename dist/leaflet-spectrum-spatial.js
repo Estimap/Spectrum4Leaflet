@@ -13,7 +13,7 @@
 * @namespace
 */
 L.SpectrumSpatial = {
-    Version: '0.2.0',
+    Version: '0.3.0',
     
     /**
     * Spectrum's services
@@ -317,6 +317,14 @@ L.CRS.EPSG41001 = L.extend({}, L.CRS.Earth, {
 });;(function(){
     var callbacks = 0;
     
+    var requestState = {
+	    notInitialized : 0,
+	    connectionEstablished : 1,
+	    received : 2,
+	    processing : 3,
+	    finished : 4  
+    };
+    
     window._Spectrum4LeafletCallbacks = {};
     
     /**
@@ -349,7 +357,7 @@ L.CRS.EPSG41001 = L.extend({}, L.CRS.Earth, {
               var response;
               var error;
         
-              if (httpRequest.readyState === 4) {
+              if (httpRequest.readyState === requestState.finished) {
                 try {
                   var contentType = this.getResponseHeader('content-type');
                   if (contentType.indexOf('application/json') !== -1 ){
@@ -2118,20 +2126,20 @@ L.SpectrumSpatial.Services.RoutingService = L.SpectrumSpatial.Services.Service.e
 
 L.SpectrumSpatial.Services.routingService = function(url,options){
   return new L.SpectrumSpatial.Services.RoutingService(url,options);
-};;L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
-/** @lends L.SpectrumSpatial.Layers.MapServiceLayer.prototype */
+};;L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
+    /** @lends L.SpectrumSpatial.Layers.MapServiceLayer.prototype */
 
 
     /**
-    * MapServiceLayer's options class
-    * @typedef {Object} L.SpectrumSpatial.Layers.MapServiceLayer.Options
-    * @property {number} opacity  Opacity of layer image (1 is default)
-    * @property {string} alt  Title for layer image
-    * @property {boolean} interactive  If layer is interactive
-    * @property {string} imageType  Type of image ( 'png' is default )
-    * @property {number} zIndex  ZIndex of layer's image ('auto' is default)
-    * @property {number} updateInterval  Min update interval of the layer
-    */
+     * MapServiceLayer's options class
+     * @typedef {Object} L.SpectrumSpatial.Layers.MapServiceLayer.Options
+     * @property {number} opacity  Opacity of layer image (1 is default)
+     * @property {string} alt  Title for layer image
+     * @property {boolean} interactive  If layer is interactive
+     * @property {string} imageType  Type of image ( 'png' is default )
+     * @property {number} zIndex  ZIndex of layer's image ('auto' is default)
+     * @property {number} updateInterval  Min update interval of the layer
+     */
 
     options: {
         opacity: 1,
@@ -2139,74 +2147,95 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
         interactive: false,
         imageType: 'png',
         zIndex: 'auto',
-        updateInterval:200,
+        updateInterval: 200,
     },
 
 
     /**
-    * @class MapService layer class
-    * @augments {L.Layer}
-    * @constructs L.SpectrumSpatial.Layers.MapServiceLayer
-    * @param {L.SpectrumSpatial.Services.MapService} service Map Service for layer
-    * @param {string} mapName Name of the map to display on map service
-    * @param {Object} postData Post data to map (only if browser supports XHR2)
-    * @param {L.SpectrumSpatial.Layers.MapServiceLayer.Options} options Additional options of layer
-    */
-    initialize: function (service, mapName, postData, options) { 
+     * @class MapService layer class
+     * @augments {L.Layer}
+     * @constructs L.SpectrumSpatial.Layers.MapServiceLayer
+     * @param {L.SpectrumSpatial.Services.MapService} service Map Service for layer
+     * @param {string} mapName Name of the map to display on map service
+     * @param {Object} postData Post data to map (only if browser supports XHR2)
+     * @param {L.SpectrumSpatial.Layers.MapServiceLayer.Options} options Additional options of layer
+     */
+    initialize: function(service, mapName, postData, options) {
         this._mapName = mapName;
         this._service = service;
         this._postData = postData;
         L.setOptions(this, options);
-    },
-    
-    onAdd: function (map) { 
-        this._map = map;                
-        this._srs = map.options.crs;
         this._update = L.Util.throttle(this._update, this.options.updateInterval, this);
+    },
+
+    onAdd: function(map) {
+        this._map = map;
+        this._srs = map.options.crs;
+
         map.on('moveend', this._update, this);
 
-        if (this.options.zIndex==='auto'){
+        if (this.options.zIndex === 'auto') {
             var maxZIndex = 0;
-            for (var i in map._layers){
+            for (var i in map._layers) {
                 var layer = map._layers[i];
-                if (layer.getZIndex){
+                if (layer.getZIndex) {
                     var z = layer.getZIndex();
-                    if (maxZIndex<z){
+                    if (maxZIndex < z) {
                         maxZIndex = z;
                     }
                 }
             }
-            this.options.zIndex = maxZIndex+1;
+            this.options.zIndex = maxZIndex + 1;
         }
-        
+
+        if ((!this._singleImages) || (this._singleImages.length === 0)) {
+            this._update();
+        } else {
+            this._forAllSingleImages(
+                function(img) {
+                    this._resetImagePosition(img);
+                    this.getPane(this.options.pane).appendChild(img);
+                }
+            );
+        }
+
         this._update();
     },
 
-    onRemove: function (map) {
+    onRemove: function(map) {
         L.DomUtil.remove(this._image);
         map.off('moveend', this._update, this);
-        delete this._image;
-    },  
-    
-    setService:function(service){
+
+        this._forAllSingleImages(
+            function(img) {
+                if (this.options.interactive) {
+                    this.removeInteractiveTarget(img);
+                }
+                this.getPane(this.options.pane).removeChild(img);
+            }
+        );
+
+    },
+
+    setService: function(service) {
         this._service = service;
         this._update();
         return this;
     },
-    
-    setMapName:function(mapName){
+
+    setMapName: function(mapName) {
         this._mapName = mapName;
         this._update();
         return this;
     },
-    
-    setPostData:function(postData){
+
+    setPostData: function(postData) {
         this._postData = postData;
         this._update();
         return this;
     },
-    
-    setOpacity: function (opacity) {
+
+    setOpacity: function(opacity) {
         this.options.opacity = opacity;
 
         if (this._image) {
@@ -2214,36 +2243,36 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
         }
         return this;
     },
-    
-    getOpacity: function () {
+
+    getOpacity: function() {
         return this.options.opacity;
     },
 
-    setStyle: function (styleOpts) {
+    setStyle: function(styleOpts) {
         if (styleOpts.opacity) {
             this.setOpacity(styleOpts.opacity);
         }
         return this;
     },
-    
-    setZIndex: function(zIndex){
+
+    setZIndex: function(zIndex) {
         this.options.zIndex = zIndex;
         this._updateZIndex();
         return this;
     },
-    
-    getZIndex: function(){
+
+    getZIndex: function() {
         return this.options.zIndex;
     },
-    
-    bringToFront: function () {
+
+    bringToFront: function() {
         if (this._map) {
             L.DomUtil.toFront(this._image);
         }
         return this;
     },
 
-    bringToBack: function () {
+    bringToBack: function() {
         if (this._map) {
             L.DomUtil.toBack(this._image);
         }
@@ -2251,12 +2280,13 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
     },
 
 
-    getAttribution: function () {
+    getAttribution: function() {
         return this.options.attribution;
     },
 
-    getEvents: function () {
+    getEvents: function() {
         var events = {
+            zoom: this._reset,
             viewreset: this._reset
         };
 
@@ -2267,179 +2297,368 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
         return events;
     },
 
-    getBounds: function () {
+    getBounds: function() {
         return this._bounds;
     },
-    
-    _initInteraction: function () {
-        if (!this.options.interactive) { return; }
+
+    _initInteraction: function() {
+        if (!this.options.interactive) {
+            return;
+        }
         L.DomUtil.addClass(this._image, 'leaflet-interactive');
         L.DomEvent.on(this._image, 'click dblclick mousedown mouseup mouseover mousemove mouseout contextmenu',
-                this._fireMouseEvent, this);
+            this._fireMouseEvent, this);
     },
 
-    _fireMouseEvent: function (e, type) {
+    _fireMouseEvent: function(e, type) {
         if (this._map) {
             this._map._fireMouseEvent(this, e, type, true);
         }
     },
 
-    _initImage: function () {
-        var img = L.DomUtil.create('img','leaflet-image-layer ' + (this._zoomAnimated ? 'leaflet-zoom-animated' : ''));
+    _initImage: function() {
+        var img = L.DomUtil.create('img', 'leaflet-image-layer ' + (this._zoomAnimated ? 'leaflet-zoom-animated' : ''));
         img.onselectstart = L.Util.falseFn;
         img.onmousemove = L.Util.falseFn;
         img.style.zIndex = this.options.zIndex;
         img.alt = this.options.alt;
-        
+
         if (this.options.opacity < 1) {
             L.DomUtil.setOpacity(img, this.options.opacity);
         }
-        
+
         return img;
     },
-    
-    _requestCounter :0,
-    
-    _animateZoom: function (e) {
-        var bounds = new L.Bounds(
-            this._map._latLngToNewLayerPoint(this._bounds.getNorthWest(), e.zoom, e.center),
-            this._map._latLngToNewLayerPoint(this._bounds.getSouthEast(), e.zoom, e.center));
 
-        var offset = bounds.min.add(bounds.getSize()._multiplyBy((1 - 1 / e.scale) / 2));
+    _requestCounter: 0,
 
-        L.DomUtil.setTransform(this._image, offset, e.scale);
+    _animateZoom: function(e) {
+        this._forAllSingleImages(
+            function(img) {
+                var scale = this._map.getZoomScale(e.zoom);
+                var offset = this._map._latLngToNewLayerPoint(img.position.getNorthWest(), e.zoom, e.center);
+                L.DomUtil.setTransform(img, offset, scale);
+            }
+        );
     },
-    
 
-    _reset: function () {  
-        var image = this._image,
-            bounds = new L.Bounds(
-                this._map.latLngToLayerPoint(this._bounds.getNorthWest()),
-                this._map.latLngToLayerPoint(this._bounds.getSouthEast())),
-            size = bounds.getSize();
+
+    _reset: function() {
+        this._forAllSingleImages(
+            function(img) {
+                this._resetImagePosition(img);
+            }
+        );
+    },
+
+    _resetImagePosition: function(image) {
+        var bounds = new L.Bounds(
+            this._map.latLngToLayerPoint(image.position.getNorthWest()),
+            this._map.latLngToLayerPoint(image.position.getSouthEast()));
+        var size = bounds.getSize();
 
         L.DomUtil.setPosition(image, bounds.min);
 
-        image.style.width  = size.x + 'px';
+        image.style.width = size.x + 'px';
         image.style.height = size.y + 'px';
+
+        return image;
     },
-    
-    
-    _update:function(){
-        
-        if(this._map._animatingZoom){
-           return;
-        }
-        
-        if (this._map._panAnim && this._map._panAnim._inProgress) {
-           return;
+
+    _incrementRequestCounter: function(imagesCount) {
+        if (!this._requestCounter) {
+            this._requestCounter = {
+                count: 1
+            };
+        } else {
+            this._requestCounter.count++;
         }
 
-        var bounds = this._map.getBounds();
-        var size = this._map.getSize();
-        var nw = this._srs.project(bounds.getNorthWest());
-        var se = this._srs.project(bounds.getSouthEast());  
-    
-        var newImage = this._initImage();
-        
-        this._requestCounter++;
-        
-        var renderOptions = {
-            mapName : this._mapName ,
-            imageType : this.options.imageType,
-            width: size.x,
-            height: size.y,
-            bounds :[ nw.x, nw.y, se.x,se.y ],
-            srs:this._srs.code,
-            additionalParams : this._postData
-        };
-        
-        if ((this._postData!==undefined)|(this._service.needAuthorization())){
-            this._service.renderMap(
-                                            renderOptions,
-                                            this._postLoad,
-                                            {
-                                                context: this, 
-                                                image: newImage, 
-                                                bounds:bounds, 
-                                                counter:this._requestCounter
-                                            });
-        }
-        else{
-            newImage.onload = L.bind(this._afterLoad, this, { image: newImage, bounds:bounds, counter:this._requestCounter});
-            newImage.src = this._service.getUrlRenderMap(renderOptions);              
-        }
-        this.fire('loading');
+        this._requestCounter.allImages = imagesCount;
+        this._requestCounter.loadedImages = 0;
     },
-    
-    _afterLoad: function (params) {  
-    
-        //only last request we will draw
-        if (this._requestCounter!= params.counter){
+
+
+    _update: function() {
+        if (!this._map) {
+            return;
+        }
+
+        if (this._map._animatingZoom) {
+            return;
+        }
+
+        var zoom = this._map.getZoom();
+
+        if (this._map._panTransition && this._map._panTransition._inProgress) {
+            return;
+        }
+
+        if (zoom > this.options.maxZoom || zoom < this.options.minZoom) {
+            return;
+        }
+
+        var params = this._buildImageParams();
+
+        this._requestImages(params);
+
+        this.fire('loading');
+
+    },
+
+    _requestImages: function(params) {
+        if (!this._singleImages) {
+            this._singleImages = [];
+        }
+
+        this._incrementRequestCounter(params.length);
+        this.fire('loading', {
+            bounds: this._map.getBounds()
+        });
+
+        for (var i = 0; i < params.length; i++) {
+            var singleParam = params[i];
+            singleParam.requestCount = this._requestCounter.count;
+
+            if ((this._postData) | (this._service.needAuthorization())) {
+                this._service.renderMap(
+                    singleParam.params,
+                    this._postLoad, {
+                        context: this,
+                        params: singleParam
+                    });
+            } else {
+                singleParam.href = this._service.getUrlRenderMap(singleParam.params);
+                this._renderImage(singleParam);
+            }
+
+        }
+    },
+
+    _buildImageParams: function() {
+        var singleMapParamsArray = [];
+
+        var wholeBounds = this._map.getBounds();
+        var wholeSize = this._map.getSize();
+
+        var min = wholeBounds.getSouthWest();
+        var max = wholeBounds.getNorthEast();
+
+        var newXmax = min.lng;
+        var newXmin = min.lng;
+        var i = 0;
+
+        var d = (newXmin + 180) / 360;
+        var sign = this._sign(d);
+        sign = (sign === 0) ? 1 : sign;
+        var coef = sign * Math.floor(Math.abs(d));
+
+        while (newXmax < max.lng) {
+            newXmax = 360 * (coef + i) + sign * 180;
+
+            if (newXmax > max.lng) {
+                newXmax = max.lng;
+            }
+
+            var normXMin = newXmin;
+            var normXMax = newXmax;
+
+            if ((newXmin < -180) || (newXmax > 180)) {
+                var d2 = Math.floor((newXmin + 180) / 360);
+                normXMin -= d2 * 360;
+                normXMax -= d2 * 360;
+            }
+
+            var singleBounds = L.latLngBounds(L.latLng(min.lat, normXMin), L.latLng(max.lat, normXMax));
+            var positionBounds = L.latLngBounds(L.latLng(min.lat, newXmin), L.latLng(max.lat, newXmax));
+            var width = (wholeSize.x * ((newXmax - newXmin) / (max.lng - min.lng)));
+            var singleSize = {
+                x: width,
+                y: wholeSize.y
+            };
+            var singleExportParams = this._buildSingleImageParams(singleBounds, singleSize);
+
+            singleMapParamsArray.push({
+                position: positionBounds,
+                bounds: singleBounds,
+                size: singleSize,
+                params: singleExportParams
+            });
+            newXmin = newXmax;
+            i++;
+        }
+
+        return singleMapParamsArray;
+    },
+
+    _buildSingleImageParams: function(bounds, size) {
+        var ne = this._map.options.crs.project(bounds.getNorthEast());
+        var sw = this._map.options.crs.project(bounds.getSouthWest());
+        var sr = parseInt(this._map.options.crs.code.split(':')[1], 10);
+
+        var top = this._map.latLngToLayerPoint(bounds._northEast);
+        var bottom = this._map.latLngToLayerPoint(bounds._southWest);
+
+        if (top.y > 0 || bottom.y < size.y) {
+            size.y = bottom.y - top.y;
+        }
+
+        var params = {
+            mapName: this._mapName,
+            imageType: this.options.imageType,
+            width: Math.round(size.x),
+            height: Math.round(size.y),
+            bounds: [sw.x, ne.y, ne.x, sw.y],
+            srs: this._srs.code,
+            additionalParams: this._postData
+        };
+
+        return params;
+    },
+
+    _renderImage: function(params) {
+        var img = this._initImage();
+        img.position = params.position;
+        var imageParams = {
+            image: img,
+            mapParams: params,
+            requestCount: params.requestCount
+        };
+        img.onload = L.bind(this._imageLoaded, this, imageParams);
+        img.onerror = L.bind(this._imageFailed, this, imageParams);
+        img.src = params.href;
+    },
+
+    _imageFailed: function(params) {
+        this.fire('error', {
+            params: params
+        });
+
+        if (params.requestCount !== this._requestCounter.count) {
             delete params.image;
             return;
         }
-    
-        this.fire('load');
-     
-        this._bounds = params.bounds;
-        this._size = this._map.getSize();
-        
-        var image = params.image,
-            bounds = new L.Bounds(
-                this._map.latLngToLayerPoint(this._bounds.getNorthWest()),
-                this._map.latLngToLayerPoint(this._bounds.getSouthEast())),
-            size = bounds.getSize();
 
-        L.DomUtil.setPosition(image, bounds.min);
-
-        image.style.width  = size.x + 'px';
-        image.style.height = size.y + 'px';
-                    
-        this.getPane(this.options.pane).appendChild(image);
-        
-        //clears old image
-        if (this._image){
-            this.getPane(this.options.pane).removeChild(this._image);
-            L.DomEvent.off(this._image, 'click dblclick mousedown mouseup mouseover mousemove mouseout contextmenu',this._fireMouseEvent, this);
-            delete this._image;
-        }
-     
-        this._image = image;    
-        this._initInteraction();
+        this._requestCounter.loadedImages++;
     },
-    
-    _postLoad:function(response, error){
+
+    _imageLoaded: function(params) {
+        if (params.requestCount !== this._requestCounter.count) {
+            delete params.image;
+            return;
+        }
+
+        var image = this._resetImagePosition(params.image);
+
+        var imagesToRemove = [];
+
+        this._forAllSingleImages(
+            function(img) {
+                if (img.position.overlaps(image.position)) {
+                    imagesToRemove.push(img);
+                }
+            }
+        );
+
+        this.getPane(this.options.pane).appendChild(image);
+        if (this.options.interactive) {
+            L.DomUtil.addClass(image, 'leaflet-interactive');
+            this.addInteractiveTarget(image);
+        }
+
+        this._singleImages.push(image);
+
+        this._requestCounter.loadedImages++;
+
+        if (this._requestCounter.allImages === this._requestCounter.loadedImages) {
+            var bounds = this._map.getBounds();
+            this.fire('load', {
+                bounds: bounds
+            });
+
+            this._forAllSingleImages(
+                function(img) {
+                    if (!img.position.overlaps(bounds)) {
+                        imagesToRemove.push(img);
+                    }
+                }
+            );
+        }
+
+        // removing useless images
+        for (var i = 0; i < imagesToRemove.length; i++) {
+            this._removeImage(imagesToRemove[i]);
+            var index = this._singleImages.indexOf(imagesToRemove[i]);
+            if (index !== -1) {
+                this._singleImages.splice(index, 1);
+            }
+        }
+    },
+
+    _removeImage: function(img) {
+        this.getPane(this.options.pane).removeChild(img);
+        if (this.options.interactive) {
+            this.removeInteractiveTarget(img);
+        }
+    },
+
+    _forAllSingleImages: function(f) {
+        if (this._singleImages) {
+            for (var i = 0; i < this._singleImages.length; i++) {
+                f.call(this, this._singleImages[i]);
+            }
+        }
+    },
+
+
+    _postLoad: function(response, error) {
         var uInt8Array = new Uint8Array(response);
         var i = uInt8Array.length;
         var binaryString = new Array(i);
-        while (i--)
-        {
-          binaryString[i] = String.fromCharCode(uInt8Array[i]);
+        while (i--) {
+            binaryString[i] = String.fromCharCode(uInt8Array[i]);
         }
         var data = binaryString.join('');
-    
+
         var base64 = window.btoa(data);
-        this.image.src ='data:image/png;base64,'+base64;
-        this.context._afterLoad({ image: this.image, bounds:this.bounds, counter:this.counter});
+        this.params.href = 'data:image/png;base64,' + base64;
+        this.context._renderImage(this.params);
     },
-    
-    _updateOpacity: function () {
-        L.DomUtil.setOpacity(this._image, this.options.opacity);
+
+    _updateOpacity: function() {
+        this.options.opacity = opacity;
+        this._forAllSingleImages(
+            function(img) {
+                L.DomUtil.setOpacity(img, this.options.opacity);
+            }
+        );
+        return this;
     },
-    
-    _updateZIndex: function(){
-        if (this._image){
-            this._image.style.zIndex = this.options.zIndex;
-        }       
-    }   
-    
+
+    _updateZIndex: function() {
+        this.options.zIndex = zIndex;
+        this._forAllSingleImages(
+            function(img) {
+                img.style.zIndex = zIndex;
+            }
+        );
+    },
+
+    _sign: function(value) {
+        if (value > 0) {
+            return 1;
+        } else if (value < 0) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+
 });
 
-L.SpectrumSpatial.Layers.mapServiceLayer = function(service,mapName,postData,options){
-  return new L.SpectrumSpatial.Layers.MapServiceLayer(service,mapName,postData,options);
-};
-;L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
+L.SpectrumSpatial.Layers.mapServiceLayer = function(service, mapName, postData, options) {
+    return new L.SpectrumSpatial.Layers.MapServiceLayer(service, mapName, postData, options);
+};;L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
 /** @lends L.SpectrumSpatial.Layers.TileServiceLayer.prototype */
 
     /**
