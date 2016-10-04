@@ -1,6 +1,4 @@
-
 module.exports = function(grunt) {
-
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
@@ -8,28 +6,28 @@ module.exports = function(grunt) {
         separator: ';'
       },
       dist: {
-        src:  [
-		     'src/Spectrum4Leaflet.js',
-		     'src/utils/Utils.js',
-		     'src/utils/Xml.js',
-		     'src/geo/projection/Projection.Mercator.js',
-		     'src/geo/crs/CRS.EPSG41001.js',
-		     'src/Request.js',
-		     'src/services/Operation.js',
-		     'src/services/Service.js',
-		     'src/services/MapService.js',
-		     'src/services/TileService.js',
-		     'src/services/FeatureService.js',
-		     'src/services/NamedResourceService.js',
-		     'src/services/GeometryService.js',
-		     'src/services/RoutingService.js',
-		     'src/layers/MapServiceLayer.js',
-		     'src/layers/TileServiceLayer.js',
-		     'src/controls/Layers.js',
-		     'src/controls/Legend.js',
-		     'src/controls/Feature.js',
-		     'src/controls/Resources.js'
-		],
+        src: [
+          'src/Spectrum4Leaflet.js',
+          'src/utils/Utils.js',
+          'src/utils/Xml.js',
+          'src/geo/projection/Projection.Mercator.js',
+          'src/geo/crs/CRS.EPSG41001.js',
+          'src/Request.js',
+          'src/services/Operation.js',
+          'src/services/Service.js',
+          'src/services/MapService.js',
+          'src/services/TileService.js',
+          'src/services/FeatureService.js',
+          'src/services/NamedResourceService.js',
+          'src/services/GeometryService.js',
+          'src/services/RoutingService.js',
+          'src/layers/MapServiceLayer.js',
+          'src/layers/TileServiceLayer.js',
+          'src/controls/Layers.js',
+          'src/controls/Legend.js',
+          'src/controls/Feature.js',
+          'src/controls/Resources.js'
+        ],
         dest: 'dist/<%= pkg.name %>.js'
       }
     },
@@ -57,20 +55,20 @@ module.exports = function(grunt) {
         }
       }
     },
-	jsdoc : {
-	        dist : {
-	            src: ['src/**/*.js'], 
-	            options: {
-	                destination: 'doc'
-	            }
-	        }
+    jsdoc: {
+      dist: {
+        src: ['src/**/*.js'],
+        options: {
+          destination: 'doc'
+        }
+      }
     },
     watch: {
       files: ['<%= jshint.files %>'],
       tasks: ['jshint', 'qunit']
     }
   });
-  
+
   grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -81,6 +79,5 @@ module.exports = function(grunt) {
   grunt.registerTask('test', ['jshint', 'qunit']);
   grunt.registerTask('dev', ['jshint', 'concat']);
   grunt.registerTask('default', ['jshint', 'qunit', 'concat', 'uglify']);
-  grunt.registerTask('production', ['jshint', 'qunit', 'concat', 'uglify','jsdoc']);
-
+  grunt.registerTask('production', ['jshint', 'qunit', 'concat', 'uglify', 'jsdoc']);
 };

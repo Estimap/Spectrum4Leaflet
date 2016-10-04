@@ -2,74 +2,75 @@
  * Leaflet namespace
  * @namespace L
  */
- 
- /**
+
+/**
  * Leaflet reference systems namespace
  * @namespace L.CRS
  */
 
 /**
-* Spectrum spatial for leaftlet namespace
-* @namespace
-*/
+ * Spectrum spatial for leaftlet namespace
+ * @namespace
+ */
 L.SpectrumSpatial = {
-    Version: '0.2.0',
-    
-    /**
-    * Spectrum's services
-    * @namespace
-    */
-    Services: {},
-    
-    /**
-    * Spectrum's services
-    * @namespace
-    */
-    Layers:{},
-    
-    /**
-    * Controls
-    * @namespace
-    */
-    Controls:{},
-    
-    /**
-    * Defaults values
-    * @namespace
-    * @property {string} [proxyUrl=undefined] Proxy url for all services
-    * @property {boolean} [alwaysUseProxy=false] All queries will be using proxy
-    * @property {boolean} [forceGet=true] Every time use get request (not JSONP)
-    * @property {boolean} [encodeUrlForProxy=false] If true proxy params will be url encoded
-    */
-    Defaults:{
-        
-        proxyUrl:undefined,
-        
-        alwaysUseProxy:false,
-        
-        forceGet : true,
-        
-        encodeUrlForProxy:false
-    },
-    
-    /**
-    * Projections
-    * @namespace
-    */
-    Projections:{},
-    
-    /**
-    * Environment values
-    * @namespace
-    */
-    Support: {
-        CORS: ('withCredentials' in new XMLHttpRequest())
-    }
+  Version: '0.4.0',
+
+  /**
+   * Spectrum's services
+   * @namespace
+   */
+  Services: {},
+
+  /**
+   * Spectrum's services
+   * @namespace
+   */
+  Layers: {},
+
+  /**
+   * Controls
+   * @namespace
+   */
+  Controls: {},
+
+  /**
+   * Defaults values
+   * @namespace
+   * @property {string} [proxyUrl=undefined] Proxy url for all services
+   * @property {boolean} [alwaysUseProxy=false] All queries will be using proxy
+   * @property {boolean} [forceGet=true] Every time use get request (not JSONP)
+   * @property {boolean} [encodeUrlForProxy=false] If true proxy params will be url encoded
+   */
+  Defaults: {
+
+    proxyUrl: undefined,
+
+    alwaysUseProxy: false,
+
+    forceGet: true,
+
+    encodeUrlForProxy: false
+  },
+
+  /**
+   * Projections
+   * @namespace
+   */
+  Projections: {},
+
+  /**
+   * Environment values
+   * @namespace
+   */
+  Support: {
+    CORS: ('withCredentials' in new XMLHttpRequest())
+  }
 };
 
-if(typeof window !== 'undefined' && window.L){
+if(typeof window !== 'undefined' && window.L) {
   window.L.SpectrumSpatial = L.SpectrumSpatial;
-};/**
+}
+;/**
 * Usefull utils
 * @namespace
 */
@@ -314,213 +315,221 @@ L.CRS.EPSG41001 = L.extend({}, L.CRS.Earth, {
 		var scale = 0.5 / (Math.PI * L.SpectrumSpatial.Projections.Mercator.R);
 		return new L.Transformation(scale, 0.5, -scale, 0.5);
 	}())
-});;(function(){
-    var callbacks = 0;
-    
-    window._Spectrum4LeafletCallbacks = {};
-    
-    /**
-    * @classdesc Simple Wraper on XMLHttpRequest, has simple get and post functions
-    * @constructor
-    */
-    L.SpectrumSpatial.Request = {
-    
-        /**
-         * Callback function for {L.SpectrumSpatial.Request}
-         *
-         * @callback L.SpectrumSpatial.Request.Callback
-         * @param {Object} response Response
-         * @param {Object} error Error object, with fieds code and message
-         */
-    
-        _createRequest: function (callback, context){
-            var httpRequest = new XMLHttpRequest();
-        
-            httpRequest.onerror = function(e) {
-              callback.call(context, {
-                error: {
-                  code: 500,
-                  message: 'XMLHttpRequest error'
-                }
-              }, null);
-            };
-        
-            httpRequest.onreadystatechange = function(){
-              var response;
-              var error;
-        
-              if (httpRequest.readyState === 4) {
-                try {
-                  var contentType = this.getResponseHeader('content-type');
-                  if (contentType.indexOf('application/json') !== -1 ){
-                      response = JSON.parse(httpRequest.responseText);
-                  }
-                  else if (contentType.indexOf('text/xml') !== -1 ){
-	                  response = httpRequest.responseXML;
-                  }
-                  else{
-                      response = httpRequest.response;
-                  }   
-                } catch(e) {
-                  response = null;
-                  error = {
-                    code: 500,
-                    message: 'Could not parse response as JSON.'
-                  };
-                }
-        
-                if (!error && response.error) {
-                  error = response.error;
-                  response = null;
-                }
-        
-                callback.call(context, response, error);
-              }
-            };
-        
-            return httpRequest;
-        },
-        
-        /**
-        * Request get options
-        * @typedef {Object} L.SpectrumSpatial.Request.GetOptions
-        * @property {string} [login]  Login
-        * @property {string} [password]  Password
-        * @property {string} [responseType] Type of response (only for XHR2)
-        */
-        
-        /**
-        * Runs get request
-        * @param {string} url Url for request
-        * @param {Request.Callback} callback function, when request is done
-        * @param {Object} [context] Context for callback
-        * @param {L.SpectrumSpatial.Request.GetOptions} [options] Options 
-        * @returns {XMLHttpRequest}
-        */
-        get: function(url, callback, context, options){
-            options = options || {};
-            var httpRequest = this._createRequest(callback,context);
-            httpRequest.open('GET', url , true, options.login, options.password);
-            if (options.responseType){
-                httpRequest.responseType = options.responseType;
-            }
-            httpRequest.send(null);
-            return httpRequest;
-        },
-        
-        /**
-        * Runs get request by JSONP pattern 
-        * @param {string} url Url for request
-        * @param {string} callbackSeparator Special character to separate callback param from query param
-        * @param {Request.Callback} callback function, when request is done
-        * @param {Object} context Context for callback
-        * @param {string} [callbackSeparator] Special character to separate callback param from query param
-        * @returns {XMLHttpRequest}
-        */
-        jsonp: function(url, callback, context, callbackSeparator){
-            var callbackId = 'c' + callbacks;
-    
-            if (!callbackSeparator){
-                callbackSeparator='';
-            }
-    
-            var script = L.DomUtil.create('script', null, document.body);
-            script.type = 'text/javascript';
-            script.src = url + callbackSeparator + 'callback=window._Spectrum4LeafletCallbacks.' + callbackId;
-            script.id = callbackId;
-    
-            window._Spectrum4LeafletCallbacks[callbackId] = function(response){
-              if(window._Spectrum4LeafletCallbacks[callbackId] !== true){
-                var error;
-                var responseType = Object.prototype.toString.call(response);
-    
-                if(!(responseType === '[object Object]' || responseType === '[object Array]')){
-                  error = {
-                    error: {
-                      code: 500,
-                      message: 'Expected array or object as JSONP response'
-                    }
-                  };
-                  response = null;
-                }
-    
-                if (!error && response.error) {
-                  error = response;
-                  response = null;
-                }
-    
-                callback.call(context, response,error);
-                window._Spectrum4LeafletCallbacks[callbackId] = true;
-              }
-            };
-    
-            callbacks++;
-    
-            return {
-              id: callbackId,
-              url: script.src,
-              abort: function(){
-                window._Spectrum4LeafletCallbacks._callback[callbackId](null,{
-                  code: 0,
-                  message: 'Request aborted.'
-                });
-              }
-            };
-        },
-        
-        /**
-        * Request post options
-        * @typedef {Object} L.SpectrumSpatial.Request.PostOptions
-        * @property {string} [login]  Login
-        * @property {string} [password]  Password
-        * @property {Object} [postData] Data to post
-        * @property {string} [postType=application/json] Type of post data
-        * @property {string} [responseType] Type of response (only for XHR2)
-        */
-        
-        /**
-        * Runs post request
-        * @param {string} url Url for request
-        * @param {Request.Callback} Callback function, when request is done
-        * @param {object} context Context for callback
-        * @param {L.SpectrumSpatial.Request.PostOptions} [options] Options for function
-        * @returns {XMLHttpRequest}
-        */
-        post: function(url, callback, context, options ){       
-            options = options || {};        
-            if (!options.postType){
-                options.postType = 'application/json';
-            }
+});;(function() {
+  var callbacks = 0;
 
-            var httpRequest = this._createRequest(callback,context);
-            httpRequest.open('POST', url, true, options.login, options.password);
-            
-            httpRequest.setRequestHeader('Content-Type', options.postType);
-            
-            if (options.responseType){
-                httpRequest.responseType = options.responseType;
+  var requestState = {
+    notInitialized: 0,
+    connectionEstablished: 1,
+    received: 2,
+    processing: 3,
+    finished: 4
+  };
+
+  window._Spectrum4LeafletCallbacks = {};
+
+  /**
+   * @classdesc Simple Wraper on XMLHttpRequest, has simple get and post functions
+   * @constructor
+   */
+  L.SpectrumSpatial.Request = {
+
+    /**
+     * Callback function for {L.SpectrumSpatial.Request}
+     *
+     * @callback L.SpectrumSpatial.Request.Callback
+     * @param {Object} response Response
+     * @param {Object} error Error object, with fieds code and message
+     */
+
+    _createRequest: function(callback, context) {
+      var httpRequest = new XMLHttpRequest();
+
+      httpRequest.onerror = function(e) {
+        callback.call(context, {
+          error: {
+            code: 500,
+            message: 'XMLHttpRequest error'
+          }
+        }, null);
+      };
+
+      httpRequest.onreadystatechange = function() {
+        var response;
+        var error;
+
+        if(httpRequest.readyState === requestState.finished) {
+          try {
+            var contentType = this.getResponseHeader('content-type');
+            if(contentType.indexOf('application/json') !== -1) {
+              response = JSON.parse(httpRequest.responseText);
             }
-            
-            httpRequest.send(options.postData);
-            return httpRequest;
-        },
-        
-        /**
-        * Runs soap request
-        * @param {string} url Url of service
-		* @param {string} message SOAP message
-        * @param {Request.Callback} Callback function, when request is done
-        * @param {object} context Context for callback
-        * @returns {XMLHttpRequest}
-        */
-        soap: function(url, message, callback, context ){
-	        var httpRequest = this._createRequest(callback,context);
-	        httpRequest.open("POST",url,true);
-		    httpRequest.setRequestHeader("Content-Type","text/xml; charset=utf-8");
-		    httpRequest.send(message);
-		    return httpRequest;
+            else if(contentType.indexOf('text/xml') !== -1) {
+              response = httpRequest.responseXML;
+            }
+            else {
+              response = httpRequest.response;
+            }
+          } catch(e) {
+            response = null;
+            error = {
+              code: 500,
+              message: 'Could not parse response as JSON.'
+            };
+          }
+
+          if(!error && response.error) {
+            error = response.error;
+            response = null;
+          }
+
+          callback.call(context, response, error);
         }
-    };
+      };
+
+      return httpRequest;
+    },
+
+    /**
+     * Request get options
+     * @typedef {Object} L.SpectrumSpatial.Request.GetOptions
+     * @property {string} [login]  Login
+     * @property {string} [password]  Password
+     * @property {string} [responseType] Type of response (only for XHR2)
+     */
+
+    /**
+     * Runs get request
+     * @param {string} url Url for request
+     * @param {Request.Callback} callback function, when request is done
+     * @param {Object} [context] Context for callback
+     * @param {L.SpectrumSpatial.Request.GetOptions} [options] Options
+     * @returns {XMLHttpRequest}
+     */
+    get: function(url, callback, context, options) {
+      options = options || {};
+      var httpRequest = this._createRequest(callback, context);
+      httpRequest.open('GET', url, true, options.login, options.password);
+      if(options.responseType) {
+        httpRequest.responseType = options.responseType;
+      }
+      httpRequest.send(null);
+      return httpRequest;
+    },
+
+    /**
+     * Runs get request by JSONP pattern
+     * @param {string} url Url for request
+     * @param {string} callbackSeparator Special character to separate callback param from query param
+     * @param {Request.Callback} callback function, when request is done
+     * @param {Object} context Context for callback
+     * @param {string} [callbackSeparator] Special character to separate callback param from query param
+     * @returns {XMLHttpRequest}
+     */
+    jsonp: function(url, callback, context, callbackSeparator) {
+      var callbackId = 'c' + callbacks;
+
+      if(!callbackSeparator) {
+        callbackSeparator = '';
+      }
+
+      var script = L.DomUtil.create('script', null, document.body);
+      script.type = 'text/javascript';
+      script.src = url + callbackSeparator + 'callback=window._Spectrum4LeafletCallbacks.' + callbackId;
+      script.id = callbackId;
+
+      window._Spectrum4LeafletCallbacks[callbackId] = function(response) {
+        if(window._Spectrum4LeafletCallbacks[callbackId] !== true) {
+          var error;
+          var responseType = Object.prototype.toString.call(response);
+
+          if(!(responseType === '[object Object]' || responseType === '[object Array]')) {
+            error = {
+              error: {
+                code: 500,
+                message: 'Expected array or object as JSONP response'
+              }
+            };
+            response = null;
+          }
+
+          if(!error && response.error) {
+            error = response;
+            response = null;
+          }
+
+          callback.call(context, response, error);
+          window._Spectrum4LeafletCallbacks[callbackId] = true;
+        }
+      };
+
+      callbacks++;
+
+      return {
+        id: callbackId,
+        url: script.src,
+        abort: function() {
+          window._Spectrum4LeafletCallbacks._callback[callbackId](null, {
+            code: 0,
+            message: 'Request aborted.'
+          });
+        }
+      };
+    },
+
+    /**
+     * Request post options
+     * @typedef {Object} L.SpectrumSpatial.Request.PostOptions
+     * @property {string} [login]  Login
+     * @property {string} [password]  Password
+     * @property {Object} [postData] Data to post
+     * @property {string} [postType=application/json] Type of post data
+     * @property {string} [responseType] Type of response (only for XHR2)
+     */
+
+    /**
+     * Runs post request
+     * @param {string} url Url for request
+     * @param {Request.Callback} Callback function, when request is done
+     * @param {object} context Context for callback
+     * @param {L.SpectrumSpatial.Request.PostOptions} [options] Options for function
+     * @returns {XMLHttpRequest}
+     */
+    post: function(url, callback, context, options) {
+      options = options || {};
+      if(!options.postType) {
+        options.postType = 'application/json';
+      }
+
+      var httpRequest = this._createRequest(callback, context);
+      httpRequest.open('POST', url, true, options.login, options.password);
+
+      httpRequest.setRequestHeader('Content-Type', options.postType);
+
+      if(options.responseType) {
+        httpRequest.responseType = options.responseType;
+      }
+
+      httpRequest.send(options.postData);
+      return httpRequest;
+    },
+
+    /**
+     * Runs soap request
+     * @param {string} url Url of service
+     * @param {string} message SOAP message
+     * @param {Request.Callback} Callback function, when request is done
+     * @param {object} context Context for callback
+     * @returns {XMLHttpRequest}
+     */
+    soap: function(url, message, callback, context) {
+      var httpRequest = this._createRequest(callback, context);
+      httpRequest.open("POST", url, true);
+      httpRequest.setRequestHeader("Content-Type", "text/xml; charset=utf-8");
+      httpRequest.send(message);
+      return httpRequest;
+    }
+  };
 })();
 
 ;L.SpectrumSpatial.Services.Operation = L.Class.extend(
@@ -2118,20 +2127,20 @@ L.SpectrumSpatial.Services.RoutingService = L.SpectrumSpatial.Services.Service.e
 
 L.SpectrumSpatial.Services.routingService = function(url,options){
   return new L.SpectrumSpatial.Services.RoutingService(url,options);
-};;L.SpectrumSpatial.Layers.MapServiceLayer =  L.Layer.extend({
-/** @lends L.SpectrumSpatial.Layers.MapServiceLayer.prototype */
+};;L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
+    /** @lends L.SpectrumSpatial.Layers.MapServiceLayer.prototype */
 
 
     /**
-    * MapServiceLayer's options class
-    * @typedef {Object} L.SpectrumSpatial.Layers.MapServiceLayer.Options
-    * @property {number} opacity  Opacity of layer image (1 is default)
-    * @property {string} alt  Title for layer image
-    * @property {boolean} interactive  If layer is interactive
-    * @property {string} imageType  Type of image ( 'png' is default )
-    * @property {number} zIndex  ZIndex of layer's image ('auto' is default)
-    * @property {number} updateInterval  Min update interval of the layer
-    */
+     * MapServiceLayer's options class
+     * @typedef {Object} L.SpectrumSpatial.Layers.MapServiceLayer.Options
+     * @property {number} opacity  Opacity of layer image (1 is default)
+     * @property {string} alt  Title for layer image
+     * @property {boolean} interactive  If layer is interactive
+     * @property {string} imageType  Type of image ( 'png' is default )
+     * @property {number} zIndex  ZIndex of layer's image ('auto' is default)
+     * @property {number} updateInterval  Min update interval of the layer
+     */
 
     options: {
         opacity: 1,
@@ -2139,74 +2148,95 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
         interactive: false,
         imageType: 'png',
         zIndex: 'auto',
-        updateInterval:200,
+        updateInterval: 200,
     },
 
 
     /**
-    * @class MapService layer class
-    * @augments {L.Layer}
-    * @constructs L.SpectrumSpatial.Layers.MapServiceLayer
-    * @param {L.SpectrumSpatial.Services.MapService} service Map Service for layer
-    * @param {string} mapName Name of the map to display on map service
-    * @param {Object} postData Post data to map (only if browser supports XHR2)
-    * @param {L.SpectrumSpatial.Layers.MapServiceLayer.Options} options Additional options of layer
-    */
-    initialize: function (service, mapName, postData, options) { 
+     * @class MapService layer class
+     * @augments {L.Layer}
+     * @constructs L.SpectrumSpatial.Layers.MapServiceLayer
+     * @param {L.SpectrumSpatial.Services.MapService} service Map Service for layer
+     * @param {string} mapName Name of the map to display on map service
+     * @param {Object} postData Post data to map (only if browser supports XHR2)
+     * @param {L.SpectrumSpatial.Layers.MapServiceLayer.Options} options Additional options of layer
+     */
+    initialize: function(service, mapName, postData, options) {
         this._mapName = mapName;
         this._service = service;
         this._postData = postData;
         L.setOptions(this, options);
-    },
-    
-    onAdd: function (map) { 
-        this._map = map;                
-        this._srs = map.options.crs;
         this._update = L.Util.throttle(this._update, this.options.updateInterval, this);
+    },
+
+    onAdd: function(map) {
+        this._map = map;
+        this._srs = map.options.crs;
+
         map.on('moveend', this._update, this);
 
-        if (this.options.zIndex==='auto'){
+        if (this.options.zIndex === 'auto') {
             var maxZIndex = 0;
-            for (var i in map._layers){
+            for (var i in map._layers) {
                 var layer = map._layers[i];
-                if (layer.getZIndex){
+                if (layer.getZIndex) {
                     var z = layer.getZIndex();
-                    if (maxZIndex<z){
+                    if (maxZIndex < z) {
                         maxZIndex = z;
                     }
                 }
             }
-            this.options.zIndex = maxZIndex+1;
+            this.options.zIndex = maxZIndex + 1;
         }
-        
+
+        if ((!this._singleImages) || (this._singleImages.length === 0)) {
+            this._update();
+        } else {
+            this._forAllSingleImages(
+                function(img) {
+                    this._resetImagePosition(img);
+                    this.getPane(this.options.pane).appendChild(img);
+                }
+            );
+        }
+
         this._update();
     },
 
-    onRemove: function (map) {
+    onRemove: function(map) {
         L.DomUtil.remove(this._image);
         map.off('moveend', this._update, this);
-        delete this._image;
-    },  
-    
-    setService:function(service){
+
+        this._forAllSingleImages(
+            function(img) {
+                if (this.options.interactive) {
+                    this.removeInteractiveTarget(img);
+                }
+                this.getPane(this.options.pane).removeChild(img);
+            }
+        );
+
+    },
+
+    setService: function(service) {
         this._service = service;
         this._update();
         return this;
     },
-    
-    setMapName:function(mapName){
+
+    setMapName: function(mapName) {
         this._mapName = mapName;
         this._update();
         return this;
     },
-    
-    setPostData:function(postData){
+
+    setPostData: function(postData) {
         this._postData = postData;
         this._update();
         return this;
     },
-    
-    setOpacity: function (opacity) {
+
+    setOpacity: function(opacity) {
         this.options.opacity = opacity;
 
         if (this._image) {
@@ -2214,36 +2244,36 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
         }
         return this;
     },
-    
-    getOpacity: function () {
+
+    getOpacity: function() {
         return this.options.opacity;
     },
 
-    setStyle: function (styleOpts) {
+    setStyle: function(styleOpts) {
         if (styleOpts.opacity) {
             this.setOpacity(styleOpts.opacity);
         }
         return this;
     },
-    
-    setZIndex: function(zIndex){
+
+    setZIndex: function(zIndex) {
         this.options.zIndex = zIndex;
         this._updateZIndex();
         return this;
     },
-    
-    getZIndex: function(){
+
+    getZIndex: function() {
         return this.options.zIndex;
     },
-    
-    bringToFront: function () {
+
+    bringToFront: function() {
         if (this._map) {
             L.DomUtil.toFront(this._image);
         }
         return this;
     },
 
-    bringToBack: function () {
+    bringToBack: function() {
         if (this._map) {
             L.DomUtil.toBack(this._image);
         }
@@ -2251,12 +2281,13 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
     },
 
 
-    getAttribution: function () {
+    getAttribution: function() {
         return this.options.attribution;
     },
 
-    getEvents: function () {
+    getEvents: function() {
         var events = {
+            zoom: this._reset,
             viewreset: this._reset
         };
 
@@ -2267,179 +2298,368 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
         return events;
     },
 
-    getBounds: function () {
+    getBounds: function() {
         return this._bounds;
     },
-    
-    _initInteraction: function () {
-        if (!this.options.interactive) { return; }
+
+    _initInteraction: function() {
+        if (!this.options.interactive) {
+            return;
+        }
         L.DomUtil.addClass(this._image, 'leaflet-interactive');
         L.DomEvent.on(this._image, 'click dblclick mousedown mouseup mouseover mousemove mouseout contextmenu',
-                this._fireMouseEvent, this);
+            this._fireMouseEvent, this);
     },
 
-    _fireMouseEvent: function (e, type) {
+    _fireMouseEvent: function(e, type) {
         if (this._map) {
             this._map._fireMouseEvent(this, e, type, true);
         }
     },
 
-    _initImage: function () {
-        var img = L.DomUtil.create('img','leaflet-image-layer ' + (this._zoomAnimated ? 'leaflet-zoom-animated' : ''));
+    _initImage: function() {
+        var img = L.DomUtil.create('img', 'leaflet-image-layer ' + (this._zoomAnimated ? 'leaflet-zoom-animated' : ''));
         img.onselectstart = L.Util.falseFn;
         img.onmousemove = L.Util.falseFn;
         img.style.zIndex = this.options.zIndex;
         img.alt = this.options.alt;
-        
+
         if (this.options.opacity < 1) {
             L.DomUtil.setOpacity(img, this.options.opacity);
         }
-        
+
         return img;
     },
-    
-    _requestCounter :0,
-    
-    _animateZoom: function (e) {
-        var bounds = new L.Bounds(
-            this._map._latLngToNewLayerPoint(this._bounds.getNorthWest(), e.zoom, e.center),
-            this._map._latLngToNewLayerPoint(this._bounds.getSouthEast(), e.zoom, e.center));
 
-        var offset = bounds.min.add(bounds.getSize()._multiplyBy((1 - 1 / e.scale) / 2));
+    _requestCounter: 0,
 
-        L.DomUtil.setTransform(this._image, offset, e.scale);
+    _animateZoom: function(e) {
+        this._forAllSingleImages(
+            function(img) {
+                var scale = this._map.getZoomScale(e.zoom);
+                var offset = this._map._latLngToNewLayerPoint(img.position.getNorthWest(), e.zoom, e.center);
+                L.DomUtil.setTransform(img, offset, scale);
+            }
+        );
     },
-    
 
-    _reset: function () {  
-        var image = this._image,
-            bounds = new L.Bounds(
-                this._map.latLngToLayerPoint(this._bounds.getNorthWest()),
-                this._map.latLngToLayerPoint(this._bounds.getSouthEast())),
-            size = bounds.getSize();
+
+    _reset: function() {
+        this._forAllSingleImages(
+            function(img) {
+                this._resetImagePosition(img);
+            }
+        );
+    },
+
+    _resetImagePosition: function(image) {
+        var bounds = new L.Bounds(
+            this._map.latLngToLayerPoint(image.position.getNorthWest()),
+            this._map.latLngToLayerPoint(image.position.getSouthEast()));
+        var size = bounds.getSize();
 
         L.DomUtil.setPosition(image, bounds.min);
 
-        image.style.width  = size.x + 'px';
+        image.style.width = size.x + 'px';
         image.style.height = size.y + 'px';
+
+        return image;
     },
-    
-    
-    _update:function(){
-        
-        if(this._map._animatingZoom){
-           return;
-        }
-        
-        if (this._map._panAnim && this._map._panAnim._inProgress) {
-           return;
+
+    _incrementRequestCounter: function(imagesCount) {
+        if (!this._requestCounter) {
+            this._requestCounter = {
+                count: 1
+            };
+        } else {
+            this._requestCounter.count++;
         }
 
-        var bounds = this._map.getBounds();
-        var size = this._map.getSize();
-        var nw = this._srs.project(bounds.getNorthWest());
-        var se = this._srs.project(bounds.getSouthEast());  
-    
-        var newImage = this._initImage();
-        
-        this._requestCounter++;
-        
-        var renderOptions = {
-            mapName : this._mapName ,
-            imageType : this.options.imageType,
-            width: size.x,
-            height: size.y,
-            bounds :[ nw.x, nw.y, se.x,se.y ],
-            srs:this._srs.code,
-            additionalParams : this._postData
-        };
-        
-        if ((this._postData!==undefined)|(this._service.needAuthorization())){
-            this._service.renderMap(
-                                            renderOptions,
-                                            this._postLoad,
-                                            {
-                                                context: this, 
-                                                image: newImage, 
-                                                bounds:bounds, 
-                                                counter:this._requestCounter
-                                            });
-        }
-        else{
-            newImage.onload = L.bind(this._afterLoad, this, { image: newImage, bounds:bounds, counter:this._requestCounter});
-            newImage.src = this._service.getUrlRenderMap(renderOptions);              
-        }
-        this.fire('loading');
+        this._requestCounter.allImages = imagesCount;
+        this._requestCounter.loadedImages = 0;
     },
-    
-    _afterLoad: function (params) {  
-    
-        //only last request we will draw
-        if (this._requestCounter!= params.counter){
+
+
+    _update: function() {
+        if (!this._map) {
+            return;
+        }
+
+        if (this._map._animatingZoom) {
+            return;
+        }
+
+        var zoom = this._map.getZoom();
+
+        if (this._map._panTransition && this._map._panTransition._inProgress) {
+            return;
+        }
+
+        if (zoom > this.options.maxZoom || zoom < this.options.minZoom) {
+            return;
+        }
+
+        var params = this._buildImageParams();
+
+        this._requestImages(params);
+
+        this.fire('loading');
+
+    },
+
+    _requestImages: function(params) {
+        if (!this._singleImages) {
+            this._singleImages = [];
+        }
+
+        this._incrementRequestCounter(params.length);
+        this.fire('loading', {
+            bounds: this._map.getBounds()
+        });
+
+        for (var i = 0; i < params.length; i++) {
+            var singleParam = params[i];
+            singleParam.requestCount = this._requestCounter.count;
+
+            if ((this._postData) | (this._service.needAuthorization())) {
+                this._service.renderMap(
+                    singleParam.params,
+                    this._postLoad, {
+                        context: this,
+                        params: singleParam
+                    });
+            } else {
+                singleParam.href = this._service.getUrlRenderMap(singleParam.params);
+                this._renderImage(singleParam);
+            }
+
+        }
+    },
+
+    _buildImageParams: function() {
+        var singleMapParamsArray = [];
+
+        var wholeBounds = this._map.getBounds();
+        var wholeSize = this._map.getSize();
+
+        var min = wholeBounds.getSouthWest();
+        var max = wholeBounds.getNorthEast();
+
+        var newXmax = min.lng;
+        var newXmin = min.lng;
+        var i = 0;
+
+        var d = (newXmin + 180) / 360;
+        var sign = this._sign(d);
+        sign = (sign === 0) ? 1 : sign;
+        var coef = sign * Math.floor(Math.abs(d));
+
+        while (newXmax < max.lng) {
+            newXmax = 360 * (coef + i) + sign * 180;
+
+            if (newXmax > max.lng) {
+                newXmax = max.lng;
+            }
+
+            var normXMin = newXmin;
+            var normXMax = newXmax;
+
+            if ((newXmin < -180) || (newXmax > 180)) {
+                var d2 = Math.floor((newXmin + 180) / 360);
+                normXMin -= d2 * 360;
+                normXMax -= d2 * 360;
+            }
+
+            var singleBounds = L.latLngBounds(L.latLng(min.lat, normXMin), L.latLng(max.lat, normXMax));
+            var positionBounds = L.latLngBounds(L.latLng(min.lat, newXmin), L.latLng(max.lat, newXmax));
+            var width = (wholeSize.x * ((newXmax - newXmin) / (max.lng - min.lng)));
+            var singleSize = {
+                x: width,
+                y: wholeSize.y
+            };
+            var singleExportParams = this._buildSingleImageParams(singleBounds, singleSize);
+
+            singleMapParamsArray.push({
+                position: positionBounds,
+                bounds: singleBounds,
+                size: singleSize,
+                params: singleExportParams
+            });
+            newXmin = newXmax;
+            i++;
+        }
+
+        return singleMapParamsArray;
+    },
+
+    _buildSingleImageParams: function(bounds, size) {
+        var ne = this._map.options.crs.project(bounds.getNorthEast());
+        var sw = this._map.options.crs.project(bounds.getSouthWest());
+        var sr = parseInt(this._map.options.crs.code.split(':')[1], 10);
+
+        var top = this._map.latLngToLayerPoint(bounds._northEast);
+        var bottom = this._map.latLngToLayerPoint(bounds._southWest);
+
+        if (top.y > 0 || bottom.y < size.y) {
+            size.y = bottom.y - top.y;
+        }
+
+        var params = {
+            mapName: this._mapName,
+            imageType: this.options.imageType,
+            width: Math.round(size.x),
+            height: Math.round(size.y),
+            bounds: [sw.x, ne.y, ne.x, sw.y],
+            srs: this._srs.code,
+            additionalParams: this._postData
+        };
+
+        return params;
+    },
+
+    _renderImage: function(params) {
+        var img = this._initImage();
+        img.position = params.position;
+        var imageParams = {
+            image: img,
+            mapParams: params,
+            requestCount: params.requestCount
+        };
+        img.onload = L.bind(this._imageLoaded, this, imageParams);
+        img.onerror = L.bind(this._imageFailed, this, imageParams);
+        img.src = params.href;
+    },
+
+    _imageFailed: function(params) {
+        this.fire('error', {
+            params: params
+        });
+
+        if (params.requestCount !== this._requestCounter.count) {
             delete params.image;
             return;
         }
-    
-        this.fire('load');
-     
-        this._bounds = params.bounds;
-        this._size = this._map.getSize();
-        
-        var image = params.image,
-            bounds = new L.Bounds(
-                this._map.latLngToLayerPoint(this._bounds.getNorthWest()),
-                this._map.latLngToLayerPoint(this._bounds.getSouthEast())),
-            size = bounds.getSize();
 
-        L.DomUtil.setPosition(image, bounds.min);
-
-        image.style.width  = size.x + 'px';
-        image.style.height = size.y + 'px';
-                    
-        this.getPane(this.options.pane).appendChild(image);
-        
-        //clears old image
-        if (this._image){
-            this.getPane(this.options.pane).removeChild(this._image);
-            L.DomEvent.off(this._image, 'click dblclick mousedown mouseup mouseover mousemove mouseout contextmenu',this._fireMouseEvent, this);
-            delete this._image;
-        }
-     
-        this._image = image;    
-        this._initInteraction();
+        this._requestCounter.loadedImages++;
     },
-    
-    _postLoad:function(response, error){
+
+    _imageLoaded: function(params) {
+        if (params.requestCount !== this._requestCounter.count) {
+            delete params.image;
+            return;
+        }
+
+        var image = this._resetImagePosition(params.image);
+
+        var imagesToRemove = [];
+
+        this._forAllSingleImages(
+            function(img) {
+                if (img.position.overlaps(image.position)) {
+                    imagesToRemove.push(img);
+                }
+            }
+        );
+
+        this.getPane(this.options.pane).appendChild(image);
+        if (this.options.interactive) {
+            L.DomUtil.addClass(image, 'leaflet-interactive');
+            this.addInteractiveTarget(image);
+        }
+
+        this._singleImages.push(image);
+
+        this._requestCounter.loadedImages++;
+
+        if (this._requestCounter.allImages === this._requestCounter.loadedImages) {
+            var bounds = this._map.getBounds();
+            this.fire('load', {
+                bounds: bounds
+            });
+
+            this._forAllSingleImages(
+                function(img) {
+                    if (!img.position.overlaps(bounds)) {
+                        imagesToRemove.push(img);
+                    }
+                }
+            );
+        }
+
+        // removing useless images
+        for (var i = 0; i < imagesToRemove.length; i++) {
+            this._removeImage(imagesToRemove[i]);
+            var index = this._singleImages.indexOf(imagesToRemove[i]);
+            if (index !== -1) {
+                this._singleImages.splice(index, 1);
+            }
+        }
+    },
+
+    _removeImage: function(img) {
+        this.getPane(this.options.pane).removeChild(img);
+        if (this.options.interactive) {
+            this.removeInteractiveTarget(img);
+        }
+    },
+
+    _forAllSingleImages: function(f) {
+        if (this._singleImages) {
+            for (var i = 0; i < this._singleImages.length; i++) {
+                f.call(this, this._singleImages[i]);
+            }
+        }
+    },
+
+
+    _postLoad: function(response, error) {
         var uInt8Array = new Uint8Array(response);
         var i = uInt8Array.length;
         var binaryString = new Array(i);
-        while (i--)
-        {
-          binaryString[i] = String.fromCharCode(uInt8Array[i]);
+        while (i--) {
+            binaryString[i] = String.fromCharCode(uInt8Array[i]);
         }
         var data = binaryString.join('');
-    
+
         var base64 = window.btoa(data);
-        this.image.src ='data:image/png;base64,'+base64;
-        this.context._afterLoad({ image: this.image, bounds:this.bounds, counter:this.counter});
+        this.params.href = 'data:image/png;base64,' + base64;
+        this.context._renderImage(this.params);
     },
-    
-    _updateOpacity: function () {
-        L.DomUtil.setOpacity(this._image, this.options.opacity);
+
+    _updateOpacity: function() {
+        this.options.opacity = opacity;
+        this._forAllSingleImages(
+            function(img) {
+                L.DomUtil.setOpacity(img, this.options.opacity);
+            }
+        );
+        return this;
     },
-    
-    _updateZIndex: function(){
-        if (this._image){
-            this._image.style.zIndex = this.options.zIndex;
-        }       
-    }   
-    
+
+    _updateZIndex: function() {
+        this.options.zIndex = zIndex;
+        this._forAllSingleImages(
+            function(img) {
+                img.style.zIndex = zIndex;
+            }
+        );
+    },
+
+    _sign: function(value) {
+        if (value > 0) {
+            return 1;
+        } else if (value < 0) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+
 });
 
-L.SpectrumSpatial.Layers.mapServiceLayer = function(service,mapName,postData,options){
-  return new L.SpectrumSpatial.Layers.MapServiceLayer(service,mapName,postData,options);
-};
-;L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
+L.SpectrumSpatial.Layers.mapServiceLayer = function(service, mapName, postData, options) {
+    return new L.SpectrumSpatial.Layers.MapServiceLayer(service, mapName, postData, options);
+};;L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
 /** @lends L.SpectrumSpatial.Layers.TileServiceLayer.prototype */
 
     /**
@@ -2638,436 +2858,443 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service,mapName,postData,opt
 L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
   return new L.SpectrumSpatial.Layers.TileServiceLayer(service,mapName,options);
 };;L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
-/** @lends L.SpectrumSpatial.Controls.Layers.prototype */ 
+  /** @lends L.SpectrumSpatial.Controls.Layers.prototype */
 
-    className: 'leaflet-ss-control-layers',
-    
-    /**
-    * Layers control options class
-    * @typedef {Object} L.SpectrumSpatial.Controls.Layers.Options
-    * @property {string} [maxHeight] Max height of control
-    * @property {string} [maxWidth] Max width of control
-    * @property {string} [position] Control position in map
-    * @property {boolean} [cssOff] If is true, control rednders without css class ( usefull when you draw outside of the map)
-    * @property {boolean} [autoZIndex] If true, Zindexes to overlays will be set automaticly 
-    * @property {boolean} [zIndexControls] If true zIndex controls is enabled
-    * @property {boolean} [opacityControls] If true opacity controls is enabled
-    * @property {boolean} [legendControls] If true legend controls is enabled
-    * @property {L.SpectrumSpatial.Controls.Legend.Options} [legendOptions] Options for legend (if legend controls is enabled)
-    * @property {Object} [legendContainer] DOM element, if we want to draw legend outside of layers control
-    * @property {boolean} [inverseOrder=false] If true, upper layer in control is upper on map ( max Z index)
-    */
-    
-    options : {
-        zIndexControls:true,
-        opacityControls:true,
-        legendControls:true,
-        legendOptions : {},
-        legendContainer :null,
-        inverseOrder:false
-    },
-    
-    /**
-    * @class Layers control
-    * @augments {L.Control} 
-    * @constructs L.SpectrumSpatial.Controls.Layers
-    * @param {Object} baseLayers Object which contans base layers ( { "title":layer } )
-    * @param {Object} overlays Object which contans overlays layers ( { "title":layer } )
-    * @param {L.SpectrumSpatial.Controls.Layers.Options} [options] Options
-    */
-    initialize: function (baseLayers, overlays, options) {
-        L.setOptions(this, options);
+  className: 'leaflet-ss-control-layers',
 
-        this._layers = {};
-        if (!this.options.legendOptions){
-            this.options.legendOptions = {  };
-        }
-        if (this.options.legendOptions.cssOff === undefined){
-            this.options.legendOptions.cssOff = true;
-        }
-        this._minZIndex = 1;
-        this._maxZIndex = 0;
-        
-        
-        this._handlingClick = false;
+  /**
+   * Layers control options class
+   * @typedef {Object} L.SpectrumSpatial.Controls.Layers.Options
+   * @property {string} [maxHeight] Max height of control
+   * @property {string} [maxWidth] Max width of control
+   * @property {string} [position] Control position in map
+   * @property {boolean} [cssOff] If is true, control rednders without css class ( usefull when you draw outside of the map)
+   * @property {boolean} [autoZIndex] If true, Zindexes to overlays will be set automaticly
+   * @property {boolean} [zIndexControls] If true zIndex controls is enabled
+   * @property {boolean} [opacityControls] If true opacity controls is enabled
+   * @property {boolean} [legendControls] If true legend controls is enabled
+   * @property {L.SpectrumSpatial.Controls.Legend.Options} [legendOptions] Options for legend (if legend controls is enabled)
+   * @property {Object} [legendContainer] DOM element, if we want to draw legend outside of layers control
+   * @property {boolean} [inverseOrder=false] If true, upper layer in control is upper on map ( max Z index)
+   */
 
-        for (var i in baseLayers) {
-            this._addLayer(baseLayers[i], i);
-        }
+  options: {
+    zIndexControls: true,
+    opacityControls: true,
+    legendControls: true,
+    legendOptions: {},
+    legendContainer: null,
+    inverseOrder: false
+  },
 
-        for (i in overlays) {
-            this._addLayer(overlays[i], i, true);
-        }
-    },
-    
-    /**
-    * Adds control to map
-    * @memberof L.SpectrumSpatial.Controls.Layers.prototype
-    * @param {L.Map} map Map for control
-    * @param {Object} [outsideContainer] DOM element, if spicified control will be rendered outside of map
-    */
-    addTo: function (map, outsideContainer) {
-        this.remove();
-        this._map = map;
+  /**
+   * @class Layers control
+   * @augments {L.Control}
+   * @constructs L.SpectrumSpatial.Controls.Layers
+   * @param {Object} baseLayers Object which contans base layers ( { "title":layer } )
+   * @param {Object} overlays Object which contans overlays layers ( { "title":layer } )
+   * @param {L.SpectrumSpatial.Controls.Layers.Options} [options] Options
+   */
+  initialize: function(baseLayers, overlays, options) {
+    L.setOptions(this, options);
 
-        
-        var container = this._container = this.onAdd(map);
-        
-        if (outsideContainer){
-            outsideContainer.appendChild(container);
-        }
-        else{
-            L.DomUtil.addClass(container, 'leaflet-control');
-            var pos = this.getPosition();
-            var corner = map._controlCorners[pos];
-
-            if (pos.indexOf('bottom') !== -1) {
-                corner.insertBefore(container, corner.firstChild);
-            } else {
-                corner.appendChild(container);
-            }   
-        }
-
-        return this;
-    },
-    
-    _addLayer: function (layer, name, overlay) {
-        layer.on('add remove', this._onLayerChange, this);
-
-        if (overlay && this.options.autoZIndex && layer.setZIndex) {
-            this._maxZIndex++;
-            layer.setZIndex(this._maxZIndex);
-        }
-        
-        if (overlay && !this.options.autoZIndex){
-            if (layer.getZIndex){
-                var z = layer.getZIndex();
-                if (this._minZIndex>z){
-                    this._minZIndex = z;
-                }
-                if (this._maxZIndex<z){
-                    this._maxZIndex = z;
-                }
-            }
-        }
-        
-        var id = L.stamp(layer);
-
-        this._layers[id] = {
-            layer: layer,
-            name: name,
-            overlay: overlay
-        };
-    },
-    
-    _update: function () {
-        if (!this._container) { return this; }
-
-        L.DomUtil.empty(this._baseLayersList);
-        L.DomUtil.empty(this._overlaysList);
-
-        var baseLayersPresent, overlaysPresent, i, obj, baseLayersCount = 0;
-
-        var overlays = [];
-        for (i in this._layers) {
-            obj = this._layers[i];
-            overlaysPresent = overlaysPresent || obj.overlay;
-            baseLayersPresent = baseLayersPresent || !obj.overlay;
-            baseLayersCount += !obj.overlay ? 1 : 0;
-            if (!obj.overlay){
-                this._addItem(obj);
-            }
-            else{
-                overlays.push({ lo : obj, z : obj.layer.getZIndex() });
-            }      
-        }
-        
-        overlays.sort(L.SpectrumSpatial.Utils.sortByProperty('z',(this.options.inverseOrder)? "desc" :  "asc" ));
-        
-        for (i in overlays) {
-            obj = overlays[i];
-            this._addItem(obj.lo);
-        }
-        
-        // Hide base layers section if there's only one layer.
-        if (this.options.hideSingleBase) {
-            baseLayersPresent = baseLayersPresent && baseLayersCount > 1;
-            this._baseLayersList.style.display = baseLayersPresent ? '' : 'none';
-        }
-
-        this._separator.style.display = overlaysPresent && baseLayersPresent ? '' : 'none';
-
-        return this;
-    },
-    
-    
-    _initLayout: function () {
-        
-        var container = this._container = L.DomUtil.create('div', this.options.cssOff ? '' : this.className);
-
-        // makes this work on IE touch devices by stopping it from firing a mouseout event when the touch is released
-        container.setAttribute('aria-haspopup', true);
-
-        if (!L.Browser.touch) {
-            L.DomEvent
-                .disableClickPropagation(container)
-                .disableScrollPropagation(container);
-        } else {
-            L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation);
-        }
-
-        var form = this._form = L.DomUtil.create('form', this.className + '-list');
-        
-        if (this.options.maxHeight){
-	        this._form.style.maxHeight = this.options.maxHeight;
-        }
-        if (this.options.maxWidth){
-	        this._form.style.maxWidth = this.options.maxWidth;
-        }
-
-        if (this.options.collapsed) {
-            if (!L.Browser.android) {
-                L.DomEvent.on(container, {
-                    mouseenter: this._expand,
-                    mouseleave: this._collapse
-                }, this);
-            }
-
-            var link = this._layersLink = L.DomUtil.create('a', 'leaflet-control-layers-toggle' , container);
-            link.href = '#';
-            link.title = 'Layers';
-
-            if (L.Browser.touch) {
-                L.DomEvent
-                    .on(link, 'click', L.DomEvent.stop)
-                    .on(link, 'click', this._expand, this);
-            } else {
-                L.DomEvent.on(link, 'focus', this._expand, this);
-            }
-
-            this._map.on('click', this._collapse, this);
-            // TODO keyboard accessibility
-        } else {
-            this._expand();
-        }
-
-        this._baseLayersList = L.DomUtil.create('div', this.className + '-base', form);
-        this._separator = L.DomUtil.create('div', this.className + '-separator', form);
-        this._overlaysList = L.DomUtil.create('div', this.className + '-overlay', form);
-
-        container.appendChild(form);
-    },
-    
-    // IE7 bugs out if you create a radio dynamically, so you have to do it this hacky way (see http://bit.ly/PqYLBe)
-    _createRadioElement: function (name, checked) {
-
-        var radioHtml = '<input type="radio" class="leaflet-ss-cell leaflet-ss-control-layers-selector" name="' +
-                name + '"' + (checked ? ' checked="checked"' : '') + '/>';
-
-        var radioFragment = document.createElement('div');
-        radioFragment.innerHTML = radioHtml;
-
-        return radioFragment.firstChild;
-    },
-    
-    _addItem: function (obj) {
-        var layerItem = L.DomUtil.create('div','leaflet-ss-rowcontainer');
-        var row = L.DomUtil.create('div','leaflet-ss-row',layerItem);
-        var checked = this._map.hasLayer(obj.layer);
-        var input;
-        
-
-        if (obj.overlay) {
-            input = L.DomUtil.create('input', 'leaflet-ss-cell leaflet-control-layers-selector');
-            input.name = 'visibilityInput';
-            input.type = 'checkbox';
-            input.defaultChecked = checked;
-        } else {
-            input = this._createRadioElement('visibilityInput', checked);
-        }
-        input.layerId = L.stamp(obj.layer);
-        L.DomEvent.on(input, 'click', this._onVisibilityChanged, this);
-
-        var name = L.DomUtil.create('span','leaflet-ss-cell leaflet-ss-control-layers-title');
-        name.innerHTML = ' ' + obj.name;
-        
-        row.appendChild(input);
-        
-        if (obj.overlay) {
-            
-            if (this.options.zIndexControls){
-                row.appendChild(this._createZIndexButton('up', obj.layer, input.layerId ));
-                row.appendChild(this._createZIndexButton('down', obj.layer, input.layerId ));
-            }  
-            
-            if (this.options.legendControls){
-                var legend = L.DomUtil.create('div','leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-legend');
-                legend.layerId = input.layerId;
-                L.DomEvent.on(legend, 'click', this._onLegendClick, this);
-                row.appendChild(legend);    
-                if (this.options.legendContainer){
-                    obj.legendContainer = this.options.legendContainer;
-                }
-                else{
-                    obj.legendContainer = document.createElement('div','leaflet-ss-row');
-                    layerItem.appendChild(obj.legendContainer);
-                }
-            }
-            if (this.options.opacityControls){
-                var opacity = L.DomUtil.create('input','leaflet-ss-cell leaflet-ss-control-layers-input');
-                opacity.type = 'text';
-                opacity.name = 'opacityInput';
-                opacity.value = (obj.layer.getOpacity)? obj.layer.getOpacity(): this.options.opacity;
-                opacity.layerId = L.stamp(obj.layer);
-                L.DomEvent.on(opacity, 'input', this._onOpacityChanged, this);
-                row.appendChild(opacity);
-            }
-        }
-
-        row.appendChild(name);
-        
-        var container = obj.overlay ? this._overlaysList : this._baseLayersList;
-        container.appendChild(layerItem);
-        
-        obj.container = layerItem;
-        return layerItem;
-    },
-    
-    _createZIndexButton:function(displayDirection, layer, layerId ){
-        var className = 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-' + displayDirection;
-        var realDirection = ((displayDirection === 'up' & this.options.inverseOrder) | 
-                             (displayDirection === 'down' & !this.options.inverseOrder)) ? 'up':'down';
-        var clickFunction = ( realDirection ==='up' ) ? this._onUpClick : this._onDownClick;
-        var disableIndex = ( realDirection ==='up' )?  this._maxZIndex:this._minZIndex;
-        var btn = L.DomUtil.create('div', className);
-        btn.layerId = layerId;
-        L.DomEvent.on(btn, 'click', clickFunction , this);
-        if (layer.getZIndex()=== disableIndex){
-            L.DomUtil.addClass(btn, 'leaflet-ss-disabled');
-        }
-        
-        return btn;
-    },
-    
-    _onLegendClick: function(e) {
-        var layerId = e.currentTarget.layerId;
-        var lo = this._layers[layerId];
-        var legend;
-        if (!this.options.legendContainer) {
-            if (lo.legendContainer.hasChildNodes()){
-                L.DomUtil.empty(lo.legendContainer);
-            }
-            else{
-                legend = new L.SpectrumSpatial.Controls.Legend(lo.layer._service,lo.layer._mapName,this.options.legendOptions);
-                legend.addTo(this._map , this.options.legendContainer ? this.options.legendContainer : lo.legendContainer);             
-            }       
-        }
-        else{           
-            legend = new L.SpectrumSpatial.Controls.Legend(lo.layer._service,lo.layer._mapName,this.options.legendOptions);
-            legend.addTo(this._map , this.options.legendContainer ? this.options.legendContainer : lo.legendContainer);
-        }
-    },
-    
-    _onDownClick: function(e) {
-        var layerId = e.currentTarget.layerId;
-        var layer = this._layers[layerId].layer;
-        var curZ = layer.getZIndex();
-        var oldLayer = this._findOverlayByZ(curZ-1);
-        if (oldLayer){
-            oldLayer.layer.setZIndex(curZ);
-            layer.setZIndex(curZ-1);
-            this._update();
-        }
-    },
-    
-    _onUpClick: function(e) {
-        var layerId = e.currentTarget.layerId;
-        var layer = this._layers[layerId].layer;
-        var curZ = layer.getZIndex();
-        var oldLayer = this._findOverlayByZ(curZ+1);
-        if (oldLayer){
-            oldLayer.layer.setZIndex(curZ);
-            layer.setZIndex(curZ+1);
-            this._update();
-        }
-    },
-    
-    _findOverlayByZ: function(z){   
-        for (var i in this._layers) {
-            obj = this._layers[i];
-            
-            if (obj.overlay && obj.layer.getZIndex()===z ){
-                return obj;
-            } 
-        }
-        return null;
-    },
-    
-    _onVisibilityChanged: function () {
-        var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container,'visibilityInput');
-        var input, layer, hasLayer;
-        var addedLayers = [],
-            removedLayers = [];
-
-        this._handlingClick = true;
-
-        for (var i = 0, len = inputs.length; i < len; i++) {
-            input = inputs[i];
-            layer = this._layers[input.layerId].layer;
-            hasLayer = this._map.hasLayer(layer);
-
-            if (input.checked && !hasLayer) {
-                addedLayers.push(layer);
-
-            } else if (!input.checked && hasLayer) {
-                removedLayers.push(layer);
-            }
-        }
-
-        // Bugfix issue 2318: Should remove all old layers before readding new ones
-        for (i = 0; i < removedLayers.length; i++) {
-            this._map.removeLayer(removedLayers[i]);
-        }
-        for (i = 0; i < addedLayers.length; i++) {
-            this._map.addLayer(addedLayers[i]);
-        }
-
-        this._handlingClick = false;
-
-        this._refocusOnMap();
-    },
-    
-    _onOpacityChanged:function(){
-        var inputs =L.SpectrumSpatial.Utils.getElementsByName(this._container,'opacityInput');
-        var input, layer;
-        
-        this._handlingClick = true;
-
-        for (var i = 0, len = inputs.length; i < len; i++) {
-            input = inputs[i];
-            layer = this._layers[input.layerId].layer;
-            var newOpacity = parseFloat(input.value);
-            if (layer.setOpacity && !isNaN(newOpacity) ){
-                layer.setOpacity(newOpacity);
-            }
-        }
-        
-        this._handlingClick = false;
-    },
-    
-    _expand: function () {
-        L.DomUtil.addClass(this._container, this.className + '-expanded');
-    },
-
-    _collapse: function () {
-        L.DomUtil.removeClass(this._container, this.className + '-expanded');
+    this._layers = {};
+    if(!this.options.legendOptions) {
+      this.options.legendOptions = {};
     }
-    
+    if(this.options.legendOptions.cssOff === undefined) {
+      this.options.legendOptions.cssOff = true;
+    }
+    this._minZIndex = 1;
+    this._maxZIndex = 0;
+
+
+    this._handlingClick = false;
+
+    for(var i in baseLayers) {
+      this._addLayer(baseLayers[i], i);
+    }
+
+    for(i in overlays) {
+      this._addLayer(overlays[i], i, true);
+    }
+  },
+
+  /**
+   * Adds control to map
+   * @memberof L.SpectrumSpatial.Controls.Layers.prototype
+   * @param {L.Map} map Map for control
+   * @param {Object} [outsideContainer] DOM element, if spicified control will be rendered outside of map
+   */
+  addTo: function(map, outsideContainer) {
+    this.remove();
+    this._map = map;
+
+
+    var container = this._container = this.onAdd(map);
+
+    if(outsideContainer) {
+      outsideContainer.appendChild(container);
+    }
+    else {
+      L.DomUtil.addClass(container, 'leaflet-control');
+      var pos = this.getPosition();
+      var corner = map._controlCorners[pos];
+
+      if(pos.indexOf('bottom') !== -1) {
+        corner.insertBefore(container, corner.firstChild);
+      } else {
+        corner.appendChild(container);
+      }
+    }
+
+    return this;
+  },
+
+  _getLayer: function(id) {
+    return this._layers[id];
+  },
+
+  _addLayer: function(layer, name, overlay) {
+    layer.on('add remove', this._onLayerChange, this);
+
+    if(overlay && this.options.autoZIndex && layer.setZIndex) {
+      this._maxZIndex++;
+      layer.setZIndex(this._maxZIndex);
+    }
+
+    if(overlay && !this.options.autoZIndex) {
+      if(layer.getZIndex) {
+        var z = layer.getZIndex();
+        if(this._minZIndex > z) {
+          this._minZIndex = z;
+        }
+        if(this._maxZIndex < z) {
+          this._maxZIndex = z;
+        }
+      }
+    }
+
+    var id = L.stamp(layer);
+
+    this._layers[id] = {
+      layer: layer,
+      name: name,
+      overlay: overlay
+    };
+  },
+
+  _update: function() {
+    if(!this._container) {
+      return this;
+    }
+
+    L.DomUtil.empty(this._baseLayersList);
+    L.DomUtil.empty(this._overlaysList);
+
+    var baseLayersPresent, overlaysPresent, i, obj, baseLayersCount = 0;
+
+    var overlays = [];
+    for(i in this._layers) {
+      obj = this._layers[i];
+      overlaysPresent = overlaysPresent || obj.overlay;
+      baseLayersPresent = baseLayersPresent || !obj.overlay;
+      baseLayersCount += !obj.overlay ? 1 : 0;
+      if(!obj.overlay) {
+        this._addItem(obj);
+      }
+      else {
+        overlays.push({lo: obj, z: obj.layer.getZIndex()});
+      }
+    }
+
+    overlays.sort(L.SpectrumSpatial.Utils.sortByProperty('z', (this.options.inverseOrder) ? "desc" : "asc"));
+
+    for(i in overlays) {
+      obj = overlays[i];
+      this._addItem(obj.lo);
+    }
+
+    // Hide base layers section if there's only one layer.
+    if(this.options.hideSingleBase) {
+      baseLayersPresent = baseLayersPresent && baseLayersCount > 1;
+      this._baseLayersList.style.display = baseLayersPresent ? '' : 'none';
+    }
+
+    this._separator.style.display = overlaysPresent && baseLayersPresent ? '' : 'none';
+
+    return this;
+  },
+
+
+  _initLayout: function() {
+
+    var container = this._container = L.DomUtil.create('div', this.options.cssOff ? '' : this.className);
+
+    // makes this work on IE touch devices by stopping it from firing a mouseout event when the touch is released
+    container.setAttribute('aria-haspopup', true);
+
+    if(!L.Browser.touch) {
+      L.DomEvent
+        .disableClickPropagation(container)
+        .disableScrollPropagation(container);
+    } else {
+      L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation);
+    }
+
+    var form = this._form = L.DomUtil.create('form', this.className + '-list');
+
+    if(this.options.maxHeight) {
+      this._form.style.maxHeight = this.options.maxHeight;
+    }
+    if(this.options.maxWidth) {
+      this._form.style.maxWidth = this.options.maxWidth;
+    }
+
+    if(this.options.collapsed) {
+      if(!L.Browser.android) {
+        L.DomEvent.on(container, {
+          mouseenter: this._expand,
+          mouseleave: this._collapse
+        }, this);
+      }
+
+      var link = this._layersLink = L.DomUtil.create('a', 'leaflet-control-layers-toggle', container);
+      link.href = '#';
+      link.title = 'Layers';
+
+      if(L.Browser.touch) {
+        L.DomEvent
+          .on(link, 'click', L.DomEvent.stop)
+          .on(link, 'click', this._expand, this);
+      } else {
+        L.DomEvent.on(link, 'focus', this._expand, this);
+      }
+
+      this._map.on('click', this._collapse, this);
+      // TODO keyboard accessibility
+    } else {
+      this._expand();
+    }
+
+    this._baseLayersList = L.DomUtil.create('div', this.className + '-base', form);
+    this._separator = L.DomUtil.create('div', this.className + '-separator', form);
+    this._overlaysList = L.DomUtil.create('div', this.className + '-overlay', form);
+
+    container.appendChild(form);
+  },
+
+  // IE7 bugs out if you create a radio dynamically, so you have to do it this hacky way (see http://bit.ly/PqYLBe)
+  _createRadioElement: function(name, checked) {
+
+    var radioHtml = '<input type="radio" class="leaflet-ss-cell leaflet-ss-control-layers-selector" name="' +
+      name + '"' + (checked ? ' checked="checked"' : '') + '/>';
+
+    var radioFragment = document.createElement('div');
+    radioFragment.innerHTML = radioHtml;
+
+    return radioFragment.firstChild;
+  },
+
+  _addItem: function(obj) {
+    var layerItem = L.DomUtil.create('div', 'leaflet-ss-rowcontainer');
+    var row = L.DomUtil.create('div', 'leaflet-ss-row', layerItem);
+    var checked = this._map.hasLayer(obj.layer);
+    var input;
+
+
+    if(obj.overlay) {
+      input = L.DomUtil.create('input', 'leaflet-ss-cell leaflet-control-layers-selector');
+      input.name = 'visibilityInput';
+      input.type = 'checkbox';
+      input.defaultChecked = checked;
+    } else {
+      input = this._createRadioElement('visibilityInput', checked);
+    }
+    input.layerId = L.stamp(obj.layer);
+    L.DomEvent.on(input, 'click', this._onVisibilityChanged, this);
+
+    var name = L.DomUtil.create('span', 'leaflet-ss-cell leaflet-ss-control-layers-title');
+    name.innerHTML = ' ' + obj.name;
+
+    row.appendChild(input);
+
+    if(obj.overlay) {
+
+      if(this.options.zIndexControls) {
+        row.appendChild(this._createZIndexButton('up', obj.layer, input.layerId));
+        row.appendChild(this._createZIndexButton('down', obj.layer, input.layerId));
+      }
+
+      if(this.options.legendControls) {
+        var legend = L.DomUtil.create('div', 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-legend');
+        legend.layerId = input.layerId;
+        L.DomEvent.on(legend, 'click', this._onLegendClick, this);
+        row.appendChild(legend);
+        if(this.options.legendContainer) {
+          obj.legendContainer = this.options.legendContainer;
+        }
+        else {
+          obj.legendContainer = document.createElement('div', 'leaflet-ss-row');
+          layerItem.appendChild(obj.legendContainer);
+        }
+      }
+      if(this.options.opacityControls) {
+        var opacity = L.DomUtil.create('input', 'leaflet-ss-cell leaflet-ss-control-layers-input');
+        opacity.type = 'text';
+        opacity.name = 'opacityInput';
+        opacity.value = (obj.layer.getOpacity) ? obj.layer.getOpacity() : this.options.opacity;
+        opacity.layerId = L.stamp(obj.layer);
+        L.DomEvent.on(opacity, 'input', this._onOpacityChanged, this);
+        row.appendChild(opacity);
+      }
+    }
+
+    row.appendChild(name);
+
+    var container = obj.overlay ? this._overlaysList : this._baseLayersList;
+    container.appendChild(layerItem);
+
+    obj.container = layerItem;
+    return layerItem;
+  },
+
+  _createZIndexButton: function(displayDirection, layer, layerId) {
+    var className = 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-' + displayDirection;
+    var realDirection = ((displayDirection === 'up' & this.options.inverseOrder) |
+    (displayDirection === 'down' & !this.options.inverseOrder)) ? 'up' : 'down';
+    var clickFunction = ( realDirection === 'up' ) ? this._onUpClick : this._onDownClick;
+    var disableIndex = ( realDirection === 'up' ) ? this._maxZIndex : this._minZIndex;
+    var btn = L.DomUtil.create('div', className);
+    btn.layerId = layerId;
+    L.DomEvent.on(btn, 'click', clickFunction, this);
+    if(layer.getZIndex() === disableIndex) {
+      L.DomUtil.addClass(btn, 'leaflet-ss-disabled');
+    }
+
+    return btn;
+  },
+
+  _onLegendClick: function(e) {
+    var layerId = e.currentTarget.layerId;
+    var lo = this._layers[layerId];
+    var legend;
+    if(!this.options.legendContainer) {
+      if(lo.legendContainer.hasChildNodes()) {
+        L.DomUtil.empty(lo.legendContainer);
+      }
+      else {
+        legend = new L.SpectrumSpatial.Controls.Legend(lo.layer._service, lo.layer._mapName, this.options.legendOptions);
+        legend.addTo(this._map, this.options.legendContainer ? this.options.legendContainer : lo.legendContainer);
+      }
+    }
+    else {
+      legend = new L.SpectrumSpatial.Controls.Legend(lo.layer._service, lo.layer._mapName, this.options.legendOptions);
+      legend.addTo(this._map, this.options.legendContainer ? this.options.legendContainer : lo.legendContainer);
+    }
+  },
+
+  _onDownClick: function(e) {
+    var layerId = e.currentTarget.layerId;
+    var layer = this._layers[layerId].layer;
+    var curZ = layer.getZIndex();
+    var oldLayer = this._findOverlayByZ(curZ - 1);
+    if(oldLayer) {
+      oldLayer.layer.setZIndex(curZ);
+      layer.setZIndex(curZ - 1);
+      this._update();
+    }
+  },
+
+  _onUpClick: function(e) {
+    var layerId = e.currentTarget.layerId;
+    var layer = this._layers[layerId].layer;
+    var curZ = layer.getZIndex();
+    var oldLayer = this._findOverlayByZ(curZ + 1);
+    if(oldLayer) {
+      oldLayer.layer.setZIndex(curZ);
+      layer.setZIndex(curZ + 1);
+      this._update();
+    }
+  },
+
+  _findOverlayByZ: function(z) {
+    for(var i in this._layers) {
+      obj = this._layers[i];
+
+      if(obj.overlay && obj.layer.getZIndex() === z) {
+        return obj;
+      }
+    }
+    return null;
+  },
+
+  _onVisibilityChanged: function() {
+    var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container, 'visibilityInput');
+    var input, layer, hasLayer;
+    var addedLayers = [],
+      removedLayers = [];
+
+    this._handlingClick = true;
+
+    for(var i = 0, len = inputs.length; i < len; i++) {
+      input = inputs[i];
+      layer = this._layers[input.layerId].layer;
+      hasLayer = this._map.hasLayer(layer);
+
+      if(input.checked && !hasLayer) {
+        addedLayers.push(layer);
+
+      } else if(!input.checked && hasLayer) {
+        removedLayers.push(layer);
+      }
+    }
+
+    // Bugfix issue 2318: Should remove all old layers before readding new ones
+    for(i = 0; i < removedLayers.length; i++) {
+      this._map.removeLayer(removedLayers[i]);
+    }
+    for(i = 0; i < addedLayers.length; i++) {
+      this._map.addLayer(addedLayers[i]);
+    }
+
+    this._handlingClick = false;
+
+    this._refocusOnMap();
+  },
+
+  _onOpacityChanged: function() {
+    var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container, 'opacityInput');
+    var input, layer;
+
+    this._handlingClick = true;
+
+    for(var i = 0, len = inputs.length; i < len; i++) {
+      input = inputs[i];
+      layer = this._layers[input.layerId].layer;
+      var newOpacity = parseFloat(input.value);
+      if(layer.setOpacity && !isNaN(newOpacity)) {
+        layer.setOpacity(newOpacity);
+      }
+    }
+
+    this._handlingClick = false;
+  },
+
+  _expand: function() {
+    L.DomUtil.addClass(this._container, this.className + '-expanded');
+  },
+
+  _collapse: function() {
+    L.DomUtil.removeClass(this._container, this.className + '-expanded');
+  }
+
 });
 
-L.SpectrumSpatial.Controls.layers = function(baselayers, overlays,options){
-    return new L.SpectrumSpatial.Controls.Layers(baselayers, overlays,options);
-};;L.SpectrumSpatial.Controls.Legend = L.Control.extend({
+L.SpectrumSpatial.Controls.layers = function(baselayers, overlays, options) {
+  return new L.SpectrumSpatial.Controls.Layers(baselayers, overlays, options);
+};
+;L.SpectrumSpatial.Controls.Legend = L.Control.extend({
 /** @lends L.SpectrumSpatial.Controls.Legend.prototype */ 
     
     className: 'leaflet-ss-control-legend',

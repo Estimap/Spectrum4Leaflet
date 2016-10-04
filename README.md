@@ -1,17 +1,14 @@
 # Spectrum4Leaflet
 Leaflet plugin for Spectrum Spatial server.
 
-## Important 
-This plugin USES LATEST DEV VERSION of Leaflet
-
 ## What is it
-This javascript API helps to you work with [Spectrum Spatial server](http://www.mapinfo.com/products/server/) services in Leaflet maps. This API contains base rest-service wrappers, layers for Leaflet maps and controls. 
+This javascript API helps to you work with [Spectrum Spatial server](http://www.mapinfo.com/products/server/) services in Leaflet maps. This API contains base rest-service wrappers, layers for Leaflet maps and controls.
 ![Spectrum4Leaflet sample](https://raw.githubusercontent.com/Estimap/Spectrum4Leaflet/gh-pages/images/sample.png)
 
 ## What is inside
 ### Service wrappers
 * MapService - all rest operations of map service
-* TileService - all rest operations of tile service 
+* TileService - all rest operations of tile service
 * FeatureService - all rest operations of feature service
 * NamedResourceService - all soap operations of feature service
 * GeometryService - all soap operations of geometry service
@@ -29,14 +26,14 @@ This javascript API helps to you work with [Spectrum Spatial server](http://www.
 
 ## Using
 In your html add reference on leaflet (dev version) and on Spectrum4Leaflet plugin and write down something like:
-```
+```javascript
 var mapServiceUrl = 'http://localhost:8080/rest/Spatial/MappingService';
 var mapName = '/Samples/NamedMaps/MapWithLayer';
 
 var map = L.map('map').setView([0, 0], 1);
-		 
+
 L.SpectrumSpatial.Layers.mapServiceLayer(
-											L.SpectrumSpatial.Services.mapService(mapServiceUrl), 
-											mapName
-										).addTo(map);
+	L.SpectrumSpatial.Services.mapService(mapServiceUrl),
+	mapName
+).addTo(map);
 ```

@@ -1,6 +1,10 @@
 Spectrum4Leaflet Changelog
 =================
 
+## 0.4.0
+* Continous world in a dateline! (for mapservicelayer) 
+* Fixed zoom animation
+
 ## 0.3.0
 * Added RoutingService
 * !IMPORTANT! Changed params order in Request.Callback
