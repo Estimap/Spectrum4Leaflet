@@ -32,7 +32,7 @@
 }
 
 .leaflet-ss-control-layers-list {
-  overflow: scroll;
+  overflow: auto;
 }
 
 .leaflet-ss-control-layers .leaflet-ss-control-layers-list,
@@ -114,7 +114,7 @@
 }
 
 .leaflet-ss-control-legend-list {
-  overflow: scroll;
+  overflow: auto;
 }
 
 .leaflet-ss-control-legend-layer {
@@ -161,7 +161,7 @@
 }
 
 .leaflet-ss-control-resources-list {
-  overflow: scroll;
+  overflow: auto;
 }
 
 .leaflet-ss-control-resources-directory {
