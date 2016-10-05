@@ -1,208 +1,198 @@
-.leaflet-ss-wait{
-    background-image: url(images/wait.gif);
-    background-repeat: no-repeat;
-    background-position: center center;
-    height:32px;
-    width:32px;
-    z-index:10;
+.leaflet-ss-wait {
+  background: url(images/wait.gif) no-repeat center center;
+  height: 32px;
+  width: 32px;
+  z-index: 10;
 }
 
-.leaflet-ss-disabled{
-    cursor: default !important;
-    opacity:0.2;
+.leaflet-ss-disabled {
+  cursor: default !important;
+  opacity: 0.2;
 }
 
-
-.leaflet-ss-rowcontainer{
-    
+.leaflet-ss-row {
+  display: block;
+  clear: both;
+  float: none;
+  position: relative;
+  padding: 1px;
+  overflow: auto;
 }
 
-.leaflet-ss-row{
-	display: block;
-	clear:both;
-	float:none;
-	position: relative;
-	padding:1px;
- 	overflow: auto; 
-}
-
-.leaflet-ss-cell{
-	float:left;
-	text-align: center;
+.leaflet-ss-cell {
+  float: left;
+  text-align: center;
 }
 
 /** Layers control */
-
 .leaflet-ss-control-layers {
-	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-	background: #fff;
-	border-radius: 5px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+  background: #fff;
+  border-radius: 5px;
 }
 
 .leaflet-ss-control-layers-list {
-    overflow: scroll;
+  overflow: scroll;
 }
 
 .leaflet-ss-control-layers .leaflet-ss-control-layers-list,
 .leaflet-ss-control-layers-expanded .leaflet-control-layers-toggle {
-	display: none;
+  display: none;
 
 }
+
 .leaflet-ss-control-layers-expanded .leaflet-ss-control-layers-list {
-	display: block;
-	position: relative;
+  display: block;
+  position: relative;
 }
 
 .leaflet-ss-control-layers-expanded {
-	padding: 6px 10px 6px 6px;
-	color: #333;
-	background: #fff;
+  padding: 6px 10px 6px 6px;
+  color: #333;
+  background: #fff;
 }
 
-.leaflet-ss-control-layers-title{
-	margin-left:2px;
+.leaflet-ss-control-layers-title {
+  margin-left: 2px;
 }
 
 .leaflet-ss-control-layers-separator {
-	clear:both;
-	height: 0;
-	border-top: 1px solid #ddd;
-	margin-top:5px;
-	margin-bottom:5px;
+  clear: both;
+  height: 0;
+  border-top: 1px solid #ddd;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
-.leaflet-ss-control-layers-btn{
-	width: 16px;
-	height: 16px;
-	cursor: pointer;
+.leaflet-ss-control-layers-btn {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
 }
 
-.leaflet-ss-control-layers-down{
-	background-image: url(images/arrowdown.png);
+.leaflet-ss-control-layers-down {
+  background-image: url(images/arrowdown.png);
 }
 
-.leaflet-ss-control-layers-up{
-	background-image: url(images/arrowup.png);
+.leaflet-ss-control-layers-up {
+  background-image: url(images/arrowup.png);
 }
 
-.leaflet-ss-control-layers-legend{
-	background-image: url(images/legend.png);
+.leaflet-ss-control-layers-legend {
+  background-image: url(images/legend.png);
 }
 
-.leaflet-retina  .leaflet-ss-control-layers-down{
-	background-image: url(images/arrowdown-2x.png);
+.leaflet-retina .leaflet-ss-control-layers-down {
+  background-size: contain;
+  background-image: url(images/arrowdown-2x.png);
 }
 
-.leaflet-retina  .leaflet-ss-control-layers-up{
-	background-image: url(images/arrowup-2x.png);
+.leaflet-retina .leaflet-ss-control-layers-up {
+  background-size: contain;
+  background-image: url(images/arrowup-2x.png);
 }
 
-.leaflet-retina  .leaflet-ss-control-layers-legend{
-	background-image: url(images/legend-2x.png);
+.leaflet-retina .leaflet-ss-control-layers-legend {
+  background-size: contain;
+  background-image: url(images/legend-2x.png);
 }
 
-.leaflet-ss-control-layers-input{
-	margin-left:2px;
-	height:8px;
-	width:18px;
-	font-size:x-small;
+.leaflet-ss-control-layers-input {
+  margin-left: 2px;
+  height: 8px;
+  width: 18px;
+  font-size: x-small;
 }
-
 
 /** Legend control */
-
 .leaflet-ss-control-legend {
-	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-	border-radius: 5px;
-    padding: 6px 6px 6px 6px;
-	color: #333;
-	background: #fff;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+  padding: 6px 6px 6px 6px;
+  color: #333;
+  background: #fff;
 }
 
 .leaflet-ss-control-legend-list {
-	overflow: scroll;
+  overflow: scroll;
 }
 
 .leaflet-ss-control-legend-layer {
-    margin-bottom: 4px;
+  margin-bottom: 4px;
 
 }
 
 .leaflet-ss-control-legend-title {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 /** Feature control */
-
 .leaflet-ss-control-feature {
-	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-	border-radius: 5px;
-    padding: 6px 6px 6px 6px;
-	color: #333;
-	background: #fff;
-	cursor: pointer;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+  padding: 6px 6px 6px 6px;
+  color: #333;
+  background: #fff;
+  cursor: pointer;
 }
 
 .leaflet-ss-control-feature-info {
-    width: 16px;
-	height: 16px;
-	background-image: url(images/feature-info.png);
+  width: 16px;
+  height: 16px;
+  background-image: url(images/feature-info.png);
 }
 
-.leaflet-ss-control-feature-activated{
-	background-color: #dcfff0;
+.leaflet-ss-control-feature-activated {
+  background-color: #dcfff0;
 }
 
 .leaflet-retina .leaflet-ss-control-feature-info {
-	background-image: url(images/feature-info-2x.png);
+  background-size: contain;
+  background-image: url(images/feature-info-2x.png);
 }
 
 /** Resources control **/
 .leaflet-ss-control-resources {
-	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-	border-radius: 5px;
-    padding: 6px 6px 6px 6px;
-	color: #333;
-	background: #fff;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+  padding: 6px 6px 6px 6px;
+  color: #333;
+  background: #fff;
 }
 
 .leaflet-ss-control-resources-list {
-	overflow: scroll;
+  overflow: scroll;
 }
 
-.leaflet-ss-control-resources-directory{
-	width: 16px;
-	height: 16px;
-	cursor: pointer;
-	background-image: url(images/plus.png);
-}
-
-.leaflet-ss-control-resources-item{
+.leaflet-ss-control-resources-directory {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  background-image: url(images/plus.png);
 }
 
 .leaflet-retina .leaflet-ss-control-resources-directory {
-	background-image: url(images/plus-2x.png);
+  background-size: contain;
+  background-image: url(images/plus-2x.png);
 }
 
-.leaflet-ss-control-resources-directory-expanded{
-	background-image: url(images/minus.png);
+.leaflet-ss-control-resources-directory-expanded {
+  background-image: url(images/minus.png);
 }
 
 .leaflet-retina .leaflet-ss-control-resources-directory-expanded {
-	background-image: url(images/minus-2x.png);
+  background-size: contain;
+  background-image: url(images/minus-2x.png);
 }
 
-
 .leaflet-ss-control-resources-node {
-	margin-left:16px;
+  margin-left: 16px;
 }
 
 .leaflet-ss-control-resources-node-collapsed {
-	display: none;
+  display: none;
 }
 
 .leaflet-ss-control-resources-mainnode {
-	margin-left:0px;
+  margin-left: 0;
 }
-
-

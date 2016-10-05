@@ -4,6 +4,9 @@
   "description": "Leaflet plugin for Spectrum Spatial server",
   "author": "Sergey Voyteshonok <info@svoyt.com>",
   "license": "Apache-2.0",
+  "scripts": {
+    "test": "grunt test"
+  },
   "devDependencies": {
     "grunt": "1.0.1",
     "grunt-contrib-concat": "1.0.1",
