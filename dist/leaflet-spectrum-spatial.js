@@ -2204,7 +2204,6 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
     },
 
     onRemove: function(map) {
-        L.DomUtil.remove(this._image);
         map.off('moveend', this._update, this);
 
         this._forAllSingleImages(
@@ -2657,7 +2656,8 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
 
 L.SpectrumSpatial.Layers.mapServiceLayer = function(service, mapName, postData, options) {
     return new L.SpectrumSpatial.Layers.MapServiceLayer(service, mapName, postData, options);
-};;L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
+};
+;L.SpectrumSpatial.Layers.TileServiceLayer = L.GridLayer.extend({
 /** @lends L.SpectrumSpatial.Layers.TileServiceLayer.prototype */
 
     /**

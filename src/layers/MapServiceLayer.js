@@ -75,7 +75,6 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
     },
 
     onRemove: function(map) {
-        L.DomUtil.remove(this._image);
         map.off('moveend', this._update, this);
 
         this._forAllSingleImages(
