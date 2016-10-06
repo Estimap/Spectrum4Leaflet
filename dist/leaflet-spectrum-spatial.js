@@ -2949,6 +2949,17 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
     return this;
   },
 
+  removeLayer: function(layer) {
+    layer.off('add remove', this._onLayerChange, this);
+
+    var obj = this._getLayer(L.stamp(layer));
+    if(obj) {
+      delete this._layers[layer._leaflet_id];
+    }
+
+    return (this._map) ? this._update() : this;
+  },
+
   _getLayer: function(id) {
     return this._layers[id];
   },
