@@ -11,6 +11,8 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
      * @property {string} imageType  Type of image ( 'png' is default )
      * @property {number} zIndex  ZIndex of layer's image ('auto' is default)
      * @property {number} updateInterval  Min update interval of the layer
+     * @property {string} tableName  Name of the spectrum table
+     * @property {string} title  Title of the layer
      */
 
     options: {
@@ -20,6 +22,8 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
         imageType: 'png',
         zIndex: 'auto',
         updateInterval: 200,
+        tableName: null,
+        title: null
     },
 
 
@@ -46,13 +50,13 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
 
         map.on('moveend', this._update, this);
 
-        if (this.options.zIndex === 'auto') {
+        if(this.options.zIndex === 'auto') {
             var maxZIndex = 0;
-            for (var i in map._layers) {
+            for(var i in map._layers) {
                 var layer = map._layers[i];
-                if (layer.getZIndex) {
+                if(layer.getZIndex) {
                     var z = layer.getZIndex();
-                    if (maxZIndex < z) {
+                    if(maxZIndex < z) {
                         maxZIndex = z;
                     }
                 }
@@ -60,7 +64,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
             this.options.zIndex = maxZIndex + 1;
         }
 
-        if ((!this._singleImages) || (this._singleImages.length === 0)) {
+        if((!this._singleImages) || (this._singleImages.length === 0)) {
             this._update();
         } else {
             this._forAllSingleImages(
@@ -79,7 +83,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
 
         this._forAllSingleImages(
             function(img) {
-                if (this.options.interactive) {
+                if(this.options.interactive) {
                     this.removeInteractiveTarget(img);
                 }
                 this.getPane(this.options.pane).removeChild(img);
@@ -109,7 +113,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
     setOpacity: function(opacity) {
         this.options.opacity = opacity;
 
-        if (this._image) {
+        if(this._image) {
             this._updateOpacity();
         }
         return this;
@@ -120,7 +124,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
     },
 
     setStyle: function(styleOpts) {
-        if (styleOpts.opacity) {
+        if(styleOpts.opacity) {
             this.setOpacity(styleOpts.opacity);
         }
         return this;
@@ -137,14 +141,14 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
     },
 
     bringToFront: function() {
-        if (this._map) {
+        if(this._map) {
             L.DomUtil.toFront(this._image);
         }
         return this;
     },
 
     bringToBack: function() {
-        if (this._map) {
+        if(this._map) {
             L.DomUtil.toBack(this._image);
         }
         return this;
@@ -161,7 +165,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
             viewreset: this._reset
         };
 
-        if (this._zoomAnimated) {
+        if(this._zoomAnimated) {
             events.zoomanim = this._animateZoom;
         }
 
@@ -173,7 +177,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
     },
 
     _initInteraction: function() {
-        if (!this.options.interactive) {
+        if(!this.options.interactive) {
             return;
         }
         L.DomUtil.addClass(this._image, 'leaflet-interactive');
@@ -182,7 +186,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
     },
 
     _fireMouseEvent: function(e, type) {
-        if (this._map) {
+        if(this._map) {
             this._map._fireMouseEvent(this, e, type, true);
         }
     },
@@ -194,7 +198,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
         img.style.zIndex = this.options.zIndex;
         img.alt = this.options.alt;
 
-        if (this.options.opacity < 1) {
+        if(this.options.opacity < 1) {
             L.DomUtil.setOpacity(img, this.options.opacity);
         }
 
@@ -237,7 +241,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
     },
 
     _incrementRequestCounter: function(imagesCount) {
-        if (!this._requestCounter) {
+        if(!this._requestCounter) {
             this._requestCounter = {
                 count: 1
             };
@@ -251,21 +255,21 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
 
 
     _update: function() {
-        if (!this._map) {
+        if(!this._map) {
             return;
         }
 
-        if (this._map._animatingZoom) {
+        if(this._map._animatingZoom) {
             return;
         }
 
         var zoom = this._map.getZoom();
 
-        if (this._map._panTransition && this._map._panTransition._inProgress) {
+        if(this._map._panTransition && this._map._panTransition._inProgress) {
             return;
         }
 
-        if (zoom > this.options.maxZoom || zoom < this.options.minZoom) {
+        if(zoom > this.options.maxZoom || zoom < this.options.minZoom) {
             return;
         }
 
@@ -278,7 +282,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
     },
 
     _requestImages: function(params) {
-        if (!this._singleImages) {
+        if(!this._singleImages) {
             this._singleImages = [];
         }
 
@@ -287,11 +291,11 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
             bounds: this._map.getBounds()
         });
 
-        for (var i = 0; i < params.length; i++) {
+        for(var i = 0; i < params.length; i++) {
             var singleParam = params[i];
             singleParam.requestCount = this._requestCounter.count;
 
-            if ((this._postData) | (this._service.needAuthorization())) {
+            if((this._postData) | (this._service.needAuthorization())) {
                 this._service.renderMap(
                     singleParam.params,
                     this._postLoad, {
@@ -324,17 +328,17 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
         sign = (sign === 0) ? 1 : sign;
         var coef = sign * Math.floor(Math.abs(d));
 
-        while (newXmax < max.lng) {
+        while(newXmax < max.lng) {
             newXmax = 360 * (coef + i) + sign * 180;
 
-            if (newXmax > max.lng) {
+            if(newXmax > max.lng) {
                 newXmax = max.lng;
             }
 
             var normXMin = newXmin;
             var normXMax = newXmax;
 
-            if ((newXmin < -180) || (newXmax > 180)) {
+            if((newXmin < -180) || (newXmax > 180)) {
                 var d2 = Math.floor((newXmin + 180) / 360);
                 normXMin -= d2 * 360;
                 normXMax -= d2 * 360;
@@ -370,7 +374,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
         var top = this._map.latLngToLayerPoint(bounds._northEast);
         var bottom = this._map.latLngToLayerPoint(bounds._southWest);
 
-        if (top.y > 0 || bottom.y < size.y) {
+        if(top.y > 0 || bottom.y < size.y) {
             size.y = bottom.y - top.y;
         }
 
@@ -405,7 +409,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
             params: params
         });
 
-        if (params.requestCount !== this._requestCounter.count) {
+        if(params.requestCount !== this._requestCounter.count) {
             delete params.image;
             return;
         }
@@ -414,7 +418,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
     },
 
     _imageLoaded: function(params) {
-        if (params.requestCount !== this._requestCounter.count) {
+        if(params.requestCount !== this._requestCounter.count) {
             delete params.image;
             return;
         }
@@ -425,14 +429,14 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
 
         this._forAllSingleImages(
             function(img) {
-                if (img.position.overlaps(image.position)) {
+                if(img.position.overlaps(image.position)) {
                     imagesToRemove.push(img);
                 }
             }
         );
 
         this.getPane(this.options.pane).appendChild(image);
-        if (this.options.interactive) {
+        if(this.options.interactive) {
             L.DomUtil.addClass(image, 'leaflet-interactive');
             this.addInteractiveTarget(image);
         }
@@ -441,7 +445,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
 
         this._requestCounter.loadedImages++;
 
-        if (this._requestCounter.allImages === this._requestCounter.loadedImages) {
+        if(this._requestCounter.allImages === this._requestCounter.loadedImages) {
             var bounds = this._map.getBounds();
             this.fire('load', {
                 bounds: bounds
@@ -449,7 +453,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
 
             this._forAllSingleImages(
                 function(img) {
-                    if (!img.position.overlaps(bounds)) {
+                    if(!img.position.overlaps(bounds)) {
                         imagesToRemove.push(img);
                     }
                 }
@@ -457,10 +461,10 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
         }
 
         // removing useless images
-        for (var i = 0; i < imagesToRemove.length; i++) {
+        for(var i = 0; i < imagesToRemove.length; i++) {
             this._removeImage(imagesToRemove[i]);
             var index = this._singleImages.indexOf(imagesToRemove[i]);
-            if (index !== -1) {
+            if(index !== -1) {
                 this._singleImages.splice(index, 1);
             }
         }
@@ -468,14 +472,14 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
 
     _removeImage: function(img) {
         this.getPane(this.options.pane).removeChild(img);
-        if (this.options.interactive) {
+        if(this.options.interactive) {
             this.removeInteractiveTarget(img);
         }
     },
 
     _forAllSingleImages: function(f) {
-        if (this._singleImages) {
-            for (var i = 0; i < this._singleImages.length; i++) {
+        if(this._singleImages) {
+            for(var i = 0; i < this._singleImages.length; i++) {
                 f.call(this, this._singleImages[i]);
             }
         }
@@ -486,7 +490,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
         var uInt8Array = new Uint8Array(response);
         var i = uInt8Array.length;
         var binaryString = new Array(i);
-        while (i--) {
+        while(i--) {
             binaryString[i] = String.fromCharCode(uInt8Array[i]);
         }
         var data = binaryString.join('');
@@ -514,9 +518,9 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
     },
 
     _sign: function(value) {
-        if (value > 0) {
+        if(value > 0) {
             return 1;
-        } else if (value < 0) {
+        } else if(value < 0) {
             return -1;
         } else {
             return 0;

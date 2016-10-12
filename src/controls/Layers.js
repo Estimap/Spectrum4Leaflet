@@ -91,20 +91,6 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
         return this;
     },
 
-    /**
-     * Callback for this._onVisibilityChanged private method
-     */
-    onVisibilityChanged: function() {
-        return this;
-    },
-
-    /**
-     * Callback for this._onOpacityChanged private method
-     */
-    onOpacityChanged: function() {
-        return this;
-    },
-
     _addLayer: function(layer, name, overlay) {
         layer.on('add remove', this._onLayerChange, this);
 
@@ -404,7 +390,6 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
             this._map.addLayer(addedLayers[i]);
         }
 
-        this.onVisibilityChanged();
         this._refocusOnMap();
         this._handlingClick = false;
     },
@@ -424,7 +409,6 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
             }
         }
 
-        this.onOpacityChanged();
         this._handlingClick = false;
     },
 
