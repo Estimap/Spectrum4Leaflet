@@ -18,7 +18,6 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
      * @property {Object} [legendContainer] DOM element, if we want to draw legend outside of layers control
      * @property {boolean} [inverseOrder=false] If true, upper layer in control is upper on map ( max Z index)
      */
-
     options: {
         zIndexControls: true,
         opacityControls: true,
@@ -36,14 +35,14 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
      * @param {Object} overlays Object which contans overlays layers ( { "title":layer } )
      * @param {L.SpectrumSpatial.Controls.Layers.Options} [options] Options
      */
-    initialize: function (baseLayers, overlays, options) {
+    initialize: function(baseLayers, overlays, options) {
         L.setOptions(this, options);
 
         this._layers = [];
-        if (!this.options.legendOptions) {
+        if(!this.options.legendOptions) {
             this.options.legendOptions = {};
         }
-        if (this.options.legendOptions.cssOff === undefined) {
+        if(this.options.legendOptions.cssOff === undefined) {
             this.options.legendOptions.cssOff = true;
         }
         this._minZIndex = 1;
@@ -52,11 +51,11 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 
         this._handlingClick = false;
 
-        for (var i in baseLayers) {
+        for(var i in baseLayers) {
             this._addLayer(baseLayers[i], i);
         }
 
-        for (i in overlays) {
+        for(i in overlays) {
             this._addLayer(overlays[i], i, true);
         }
     },
@@ -67,14 +66,14 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
      * @param {L.Map} map Map for control
      * @param {Object} [outsideContainer] DOM element, if spicified control will be rendered outside of map
      */
-    addTo: function (map, outsideContainer) {
+    addTo: function(map, outsideContainer) {
         this.remove();
         this._map = map;
 
 
         var container = this._container = this.onAdd(map);
 
-        if (outsideContainer) {
+        if(outsideContainer) {
             outsideContainer.appendChild(container);
         }
         else {
@@ -82,7 +81,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
             var pos = this.getPosition();
             var corner = map._controlCorners[pos];
 
-            if (pos.indexOf('bottom') !== -1) {
+            if(pos.indexOf('bottom') !== -1) {
                 corner.insertBefore(container, corner.firstChild);
             } else {
                 corner.appendChild(container);
@@ -92,21 +91,35 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
         return this;
     },
 
-    _addLayer: function (layer, name, overlay) {
+    /**
+     * Callback for this._onVisibilityChanged private method
+     */
+    onVisibilityChanged: function() {
+        return this;
+    },
+
+    /**
+     * Callback for this._onOpacityChanged private method
+     */
+    onOpacityChanged: function() {
+        return this;
+    },
+
+    _addLayer: function(layer, name, overlay) {
         layer.on('add remove', this._onLayerChange, this);
 
-        if (overlay && this.options.autoZIndex && layer.setZIndex) {
+        if(overlay && this.options.autoZIndex && layer.setZIndex) {
             this._maxZIndex++;
             layer.setZIndex(this._maxZIndex);
         }
 
-        if (overlay && !this.options.autoZIndex) {
-            if (layer.getZIndex) {
+        if(overlay && !this.options.autoZIndex) {
+            if(layer.getZIndex) {
                 var z = layer.getZIndex();
-                if (this._minZIndex > z) {
+                if(this._minZIndex > z) {
                     this._minZIndex = z;
                 }
-                if (this._maxZIndex < z) {
+                if(this._maxZIndex < z) {
                     this._maxZIndex = z;
                 }
             }
@@ -119,8 +132,8 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
         });
     },
 
-    _update: function () {
-        if (!this._container) {
+    _update: function() {
+        if(!this._container) {
             return this;
         }
 
@@ -130,28 +143,28 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
         var baseLayersPresent, overlaysPresent, obj, baseLayersCount = 0;
 
         var overlays = [];
-        for (var i=0; i<this._layers.length; i++) {
+        for(var i = 0; i < this._layers.length; i++) {
             obj = this._layers[i];
             overlaysPresent = overlaysPresent || obj.overlay;
             baseLayersPresent = baseLayersPresent || !obj.overlay;
             baseLayersCount += !obj.overlay ? 1 : 0;
-            if (!obj.overlay) {
+            if(!obj.overlay) {
                 this._addItem(obj);
             }
             else {
-                overlays.push({ lo: obj, z: obj.layer.getZIndex() });
+                overlays.push({lo: obj, z: obj.layer.getZIndex()});
             }
         }
 
         overlays.sort(L.SpectrumSpatial.Utils.sortByProperty('z', (this.options.inverseOrder) ? "desc" : "asc"));
 
-        for (i in overlays) {
+        for(i in overlays) {
             obj = overlays[i];
             this._addItem(obj.lo);
         }
 
         // Hide base layers section if there's only one layer.
-        if (this.options.hideSingleBase) {
+        if(this.options.hideSingleBase) {
             baseLayersPresent = baseLayersPresent && baseLayersCount > 1;
             this._baseLayersList.style.display = baseLayersPresent ? '' : 'none';
         }
@@ -162,14 +175,13 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
     },
 
 
-    _initLayout: function () {
-
+    _initLayout: function() {
         var container = this._container = L.DomUtil.create('div', this.options.cssOff ? '' : this.className);
 
         // makes this work on IE touch devices by stopping it from firing a mouseout event when the touch is released
         container.setAttribute('aria-haspopup', true);
 
-        if (!L.Browser.touch) {
+        if(!L.Browser.touch) {
             L.DomEvent
                 .disableClickPropagation(container)
                 .disableScrollPropagation(container);
@@ -179,15 +191,15 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 
         var form = this._form = L.DomUtil.create('form', this.className + '-list');
 
-        if (this.options.maxHeight) {
+        if(this.options.maxHeight) {
             this._form.style.maxHeight = this.options.maxHeight;
         }
-        if (this.options.maxWidth) {
+        if(this.options.maxWidth) {
             this._form.style.maxWidth = this.options.maxWidth;
         }
 
-        if (this.options.collapsed) {
-            if (!L.Browser.android) {
+        if(this.options.collapsed) {
+            if(!L.Browser.android) {
                 L.DomEvent.on(container, {
                     mouseenter: this._expand,
                     mouseleave: this._collapse
@@ -198,7 +210,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
             link.href = '#';
             link.title = 'Layers';
 
-            if (L.Browser.touch) {
+            if(L.Browser.touch) {
                 L.DomEvent
                     .on(link, 'click', L.DomEvent.stop)
                     .on(link, 'click', this._expand, this);
@@ -220,8 +232,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
     },
 
     // IE7 bugs out if you create a radio dynamically, so you have to do it this hacky way (see http://bit.ly/PqYLBe)
-    _createRadioElement: function (name, checked) {
-
+    _createRadioElement: function(name, checked) {
         var radioHtml = '<input type="radio" class="leaflet-ss-cell leaflet-ss-control-layers-selector" name="' +
             name + '"' + (checked ? ' checked="checked"' : '') + '/>';
 
@@ -231,14 +242,14 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
         return radioFragment.firstChild;
     },
 
-    _addItem: function (obj) {
+    _addItem: function(obj) {
         var layerItem = L.DomUtil.create('div', 'leaflet-ss-rowcontainer');
         var row = L.DomUtil.create('div', 'leaflet-ss-row', layerItem);
         var checked = this._map.hasLayer(obj.layer);
         var input;
 
 
-        if (obj.overlay) {
+        if(obj.overlay) {
             input = L.DomUtil.create('input', 'leaflet-ss-cell leaflet-control-layers-selector');
             input.name = 'visibilityInput';
             input.type = 'checkbox';
@@ -254,19 +265,19 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 
         row.appendChild(input);
 
-        if (obj.overlay) {
+        if(obj.overlay) {
 
-            if (this.options.zIndexControls) {
+            if(this.options.zIndexControls) {
                 row.appendChild(this._createZIndexButton('up', obj.layer, input.layerId));
                 row.appendChild(this._createZIndexButton('down', obj.layer, input.layerId));
             }
 
-            if (this.options.legendControls) {
+            if(this.options.legendControls) {
                 var legend = L.DomUtil.create('div', 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-legend');
                 legend.layerId = input.layerId;
                 L.DomEvent.on(legend, 'click', this._onLegendClick, this);
                 row.appendChild(legend);
-                if (this.options.legendContainer) {
+                if(this.options.legendContainer) {
                     obj.legendContainer = this.options.legendContainer;
                 }
                 else {
@@ -274,7 +285,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
                     layerItem.appendChild(obj.legendContainer);
                 }
             }
-            if (this.options.opacityControls) {
+            if(this.options.opacityControls) {
                 var opacity = L.DomUtil.create('input', 'leaflet-ss-cell leaflet-ss-control-layers-input');
                 opacity.type = 'text';
                 opacity.name = 'opacityInput';
@@ -294,28 +305,28 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
         return layerItem;
     },
 
-    _createZIndexButton: function (displayDirection, layer, layerId) {
+    _createZIndexButton: function(displayDirection, layer, layerId) {
         var className = 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-' + displayDirection;
-        var realDirection = ((displayDirection === 'up' & this.options.inverseOrder) |
-            (displayDirection === 'down' & !this.options.inverseOrder)) ? 'up' : 'down';
+        var realDirection = ((displayDirection === 'up' & this.options.inverseOrder) ||
+        (displayDirection === 'down' & !this.options.inverseOrder)) ? 'up' : 'down';
         var clickFunction = (realDirection === 'up') ? this._onUpClick : this._onDownClick;
         var disableIndex = (realDirection === 'up') ? this._maxZIndex : this._minZIndex;
         var btn = L.DomUtil.create('div', className);
         btn.layerId = layerId;
         L.DomEvent.on(btn, 'click', clickFunction, this);
-        if (layer.getZIndex() === disableIndex) {
+        if(layer.getZIndex() === disableIndex) {
             L.DomUtil.addClass(btn, 'leaflet-ss-disabled');
         }
 
         return btn;
     },
 
-    _onLegendClick: function (e) {
+    _onLegendClick: function(e) {
         var layerId = e.currentTarget.layerId;
         var lo = this._getLayer(layerId);
         var legend;
-        if (!this.options.legendContainer) {
-            if (lo.legendContainer.hasChildNodes()) {
+        if(!this.options.legendContainer) {
+            if(lo.legendContainer.hasChildNodes()) {
                 L.DomUtil.empty(lo.legendContainer);
             }
             else {
@@ -329,42 +340,42 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
         }
     },
 
-    _onDownClick: function (e) {
+    _onDownClick: function(e) {
         var layerId = e.currentTarget.layerId;
         var layer = this._getLayer(layerId).layer;
         var curZ = layer.getZIndex();
         var oldLayer = this._findOverlayByZ(curZ - 1);
-        if (oldLayer) {
+        if(oldLayer) {
             oldLayer.layer.setZIndex(curZ);
             layer.setZIndex(curZ - 1);
             this._update();
         }
     },
 
-    _onUpClick: function (e) {
+    _onUpClick: function(e) {
         var layerId = e.currentTarget.layerId;
         var layer = this._getLayer(layerId).layer;
         var curZ = layer.getZIndex();
         var oldLayer = this._findOverlayByZ(curZ + 1);
-        if (oldLayer) {
+        if(oldLayer) {
             oldLayer.layer.setZIndex(curZ);
             layer.setZIndex(curZ + 1);
             this._update();
         }
     },
 
-    _findOverlayByZ: function (z) {
-        for (var i=0;i< this._layers.length;i++) {
+    _findOverlayByZ: function(z) {
+        for(var i = 0; i < this._layers.length; i++) {
             obj = this._layers[i];
 
-            if (obj.overlay && obj.layer.getZIndex() === z) {
+            if(obj.overlay && obj.layer.getZIndex() === z) {
                 return obj;
             }
         }
         return null;
     },
 
-    _onVisibilityChanged: function () {
+    _onVisibilityChanged: function() {
         var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container, 'visibilityInput');
         var input, layer, hasLayer;
         var addedLayers = [],
@@ -372,60 +383,61 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 
         this._handlingClick = true;
 
-        for (var i = 0, len = inputs.length; i < len; i++) {
+        for(var i = 0, len = inputs.length; i < len; i++) {
             input = inputs[i];
             layer = this._getLayer(input.layerId).layer;
             hasLayer = this._map.hasLayer(layer);
 
-            if (input.checked && !hasLayer) {
+            if(input.checked && !hasLayer) {
                 addedLayers.push(layer);
 
-            } else if (!input.checked && hasLayer) {
+            } else if(!input.checked && hasLayer) {
                 removedLayers.push(layer);
             }
         }
 
         // Bugfix issue 2318: Should remove all old layers before readding new ones
-        for (i = 0; i < removedLayers.length; i++) {
+        for(i = 0; i < removedLayers.length; i++) {
             this._map.removeLayer(removedLayers[i]);
         }
-        for (i = 0; i < addedLayers.length; i++) {
+        for(i = 0; i < addedLayers.length; i++) {
             this._map.addLayer(addedLayers[i]);
         }
 
-        this._handlingClick = false;
-
+        this.onVisibilityChanged();
         this._refocusOnMap();
+        this._handlingClick = false;
     },
 
-    _onOpacityChanged: function () {
+    _onOpacityChanged: function() {
         var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container, 'opacityInput');
         var input, layer;
 
         this._handlingClick = true;
 
-        for (var i = 0, len = inputs.length; i < len; i++) {
+        for(var i = 0, len = inputs.length; i < len; i++) {
             input = inputs[i];
             layer = this._getLayer(input.layerId).layer;
             var newOpacity = parseFloat(input.value);
-            if (layer.setOpacity && !isNaN(newOpacity)) {
+            if(layer.setOpacity && !isNaN(newOpacity)) {
                 layer.setOpacity(newOpacity);
             }
         }
 
+        this.onOpacityChanged();
         this._handlingClick = false;
     },
 
-    _expand: function () {
+    _expand: function() {
         L.DomUtil.addClass(this._container, this.className + '-expanded');
     },
 
-    _collapse: function () {
+    _collapse: function() {
         L.DomUtil.removeClass(this._container, this.className + '-expanded');
     }
 
 });
 
-L.SpectrumSpatial.Controls.layers = function (baselayers, overlays, options) {
+L.SpectrumSpatial.Controls.layers = function(baselayers, overlays, options) {
     return new L.SpectrumSpatial.Controls.Layers(baselayers, overlays, options);
 };
