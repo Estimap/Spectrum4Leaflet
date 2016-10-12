@@ -1,44 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Feature control example</title>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css" />
-	<link rel="stylesheet" href="../dist/leaflet-spectrum-spatial.css" />
+    <title>Feature control example</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../bower_components/leaflet/dist/leaflet.css"/>
+    <link rel="stylesheet" href="../dist/leaflet-spectrum-spatial.css"/>
 </head>
 <body>
-	<div id="map" style="width: 800px; height: 600px"></div>
-	<br/>
-	<label for="ssurl">Spectrum Spatial feature service url</label>
-	<input type="text" id="ssurl"></input>
-	<br/>
-	<label for="tablename">Spectrum Spatial table name</label>
-	<input type="text" id="tablename"></input>
-	<br/>
-	<label for="title">Table title</label>
-	<input type="text" id="title"></input>
+    <div id="map" style="width: 800px; height: 600px"></div>
+    <br/>
+    <label for="ssurl">Spectrum Spatial feature service url</label>
+    <input type="text" id="ssurl"/>
+    <br/>
+    <label for="tablename">Spectrum Spatial table name</label>
+    <input type="text" id="tablename"/>
+    <br/>
+    <label for="title">Table title</label>
+    <input type="text" id="title"/>
 
-	<input type="button" value="add" onclick="add()"/>
-	<div id="layers"  style="position:absolute; left:820px; top:0px; width: 200px; height: 200px;"></div>
+    <input type="button" value="add" onclick="add()"/>
+    <div id="layers" style="position:absolute; left:820px; top:0px; width: 200px; height: 200px;"></div>
     <script src="../bower_components/leaflet/dist/leaflet-src.js"></script>
     <script src="../dist/leaflet-spectrum-spatial.js"></script>
-	<script>
+    <script>
+        var map = L.map('map').setView([0, 0], 1);
+        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {minZoom: 0, maxZoom: 18, attribution: 'OpenStreetMap'}).addTo(map);
 
-		var map = L.map('map').setView([0, 0], 1);
-		L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { minZoom: 0, maxZoom: 18, attribution: 'OpenStreetMap'}).addTo(map);
-        
-        function add(){
-	        var serviceUrl = document.getElementById("ssurl").value;
-		    var tablename =  document.getElementById("tablename").value;
-		    var title =  document.getElementById("title").value;
-	        var service = L.SpectrumSpatial.Services.featureService(serviceUrl);        
-	        var control =  new L.SpectrumSpatial.Controls.Feature(service,  
-															      [{ tableName: tablename , title: title }], 
-															      { pixelTolerance: 10 });
-	        control.addTo(map);
+        function add() {
+            var serviceUrl = document.getElementById("ssurl").value;
+            var tablename = document.getElementById("tablename").value;
+            var title = document.getElementById("title").value;
+
+            var service = L.SpectrumSpatial.Services.featureService(serviceUrl);
+            var control = new L.SpectrumSpatial.Controls.Feature(
+                service,
+                [{tableName: tablename, title: title}],
+                {pixelTolerance: 10});
+            control.addTo(map);
         }
-	
-	</script>
+    </script>
 </body>
 </html>
