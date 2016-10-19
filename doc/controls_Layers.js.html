@@ -1,4 +1,32 @@
-L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: controls/Layers.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: controls/Layers.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
     /** @lends L.SpectrumSpatial.Controls.Layers.prototype */
 
     className: 'leaflet-ss-control-layers',
@@ -94,18 +122,18 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
     _addLayer: function(layer, name, overlay) {
         layer.on('add remove', this._onLayerChange, this);
 
-        if(overlay && this.options.autoZIndex && layer.setZIndex) {
+        if(overlay &amp;&amp; this.options.autoZIndex &amp;&amp; layer.setZIndex) {
             this._maxZIndex++;
             layer.setZIndex(this._maxZIndex);
         }
 
-        if(overlay && !this.options.autoZIndex) {
+        if(overlay &amp;&amp; !this.options.autoZIndex) {
             if(layer.getZIndex) {
                 var z = layer.getZIndex();
                 if(this._minZIndex > z) {
                     this._minZIndex = z;
                 }
-                if(this._maxZIndex < z) {
+                if(this._maxZIndex &lt; z) {
                     this._maxZIndex = z;
                 }
             }
@@ -129,7 +157,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
         var baseLayersPresent, overlaysPresent, obj, baseLayersCount = 0;
 
         var overlays = [];
-        for(var i = 0; i < this._layers.length; i++) {
+        for(var i = 0; i &lt; this._layers.length; i++) {
             obj = this._layers[i];
             overlaysPresent = overlaysPresent || obj.overlay;
             baseLayersPresent = baseLayersPresent || !obj.overlay;
@@ -151,11 +179,11 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 
         // Hide base layers section if there's only one layer.
         if(this.options.hideSingleBase) {
-            baseLayersPresent = baseLayersPresent && baseLayersCount > 1;
+            baseLayersPresent = baseLayersPresent &amp;&amp; baseLayersCount > 1;
             this._baseLayersList.style.display = baseLayersPresent ? '' : 'none';
         }
 
-        this._separator.style.display = overlaysPresent && baseLayersPresent ? '' : 'none';
+        this._separator.style.display = overlaysPresent &amp;&amp; baseLayersPresent ? '' : 'none';
 
         return this;
     },
@@ -219,7 +247,7 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 
     // IE7 bugs out if you create a radio dynamically, so you have to do it this hacky way (see http://bit.ly/PqYLBe)
     _createRadioElement: function(name, checked) {
-        var radioHtml = '<input type="radio" class="leaflet-ss-cell leaflet-ss-control-layers-selector" name="' +
+        var radioHtml = '&lt;input type="radio" class="leaflet-ss-cell leaflet-ss-control-layers-selector" name="' +
             name + '"' + (checked ? ' checked="checked"' : '') + '/>';
 
         var radioFragment = document.createElement('div');
@@ -293,8 +321,8 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 
     _createZIndexButton: function(displayDirection, layer, layerId) {
         var className = 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-' + displayDirection;
-        var realDirection = ((displayDirection === 'up' & this.options.inverseOrder) ||
-        (displayDirection === 'down' & !this.options.inverseOrder)) ? 'up' : 'down';
+        var realDirection = ((displayDirection === 'up' &amp; this.options.inverseOrder) ||
+        (displayDirection === 'down' &amp; !this.options.inverseOrder)) ? 'up' : 'down';
         var clickFunction = (realDirection === 'up') ? this._onUpClick : this._onDownClick;
         var disableIndex = (realDirection === 'up') ? this._maxZIndex : this._minZIndex;
         var btn = L.DomUtil.create('div', className);
@@ -351,10 +379,10 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
     },
 
     _findOverlayByZ: function(z) {
-        for(var i = 0; i < this._layers.length; i++) {
+        for(var i = 0; i &lt; this._layers.length; i++) {
             obj = this._layers[i];
 
-            if(obj.overlay && obj.layer.getZIndex() === z) {
+            if(obj.overlay &amp;&amp; obj.layer.getZIndex() === z) {
                 return obj;
             }
         }
@@ -369,24 +397,24 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 
         this._handlingClick = true;
 
-        for(var i = 0, len = inputs.length; i < len; i++) {
+        for(var i = 0, len = inputs.length; i &lt; len; i++) {
             input = inputs[i];
             layer = this._getLayer(input.layerId).layer;
             hasLayer = this._map.hasLayer(layer);
 
-            if(input.checked && !hasLayer) {
+            if(input.checked &amp;&amp; !hasLayer) {
                 addedLayers.push(layer);
 
-            } else if(!input.checked && hasLayer) {
+            } else if(!input.checked &amp;&amp; hasLayer) {
                 removedLayers.push(layer);
             }
         }
 
         // Bugfix issue 2318: Should remove all old layers before readding new ones
-        for(i = 0; i < removedLayers.length; i++) {
+        for(i = 0; i &lt; removedLayers.length; i++) {
             this._map.removeLayer(removedLayers[i]);
         }
-        for(i = 0; i < addedLayers.length; i++) {
+        for(i = 0; i &lt; addedLayers.length; i++) {
             this._map.addLayer(addedLayers[i]);
         }
 
@@ -400,11 +428,11 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 
         this._handlingClick = true;
 
-        for(var i = 0, len = inputs.length; i < len; i++) {
+        for(var i = 0, len = inputs.length; i &lt; len; i++) {
             input = inputs[i];
             layer = this._getLayer(input.layerId).layer;
             var newOpacity = parseFloat(input.value);
-            if(layer.setOpacity && !isNaN(newOpacity)) {
+            if(layer.setOpacity &amp;&amp; !isNaN(newOpacity)) {
                 layer.setOpacity(newOpacity);
             }
         }
@@ -425,3 +453,26 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
 L.SpectrumSpatial.Controls.layers = function(baselayers, overlays, options) {
     return new L.SpectrumSpatial.Controls.Layers(baselayers, overlays, options);
 };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="L.SpectrumSpatial.Controls.Feature.html">Feature</a></li><li><a href="L.SpectrumSpatial.Controls.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Controls.Legend.html">Legend</a></li><li><a href="L.SpectrumSpatial.Controls.Resources.html">Resources</a></li><li><a href="L.SpectrumSpatial.Layers.MapServiceLayer.html">MapServiceLayer</a></li><li><a href="L.SpectrumSpatial.Layers.TileServiceLayer.html">TileServiceLayer</a></li><li><a href="L.SpectrumSpatial.Request.html">Request</a></li><li><a href="L.SpectrumSpatial.Services.FeatureService.html">FeatureService</a></li><li><a href="L.SpectrumSpatial.Services.GeometryService.html">GeometryService</a></li><li><a href="L.SpectrumSpatial.Services.MapService.html">MapService</a></li><li><a href="L.SpectrumSpatial.Services.NamedResourceService.html">NamedResourceService</a></li><li><a href="L.SpectrumSpatial.Services.Operation.html">Operation</a></li><li><a href="L.SpectrumSpatial.Services.RoutingService.html">RoutingService</a></li><li><a href="L.SpectrumSpatial.Services.Service.html">Service</a></li><li><a href="L.SpectrumSpatial.Services.TileService.html">TileService</a></li></ul><h3>Events</h3><ul><li><a href="L.SpectrumSpatial.Controls.Feature.html#event:activated">activated</a></li><li><a href="L.SpectrumSpatial.Controls.Feature.html#event:deactivated">deactivated</a></li></ul><h3>Namespaces</h3><ul><li><a href="L.html">L</a></li><li><a href="L.CRS.html">CRS</a></li><li><a href="L.SpectrumSpatial.html">SpectrumSpatial</a></li><li><a href="L.SpectrumSpatial.Controls.html">Controls</a></li><li><a href="L.SpectrumSpatial.Defaults.html">Defaults</a></li><li><a href="L.SpectrumSpatial.Layers.html">Layers</a></li><li><a href="L.SpectrumSpatial.Projections.html">Projections</a></li><li><a href="L.SpectrumSpatial.Services.html">Services</a></li><li><a href="L.SpectrumSpatial.Support.html">Support</a></li><li><a href="L.SpectrumSpatial.Utils.html">Utils</a></li><li><a href="L.SpectrumSpatial.Utils.Xml.html">Xml</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CompareFunction">CompareFunction</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Wed Oct 19 2016 18:57:44 GMT+0300 (MSK)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

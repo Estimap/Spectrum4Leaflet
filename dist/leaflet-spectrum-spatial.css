@@ -1,3 +1,7 @@
+.leaflet-ss-cursor-crosshair{
+    cursor: crosshair
+}
+
 .leaflet-ss-wait {
   background: url(images/wait.gif) no-repeat center center;
   height: 32px;

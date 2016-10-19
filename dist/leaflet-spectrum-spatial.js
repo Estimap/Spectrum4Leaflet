@@ -2140,6 +2140,8 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
      * @property {string} imageType  Type of image ( 'png' is default )
      * @property {number} zIndex  ZIndex of layer's image ('auto' is default)
      * @property {number} updateInterval  Min update interval of the layer
+     * @property {string} tableName  Name of the spectrum table
+     * @property {string} title  Title of the layer
      */
 
     options: {
@@ -2149,6 +2151,8 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
         imageType: 'png',
         zIndex: 'auto',
         updateInterval: 200,
+        tableName: null,
+        title: null
     },
 
 
@@ -2175,13 +2179,13 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
 
         map.on('moveend', this._update, this);
 
-        if (this.options.zIndex === 'auto') {
+        if(this.options.zIndex === 'auto') {
             var maxZIndex = 0;
-            for (var i in map._layers) {
+            for(var i in map._layers) {
                 var layer = map._layers[i];
-                if (layer.getZIndex) {
+                if(layer.getZIndex) {
                     var z = layer.getZIndex();
-                    if (maxZIndex < z) {
+                    if(maxZIndex < z) {
                         maxZIndex = z;
                     }
                 }
@@ -2189,7 +2193,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
             this.options.zIndex = maxZIndex + 1;
         }
 
-        if ((!this._singleImages) || (this._singleImages.length === 0)) {
+        if((!this._singleImages) || (this._singleImages.length === 0)) {
             this._update();
         } else {
             this._forAllSingleImages(
@@ -2208,7 +2212,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
 
         this._forAllSingleImages(
             function(img) {
-                if (this.options.interactive) {
+                if(this.options.interactive) {
                     this.removeInteractiveTarget(img);
                 }
                 this.getPane(this.options.pane).removeChild(img);
@@ -2238,7 +2242,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
     setOpacity: function(opacity) {
         this.options.opacity = opacity;
 
-        if (this._image) {
+        if(this._image) {
             this._updateOpacity();
         }
         return this;
@@ -2249,7 +2253,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
     },
 
     setStyle: function(styleOpts) {
-        if (styleOpts.opacity) {
+        if(styleOpts.opacity) {
             this.setOpacity(styleOpts.opacity);
         }
         return this;
@@ -2266,14 +2270,14 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
     },
 
     bringToFront: function() {
-        if (this._map) {
+        if(this._map) {
             L.DomUtil.toFront(this._image);
         }
         return this;
     },
 
     bringToBack: function() {
-        if (this._map) {
+        if(this._map) {
             L.DomUtil.toBack(this._image);
         }
         return this;
@@ -2290,7 +2294,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
             viewreset: this._reset
         };
 
-        if (this._zoomAnimated) {
+        if(this._zoomAnimated) {
             events.zoomanim = this._animateZoom;
         }
 
@@ -2302,7 +2306,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
     },
 
     _initInteraction: function() {
-        if (!this.options.interactive) {
+        if(!this.options.interactive) {
             return;
         }
         L.DomUtil.addClass(this._image, 'leaflet-interactive');
@@ -2311,7 +2315,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
     },
 
     _fireMouseEvent: function(e, type) {
-        if (this._map) {
+        if(this._map) {
             this._map._fireMouseEvent(this, e, type, true);
         }
     },
@@ -2323,7 +2327,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
         img.style.zIndex = this.options.zIndex;
         img.alt = this.options.alt;
 
-        if (this.options.opacity < 1) {
+        if(this.options.opacity < 1) {
             L.DomUtil.setOpacity(img, this.options.opacity);
         }
 
@@ -2366,7 +2370,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
     },
 
     _incrementRequestCounter: function(imagesCount) {
-        if (!this._requestCounter) {
+        if(!this._requestCounter) {
             this._requestCounter = {
                 count: 1
             };
@@ -2380,21 +2384,21 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
 
 
     _update: function() {
-        if (!this._map) {
+        if(!this._map) {
             return;
         }
 
-        if (this._map._animatingZoom) {
+        if(this._map._animatingZoom) {
             return;
         }
 
         var zoom = this._map.getZoom();
 
-        if (this._map._panTransition && this._map._panTransition._inProgress) {
+        if(this._map._panTransition && this._map._panTransition._inProgress) {
             return;
         }
 
-        if (zoom > this.options.maxZoom || zoom < this.options.minZoom) {
+        if(zoom > this.options.maxZoom || zoom < this.options.minZoom) {
             return;
         }
 
@@ -2407,7 +2411,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
     },
 
     _requestImages: function(params) {
-        if (!this._singleImages) {
+        if(!this._singleImages) {
             this._singleImages = [];
         }
 
@@ -2416,11 +2420,11 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
             bounds: this._map.getBounds()
         });
 
-        for (var i = 0; i < params.length; i++) {
+        for(var i = 0; i < params.length; i++) {
             var singleParam = params[i];
             singleParam.requestCount = this._requestCounter.count;
 
-            if ((this._postData) | (this._service.needAuthorization())) {
+            if((this._postData) | (this._service.needAuthorization())) {
                 this._service.renderMap(
                     singleParam.params,
                     this._postLoad, {
@@ -2453,17 +2457,17 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
         sign = (sign === 0) ? 1 : sign;
         var coef = sign * Math.floor(Math.abs(d));
 
-        while (newXmax < max.lng) {
+        while(newXmax < max.lng) {
             newXmax = 360 * (coef + i) + sign * 180;
 
-            if (newXmax > max.lng) {
+            if(newXmax > max.lng) {
                 newXmax = max.lng;
             }
 
             var normXMin = newXmin;
             var normXMax = newXmax;
 
-            if ((newXmin < -180) || (newXmax > 180)) {
+            if((newXmin < -180) || (newXmax > 180)) {
                 var d2 = Math.floor((newXmin + 180) / 360);
                 normXMin -= d2 * 360;
                 normXMax -= d2 * 360;
@@ -2499,7 +2503,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
         var top = this._map.latLngToLayerPoint(bounds._northEast);
         var bottom = this._map.latLngToLayerPoint(bounds._southWest);
 
-        if (top.y > 0 || bottom.y < size.y) {
+        if(top.y > 0 || bottom.y < size.y) {
             size.y = bottom.y - top.y;
         }
 
@@ -2534,7 +2538,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
             params: params
         });
 
-        if (params.requestCount !== this._requestCounter.count) {
+        if(params.requestCount !== this._requestCounter.count) {
             delete params.image;
             return;
         }
@@ -2543,7 +2547,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
     },
 
     _imageLoaded: function(params) {
-        if (params.requestCount !== this._requestCounter.count) {
+        if(params.requestCount !== this._requestCounter.count) {
             delete params.image;
             return;
         }
@@ -2554,14 +2558,14 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
 
         this._forAllSingleImages(
             function(img) {
-                if (img.position.overlaps(image.position)) {
+                if(img.position.overlaps(image.position)) {
                     imagesToRemove.push(img);
                 }
             }
         );
 
         this.getPane(this.options.pane).appendChild(image);
-        if (this.options.interactive) {
+        if(this.options.interactive) {
             L.DomUtil.addClass(image, 'leaflet-interactive');
             this.addInteractiveTarget(image);
         }
@@ -2570,7 +2574,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
 
         this._requestCounter.loadedImages++;
 
-        if (this._requestCounter.allImages === this._requestCounter.loadedImages) {
+        if(this._requestCounter.allImages === this._requestCounter.loadedImages) {
             var bounds = this._map.getBounds();
             this.fire('load', {
                 bounds: bounds
@@ -2578,7 +2582,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
 
             this._forAllSingleImages(
                 function(img) {
-                    if (!img.position.overlaps(bounds)) {
+                    if(!img.position.overlaps(bounds)) {
                         imagesToRemove.push(img);
                     }
                 }
@@ -2586,10 +2590,10 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
         }
 
         // removing useless images
-        for (var i = 0; i < imagesToRemove.length; i++) {
+        for(var i = 0; i < imagesToRemove.length; i++) {
             this._removeImage(imagesToRemove[i]);
             var index = this._singleImages.indexOf(imagesToRemove[i]);
-            if (index !== -1) {
+            if(index !== -1) {
                 this._singleImages.splice(index, 1);
             }
         }
@@ -2597,14 +2601,14 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
 
     _removeImage: function(img) {
         this.getPane(this.options.pane).removeChild(img);
-        if (this.options.interactive) {
+        if(this.options.interactive) {
             this.removeInteractiveTarget(img);
         }
     },
 
     _forAllSingleImages: function(f) {
-        if (this._singleImages) {
-            for (var i = 0; i < this._singleImages.length; i++) {
+        if(this._singleImages) {
+            for(var i = 0; i < this._singleImages.length; i++) {
                 f.call(this, this._singleImages[i]);
             }
         }
@@ -2615,7 +2619,7 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
         var uInt8Array = new Uint8Array(response);
         var i = uInt8Array.length;
         var binaryString = new Array(i);
-        while (i--) {
+        while(i--) {
             binaryString[i] = String.fromCharCode(uInt8Array[i]);
         }
         var data = binaryString.join('');
@@ -2643,9 +2647,9 @@ L.SpectrumSpatial.Services.routingService = function(url,options){
     },
 
     _sign: function(value) {
-        if (value > 0) {
+        if(value > 0) {
             return 1;
-        } else if (value < 0) {
+        } else if(value < 0) {
             return -1;
         } else {
             return 0;
@@ -2855,7 +2859,12 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service, mapName, postData, 
 
 L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
   return new L.SpectrumSpatial.Layers.TileServiceLayer(service,mapName,options);
-};;L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
+};;/**
+ * Extending basic L.Control with L.Evented
+ */
+
+L.Control.include(L.Evented.prototype);
+;L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
     /** @lends L.SpectrumSpatial.Controls.Layers.prototype */
 
     className: 'leaflet-ss-control-layers',
@@ -2875,7 +2884,6 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
      * @property {Object} [legendContainer] DOM element, if we want to draw legend outside of layers control
      * @property {boolean} [inverseOrder=false] If true, upper layer in control is upper on map ( max Z index)
      */
-
     options: {
         zIndexControls: true,
         opacityControls: true,
@@ -2893,14 +2901,14 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
      * @param {Object} overlays Object which contans overlays layers ( { "title":layer } )
      * @param {L.SpectrumSpatial.Controls.Layers.Options} [options] Options
      */
-    initialize: function (baseLayers, overlays, options) {
+    initialize: function(baseLayers, overlays, options) {
         L.setOptions(this, options);
 
         this._layers = [];
-        if (!this.options.legendOptions) {
+        if(!this.options.legendOptions) {
             this.options.legendOptions = {};
         }
-        if (this.options.legendOptions.cssOff === undefined) {
+        if(this.options.legendOptions.cssOff === undefined) {
             this.options.legendOptions.cssOff = true;
         }
         this._minZIndex = 1;
@@ -2909,11 +2917,11 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 
         this._handlingClick = false;
 
-        for (var i in baseLayers) {
+        for(var i in baseLayers) {
             this._addLayer(baseLayers[i], i);
         }
 
-        for (i in overlays) {
+        for(i in overlays) {
             this._addLayer(overlays[i], i, true);
         }
     },
@@ -2924,14 +2932,14 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
      * @param {L.Map} map Map for control
      * @param {Object} [outsideContainer] DOM element, if spicified control will be rendered outside of map
      */
-    addTo: function (map, outsideContainer) {
+    addTo: function(map, outsideContainer) {
         this.remove();
         this._map = map;
 
 
         var container = this._container = this.onAdd(map);
 
-        if (outsideContainer) {
+        if(outsideContainer) {
             outsideContainer.appendChild(container);
         }
         else {
@@ -2939,7 +2947,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
             var pos = this.getPosition();
             var corner = map._controlCorners[pos];
 
-            if (pos.indexOf('bottom') !== -1) {
+            if(pos.indexOf('bottom') !== -1) {
                 corner.insertBefore(container, corner.firstChild);
             } else {
                 corner.appendChild(container);
@@ -2949,21 +2957,21 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
         return this;
     },
 
-    _addLayer: function (layer, name, overlay) {
+    _addLayer: function(layer, name, overlay) {
         layer.on('add remove', this._onLayerChange, this);
 
-        if (overlay && this.options.autoZIndex && layer.setZIndex) {
+        if(overlay && this.options.autoZIndex && layer.setZIndex) {
             this._maxZIndex++;
             layer.setZIndex(this._maxZIndex);
         }
 
-        if (overlay && !this.options.autoZIndex) {
-            if (layer.getZIndex) {
+        if(overlay && !this.options.autoZIndex) {
+            if(layer.getZIndex) {
                 var z = layer.getZIndex();
-                if (this._minZIndex > z) {
+                if(this._minZIndex > z) {
                     this._minZIndex = z;
                 }
-                if (this._maxZIndex < z) {
+                if(this._maxZIndex < z) {
                     this._maxZIndex = z;
                 }
             }
@@ -2976,8 +2984,8 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
         });
     },
 
-    _update: function () {
-        if (!this._container) {
+    _update: function() {
+        if(!this._container) {
             return this;
         }
 
@@ -2987,28 +2995,28 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
         var baseLayersPresent, overlaysPresent, obj, baseLayersCount = 0;
 
         var overlays = [];
-        for (var i=0; i<this._layers.length; i++) {
+        for(var i = 0; i < this._layers.length; i++) {
             obj = this._layers[i];
             overlaysPresent = overlaysPresent || obj.overlay;
             baseLayersPresent = baseLayersPresent || !obj.overlay;
             baseLayersCount += !obj.overlay ? 1 : 0;
-            if (!obj.overlay) {
+            if(!obj.overlay) {
                 this._addItem(obj);
             }
             else {
-                overlays.push({ lo: obj, z: obj.layer.getZIndex() });
+                overlays.push({lo: obj, z: obj.layer.getZIndex()});
             }
         }
 
         overlays.sort(L.SpectrumSpatial.Utils.sortByProperty('z', (this.options.inverseOrder) ? "desc" : "asc"));
 
-        for (i in overlays) {
+        for(i in overlays) {
             obj = overlays[i];
             this._addItem(obj.lo);
         }
 
         // Hide base layers section if there's only one layer.
-        if (this.options.hideSingleBase) {
+        if(this.options.hideSingleBase) {
             baseLayersPresent = baseLayersPresent && baseLayersCount > 1;
             this._baseLayersList.style.display = baseLayersPresent ? '' : 'none';
         }
@@ -3019,14 +3027,13 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
     },
 
 
-    _initLayout: function () {
-
+    _initLayout: function() {
         var container = this._container = L.DomUtil.create('div', this.options.cssOff ? '' : this.className);
 
         // makes this work on IE touch devices by stopping it from firing a mouseout event when the touch is released
         container.setAttribute('aria-haspopup', true);
 
-        if (!L.Browser.touch) {
+        if(!L.Browser.touch) {
             L.DomEvent
                 .disableClickPropagation(container)
                 .disableScrollPropagation(container);
@@ -3036,15 +3043,15 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 
         var form = this._form = L.DomUtil.create('form', this.className + '-list');
 
-        if (this.options.maxHeight) {
+        if(this.options.maxHeight) {
             this._form.style.maxHeight = this.options.maxHeight;
         }
-        if (this.options.maxWidth) {
+        if(this.options.maxWidth) {
             this._form.style.maxWidth = this.options.maxWidth;
         }
 
-        if (this.options.collapsed) {
-            if (!L.Browser.android) {
+        if(this.options.collapsed) {
+            if(!L.Browser.android) {
                 L.DomEvent.on(container, {
                     mouseenter: this._expand,
                     mouseleave: this._collapse
@@ -3055,7 +3062,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
             link.href = '#';
             link.title = 'Layers';
 
-            if (L.Browser.touch) {
+            if(L.Browser.touch) {
                 L.DomEvent
                     .on(link, 'click', L.DomEvent.stop)
                     .on(link, 'click', this._expand, this);
@@ -3077,8 +3084,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
     },
 
     // IE7 bugs out if you create a radio dynamically, so you have to do it this hacky way (see http://bit.ly/PqYLBe)
-    _createRadioElement: function (name, checked) {
-
+    _createRadioElement: function(name, checked) {
         var radioHtml = '<input type="radio" class="leaflet-ss-cell leaflet-ss-control-layers-selector" name="' +
             name + '"' + (checked ? ' checked="checked"' : '') + '/>';
 
@@ -3088,14 +3094,14 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
         return radioFragment.firstChild;
     },
 
-    _addItem: function (obj) {
+    _addItem: function(obj) {
         var layerItem = L.DomUtil.create('div', 'leaflet-ss-rowcontainer');
         var row = L.DomUtil.create('div', 'leaflet-ss-row', layerItem);
         var checked = this._map.hasLayer(obj.layer);
         var input;
 
 
-        if (obj.overlay) {
+        if(obj.overlay) {
             input = L.DomUtil.create('input', 'leaflet-ss-cell leaflet-control-layers-selector');
             input.name = 'visibilityInput';
             input.type = 'checkbox';
@@ -3111,19 +3117,19 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 
         row.appendChild(input);
 
-        if (obj.overlay) {
+        if(obj.overlay) {
 
-            if (this.options.zIndexControls) {
+            if(this.options.zIndexControls) {
                 row.appendChild(this._createZIndexButton('up', obj.layer, input.layerId));
                 row.appendChild(this._createZIndexButton('down', obj.layer, input.layerId));
             }
 
-            if (this.options.legendControls) {
+            if(this.options.legendControls) {
                 var legend = L.DomUtil.create('div', 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-legend');
                 legend.layerId = input.layerId;
                 L.DomEvent.on(legend, 'click', this._onLegendClick, this);
                 row.appendChild(legend);
-                if (this.options.legendContainer) {
+                if(this.options.legendContainer) {
                     obj.legendContainer = this.options.legendContainer;
                 }
                 else {
@@ -3131,7 +3137,7 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
                     layerItem.appendChild(obj.legendContainer);
                 }
             }
-            if (this.options.opacityControls) {
+            if(this.options.opacityControls) {
                 var opacity = L.DomUtil.create('input', 'leaflet-ss-cell leaflet-ss-control-layers-input');
                 opacity.type = 'text';
                 opacity.name = 'opacityInput';
@@ -3151,28 +3157,28 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
         return layerItem;
     },
 
-    _createZIndexButton: function (displayDirection, layer, layerId) {
+    _createZIndexButton: function(displayDirection, layer, layerId) {
         var className = 'leaflet-ss-cell leaflet-ss-control-layers-btn leaflet-ss-control-layers-' + displayDirection;
-        var realDirection = ((displayDirection === 'up' & this.options.inverseOrder) |
-            (displayDirection === 'down' & !this.options.inverseOrder)) ? 'up' : 'down';
+        var realDirection = ((displayDirection === 'up' & this.options.inverseOrder) ||
+        (displayDirection === 'down' & !this.options.inverseOrder)) ? 'up' : 'down';
         var clickFunction = (realDirection === 'up') ? this._onUpClick : this._onDownClick;
         var disableIndex = (realDirection === 'up') ? this._maxZIndex : this._minZIndex;
         var btn = L.DomUtil.create('div', className);
         btn.layerId = layerId;
         L.DomEvent.on(btn, 'click', clickFunction, this);
-        if (layer.getZIndex() === disableIndex) {
+        if(layer.getZIndex() === disableIndex) {
             L.DomUtil.addClass(btn, 'leaflet-ss-disabled');
         }
 
         return btn;
     },
 
-    _onLegendClick: function (e) {
+    _onLegendClick: function(e) {
         var layerId = e.currentTarget.layerId;
         var lo = this._getLayer(layerId);
         var legend;
-        if (!this.options.legendContainer) {
-            if (lo.legendContainer.hasChildNodes()) {
+        if(!this.options.legendContainer) {
+            if(lo.legendContainer.hasChildNodes()) {
                 L.DomUtil.empty(lo.legendContainer);
             }
             else {
@@ -3186,42 +3192,42 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
         }
     },
 
-    _onDownClick: function (e) {
+    _onDownClick: function(e) {
         var layerId = e.currentTarget.layerId;
         var layer = this._getLayer(layerId).layer;
         var curZ = layer.getZIndex();
         var oldLayer = this._findOverlayByZ(curZ - 1);
-        if (oldLayer) {
+        if(oldLayer) {
             oldLayer.layer.setZIndex(curZ);
             layer.setZIndex(curZ - 1);
             this._update();
         }
     },
 
-    _onUpClick: function (e) {
+    _onUpClick: function(e) {
         var layerId = e.currentTarget.layerId;
         var layer = this._getLayer(layerId).layer;
         var curZ = layer.getZIndex();
         var oldLayer = this._findOverlayByZ(curZ + 1);
-        if (oldLayer) {
+        if(oldLayer) {
             oldLayer.layer.setZIndex(curZ);
             layer.setZIndex(curZ + 1);
             this._update();
         }
     },
 
-    _findOverlayByZ: function (z) {
-        for (var i=0;i< this._layers.length;i++) {
+    _findOverlayByZ: function(z) {
+        for(var i = 0; i < this._layers.length; i++) {
             obj = this._layers[i];
 
-            if (obj.overlay && obj.layer.getZIndex() === z) {
+            if(obj.overlay && obj.layer.getZIndex() === z) {
                 return obj;
             }
         }
         return null;
     },
 
-    _onVisibilityChanged: function () {
+    _onVisibilityChanged: function() {
         var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container, 'visibilityInput');
         var input, layer, hasLayer;
         var addedLayers = [],
@@ -3229,43 +3235,42 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
 
         this._handlingClick = true;
 
-        for (var i = 0, len = inputs.length; i < len; i++) {
+        for(var i = 0, len = inputs.length; i < len; i++) {
             input = inputs[i];
             layer = this._getLayer(input.layerId).layer;
             hasLayer = this._map.hasLayer(layer);
 
-            if (input.checked && !hasLayer) {
+            if(input.checked && !hasLayer) {
                 addedLayers.push(layer);
 
-            } else if (!input.checked && hasLayer) {
+            } else if(!input.checked && hasLayer) {
                 removedLayers.push(layer);
             }
         }
 
         // Bugfix issue 2318: Should remove all old layers before readding new ones
-        for (i = 0; i < removedLayers.length; i++) {
+        for(i = 0; i < removedLayers.length; i++) {
             this._map.removeLayer(removedLayers[i]);
         }
-        for (i = 0; i < addedLayers.length; i++) {
+        for(i = 0; i < addedLayers.length; i++) {
             this._map.addLayer(addedLayers[i]);
         }
 
-        this._handlingClick = false;
-
         this._refocusOnMap();
+        this._handlingClick = false;
     },
 
-    _onOpacityChanged: function () {
+    _onOpacityChanged: function() {
         var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container, 'opacityInput');
         var input, layer;
 
         this._handlingClick = true;
 
-        for (var i = 0, len = inputs.length; i < len; i++) {
+        for(var i = 0, len = inputs.length; i < len; i++) {
             input = inputs[i];
             layer = this._getLayer(input.layerId).layer;
             var newOpacity = parseFloat(input.value);
-            if (layer.setOpacity && !isNaN(newOpacity)) {
+            if(layer.setOpacity && !isNaN(newOpacity)) {
                 layer.setOpacity(newOpacity);
             }
         }
@@ -3273,17 +3278,17 @@ L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
         this._handlingClick = false;
     },
 
-    _expand: function () {
+    _expand: function() {
         L.DomUtil.addClass(this._container, this.className + '-expanded');
     },
 
-    _collapse: function () {
+    _collapse: function() {
         L.DomUtil.removeClass(this._container, this.className + '-expanded');
     }
 
 });
 
-L.SpectrumSpatial.Controls.layers = function (baselayers, overlays, options) {
+L.SpectrumSpatial.Controls.layers = function(baselayers, overlays, options) {
     return new L.SpectrumSpatial.Controls.Layers(baselayers, overlays, options);
 };
 ;L.SpectrumSpatial.Controls.Legend = L.Control.extend({
@@ -3434,226 +3439,252 @@ L.SpectrumSpatial.Controls.layers = function (baselayers, overlays, options) {
 L.SpectrumSpatial.Controls.legend = function(service, mapName, options){
     return new L.SpectrumSpatial.Controls.Legend(service, mapName, options);
 };;L.SpectrumSpatial.Controls.Feature = L.Control.extend({
-/** @lends L.SpectrumSpatial.Controls.Feature.prototype */  
-    
+    /** @lends L.SpectrumSpatial.Controls.Feature.prototype */
+
     className: 'leaflet-ss-control-feature',
-    
+
     /**
-    * Feature control options class
-    * @typedef {Object} L.SpectrumSpatial.Controls.Feature.Options
-    * @property {number} [pixelTolerance=0] Tolerance in pixels on map
-    * @property {Array.<string>} [hideTypes] Array of column's types which should be hided
-    * @property {boolean} [showIfEmpty] If true - shows popup every time on response (even response has no features)
-    * @property {boolean} [useDefaultProjection] Use EPSG:4326 coordinates in spatial queries
-    */
-    
+     * Feature control options class
+     * @typedef {Object} L.SpectrumSpatial.Controls.Feature.Options
+     * @property {number} [pixelTolerance=0] Tolerance in pixels on map
+     * @property {Array.<string>} [hideTypes] Array of column's types which should be hided
+     * @property {boolean} [showIfEmpty] If true - shows popup every time on response (even response has no features)
+     * @property {boolean} [useDefaultProjection] Use EPSG:4326 coordinates in spatial queries
+     * @property {L.Popup.Options} Options for Leaflet popup
+     */
     options: {
-        pixelTolerance:0,
-        hideTypes: ['Geometry','Style'],
-        showIfEmpty:false,
-        useDefaultProjection: true
+        pixelTolerance: 0,
+        hideTypes: ['Geometry', 'Style'],
+        showIfEmpty: false,
+        useDefaultProjection: true,
+        popupOptions:{}
     },
-    
+
     /**
-    * Type to describe feature layer to control
-    * @typedef {Object} L.SpectrumSpatial.Controls.Feature.FeatureLayer
-    * @property {string} tableName Name of the table in feature service
-    * @property {string} title Title of table
-    * @property {L.SpectrumSpatial.Services.FeatureService.SearchAtPointOptions} options Options to query
-    */
-    
+     * Type to describe feature layer to control
+     * @typedef {Object} L.SpectrumSpatial.Controls.Feature.FeatureLayer
+     * @property {string} tableName Name of the table in feature service
+     * @property {string} title Title of table
+     * @property {L.SpectrumSpatial.Services.FeatureService.SearchAtPointOptions} options Options to query
+     */
+
     /**
-    * @class Feature control
-    * @augments {L.Control} 
-    * @constructs L.SpectrumSpatial.Controls.Feature
-    * @param {L.SpectrumSpatial.Services.FeatureService} service Feature service 
-    * @param {Array.<L.SpectrumSpatial.Controls.Feature.FeatureLayer>} featureLayers Described feature layers
-    * @param {L.SpectrumSpatial.Controls.Feature.Options} [options] Options
-    */
-    initialize: function (service, featureLayers, options) {
+     * Fired after the control is activated
+     * @event L.SpectrumSpatial.Controls.Feature#activated
+     **/
+
+    /**
+     * Fired after the control is deactivated
+     * @event L.SpectrumSpatial.Controls.Feature#deactivated
+     **/
+
+    /**
+     * @class Feature control
+     * @augments {L.Control}
+     * @constructs L.SpectrumSpatial.Controls.Feature
+     * @param {L.SpectrumSpatial.Services.FeatureService} service Feature service
+     * @param {Array.<L.SpectrumSpatial.Controls.Feature.FeatureLayer>} featureLayers Described feature layers
+     * @param {L.SpectrumSpatial.Controls.Feature.Options} [options] Options
+     * @fires L.SpectrumSpatial.Controls.Feature#activated
+     * @fires L.SpectrumSpatial.Controls.Feature#deactivated
+     */
+    initialize: function(service, featureLayers, options) {
         L.setOptions(this, options);
         this._service = service;
         this._featureLayers = featureLayers;
     },
-    
-    
+
+
     /**
-    * Adds control to map
-    * @memberof L.SpectrumSpatial.Controls.Feature.prototype
-    * @param {L.Map} map Map for control
-    */
-    addTo: function (map) {
+     * Adds control to map
+     * @memberof L.SpectrumSpatial.Controls.Feature.prototype
+     * @param {L.Map} map Map for control
+     */
+    addTo: function(map) {
         this.remove();
         this._map = map;
 
-        
+
         var container = this._container = this.onAdd(map);
-        
+
         L.DomUtil.addClass(container, 'leaflet-control');
         var pos = this.getPosition();
         var corner = map._controlCorners[pos];
 
-        if (pos.indexOf('bottom') !== -1) {
+        if(pos.indexOf('bottom') !== -1) {
             corner.insertBefore(container, corner.firstChild);
         } else {
             corner.appendChild(container);
-        }   
-        
+        }
+
         return this;
     },
-    
-    onAdd: function () {
+
+    onAdd: function() {
         var container = this._container = L.DomUtil.create('div', this.options.cssOff ? '' : this.className);
-        this._featureInfo = L.DomUtil.create('div','leaflet-ss-control-feature-info');
-        L.DomEvent.on(this._featureInfo , 'click', this._onFeatureInfoClick, this);
-        container.appendChild(this._featureInfo );
+        this._featureInfo = L.DomUtil.create('div', 'leaflet-ss-control-feature-info');
+        L.DomEvent.on(this._featureInfo, 'click', this._onFeatureInfoClick, this);
+        container.appendChild(this._featureInfo);
         return this._container;
     },
-    
-    _onFeatureInfoClick: function(e){
+
+    setService: function(service) {
+        this._service = service;
+        return this;
+    },
+
+    setLayers: function(featureLayers) {
+        this._featureLayers = featureLayers;
+        return this;
+    },
+
+    setActive: function(isActive) {
+        this._active = isActive;
+        if(isActive) {
+            this._map.on('click', this._getFeatureInfo, this);
+            L.DomUtil.addClass(this._featureInfo, 'leaflet-ss-control-feature-activated');
+            L.DomUtil.addClass(this._map._container, 'leaflet-ss-cursor-crosshair');
+            this.fire('activated');
+        }
+        else {
+            this._clearPopup();
+            this._map.off('click', this._getFeatureInfo, this);
+            L.DomUtil.removeClass(this._featureInfo, 'leaflet-ss-control-feature-activated');
+            L.DomUtil.removeClass(this._map._container, 'leaflet-ss-cursor-crosshair');
+            this.fire('deactivated');
+        }
+    },
+
+    getPopupHtmlContent: function(requestedData) {
+        var content = '';
+
+        for(var i = 0; i < requestedData.length; i++) {
+            var featureLayer = requestedData[i];
+
+            if(!((featureLayer.data.features) && (featureLayer.data.features.length > 0))) {
+                continue;
+            }
+
+            content += L.Util.template('<b>{title}</b><br/>', featureLayer.layerSettings);
+            content += '<table><thead><tr>';
+
+            var visibleColumns = [];
+
+            for(var j in featureLayer.data.Metadata) {
+                var column = featureLayer.data.Metadata[j];
+                if(this.options.hideTypes.indexOf(column.type) === -1) {
+                    visibleColumns.push(column.name);
+                    content += L.Util.template('<th>{name}</th>', column);
+                }
+            }
+            content += '</tr></thead><tbody>';
+            for(var k in featureLayer.data.features) {
+                var feature = featureLayer.data.features[k];
+                content += '<tr>';
+
+                for(var c in visibleColumns) {
+                    var cName = visibleColumns[c];
+                    content += '<td>' + feature.properties[cName] + '</td>';
+                }
+
+                content += '</tr>';
+            }
+            content += '</tbody></table>';
+        }
+
+        return content;
+    },
+
+    _onFeatureInfoClick: function(e) {
         this.setActive(!this._active);
         L.DomEvent.stopPropagation(e);
     },
-    
-    _getFeatureInfo:function(e){
-        if (!this._waitImage){
-            this._waitImage = L.DomUtil.create('div','leaflet-ss-wait');
+
+    _getFeatureInfo: function(e) {
+        if(!this._waitImage) {
+            this._waitImage = L.DomUtil.create('div', 'leaflet-ss-wait');
         }
-        this._featureInfo.style.display="none";
+        this._featureInfo.style.display = "none";
         this._container.appendChild(this._waitImage);
-        
-        var queryCollector= { position: e.latlng, all: this._featureLayers.length, requested: [], hasFeatures:false };
-        var point =  e.layerPoint;
-        var crs = map.options.crs.code;
-        
-        if (this.options.useDefaultProjection){
-            crs =  'EPSG:4326';
-            point =  { x: e.latlng.lng, y:e.latlng.lat } ;
+
+        var queryCollector = {position: e.latlng, all: this._featureLayers.length, requested: [], hasFeatures: false};
+        var point = e.layerPoint;
+        var crs = this._map.options.crs.code;
+
+        if(this.options.useDefaultProjection) {
+            crs = 'EPSG:4326';
+            point = {x: e.latlng.lng, y: e.latlng.lat};
         }
         var tolerance;
-        if (this.options.pixelTolerance!==0){
-            tolerance = Math.round(L.SpectrumSpatial.Utils.countPixelDistance(this._map,this.options.pixelTolerance,e.latlng));
+        if(this.options.pixelTolerance !== 0) {
+            tolerance = Math.round(L.SpectrumSpatial.Utils.countPixelDistance(this._map, this.options.pixelTolerance, e.latlng));
         }
-        
-        
-        for (var i in this._featureLayers){
+
+
+        for(var i = 0; i < this._featureLayers.length; i++) {
             var featureLayer = this._featureLayers[i];
             featureLayer.options = featureLayer.options || {};
-            var options = L.SpectrumSpatial.Utils.merge({},featureLayer.options);
-            
-            if ((featureLayer.options.tolerance===undefined) & (tolerance!==undefined)){
-                options.tolerance =  tolerance + ' m';
+            var options = L.SpectrumSpatial.Utils.merge({}, featureLayer.options);
+
+            if((featureLayer.options.tolerance === undefined) && (tolerance !== undefined)) {
+                options.tolerance = tolerance + ' m';
             }
-        
-            this._service.searchAtPoint(featureLayer.tableName, 
-                                         point,
-                                         crs,
-                                        this._serviceCallback, 
-                                        { context:this, collector: queryCollector, layerSettings: featureLayer}, options);
+
+            this._service.searchAtPoint(featureLayer.tableName,
+                point,
+                crs,
+                this._serviceCallback,
+                {context: this, collector: queryCollector, layerSettings: featureLayer}, options);
         }
-        
     },
-    
-    
-    
-    _serviceCallback:function(response,error){
-        
+
+
+    _serviceCallback: function(response, error) {
         var collector = this.collector;
-        
-        if ((response.features) && (response.features.length>0)){
+
+        if((response.features) && (response.features.length > 0)) {
             collector.hasFeatures = true;
         }
-        
-        collector.requested.push({ layerSettings:this.layerSettings, data: response });
-        
-        if (collector.all === collector.requested.length){
-            this.context._queryEnded.call(this.context,collector);
+
+        collector.requested.push({layerSettings: this.layerSettings, data: response});
+
+        if(collector.all === collector.requested.length) {
+            this.context._queryEnded.call(this.context, collector);
         }
     },
-    
-    _queryEnded:function(collector){
-        this._featureInfo.style.display="block";
+
+    _queryEnded: function(collector) {
+        this._featureInfo.style.display = "block";
         this._container.removeChild(this._waitImage);
-        
+
         this._clearPopup();
-        
-        
-        if (!(this.options.showIfEmpty | collector.hasFeatures)){
+
+        if(!(this.options.showIfEmpty || collector.hasFeatures)) {
             return;
         }
-        
-        this._popup = L.popup()
+
+        this._showPopup(collector);
+    },
+
+    _showPopup: function(collector){
+        this._popup = L.popup(this.options.popupOptions)
             .setLatLng(collector.position)
             .setContent(this.getPopupHtmlContent(collector.requested))
             .openOn(this._map);
     },
-    
-    getPopupHtmlContent:function(requestedData){
-        var content ='';
-        for(var i=0; i< requestedData.length;i++){
-            var featureLayer = requestedData[i];
-            
-            if (!((featureLayer.data.features) && (featureLayer.data.features.length>0))){
-                continue;
-            }
-            
-            content += L.Util.template('<b>{title}</b><br/>',featureLayer.layerSettings);
-            content+= '<table><thead><tr>';
-            
-            var visibleColumns = [];
-            
-            for(var j in featureLayer.data.Metadata){
-                var column = featureLayer.data.Metadata[j];
-                if ( this.options.hideTypes.indexOf(column.type)===-1){
-                    visibleColumns.push(column.name);
-                    content+= L.Util.template('<th>{name}</th>',column);
-                }
-            }
-            content+= '</tr></thead><tbody>';
-            for(var k in featureLayer.data.features){
-                var feature = featureLayer.data.features[k];
-                content+= '<tr>';
-                
-                for(var c in visibleColumns){
-                    var cName = visibleColumns[c];
-                    content+= '<td>' + feature.properties[cName] + '</td>';
-                }
-                
-                content+= '</tr>';
-            }
-            content+= '</tbody></table>';
-            
-        }
-        
-        
-        return content;
-    },
-    
-    _clearPopup: function(){
-        if (this._popup){
+
+    _clearPopup: function() {
+        if(this._popup) {
             this._map.closePopup(this._popup);
             delete this._popup;
         }
-    },
-    
-    setActive:function(isActive){
-        this._active = isActive;
-        if (isActive){
-            this._map.on('click', this._getFeatureInfo, this);
-            L.DomUtil.addClass(this._featureInfo , 'leaflet-ss-control-feature-activated');
-        }
-        else{
-            this._clearPopup();
-            this._map.off('click', this._getFeatureInfo, this);
-            L.DomUtil.removeClass(this._featureInfo , 'leaflet-ss-control-feature-activated');
-        }
-        
     }
 });
 
-L.SpectrumSpatial.Controls.feature = function(service, featureLayers, options){
+L.SpectrumSpatial.Controls.feature = function(service, featureLayers, options) {
     return new L.SpectrumSpatial.Controls.Feature(service, featureLayers, options);
-};;L.SpectrumSpatial.Controls.Resources = L.Control.extend({
+};
+;L.SpectrumSpatial.Controls.Resources = L.Control.extend({
 /** @lends L.SpectrumSpatial.Controls.Resources.prototype */ 
     
     className: 'leaflet-ss-control-resources',
