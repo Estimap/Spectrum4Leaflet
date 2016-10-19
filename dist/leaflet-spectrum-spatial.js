@@ -2859,7 +2859,12 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service, mapName, postData, 
 
 L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
   return new L.SpectrumSpatial.Layers.TileServiceLayer(service,mapName,options);
-};;L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
+};;/**
+ * Extending basic L.Control with L.Evented
+ */
+
+L.Control.include(L.Evented.prototype);
+;L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
     /** @lends L.SpectrumSpatial.Controls.Layers.prototype */
 
     className: 'leaflet-ss-control-layers',
@@ -3445,12 +3450,14 @@ L.SpectrumSpatial.Controls.legend = function(service, mapName, options){
      * @property {Array.<string>} [hideTypes] Array of column's types which should be hided
      * @property {boolean} [showIfEmpty] If true - shows popup every time on response (even response has no features)
      * @property {boolean} [useDefaultProjection] Use EPSG:4326 coordinates in spatial queries
+     * @property {L.Popup.Options} Options for Leaflet popup
      */
     options: {
         pixelTolerance: 0,
         hideTypes: ['Geometry', 'Style'],
         showIfEmpty: false,
-        useDefaultProjection: true
+        useDefaultProjection: true,
+        popupOptions:{}
     },
 
     /**
@@ -3462,12 +3469,24 @@ L.SpectrumSpatial.Controls.legend = function(service, mapName, options){
      */
 
     /**
+     * Fired after the control is activated
+     * @event L.SpectrumSpatial.Controls.Feature#activated
+     **/
+
+    /**
+     * Fired after the control is deactivated
+     * @event L.SpectrumSpatial.Controls.Feature#deactivated
+     **/
+
+    /**
      * @class Feature control
      * @augments {L.Control}
      * @constructs L.SpectrumSpatial.Controls.Feature
      * @param {L.SpectrumSpatial.Services.FeatureService} service Feature service
      * @param {Array.<L.SpectrumSpatial.Controls.Feature.FeatureLayer>} featureLayers Described feature layers
      * @param {L.SpectrumSpatial.Controls.Feature.Options} [options] Options
+     * @fires L.SpectrumSpatial.Controls.Feature#activated
+     * @fires L.SpectrumSpatial.Controls.Feature#deactivated
      */
     initialize: function(service, featureLayers, options) {
         L.setOptions(this, options);
@@ -3524,11 +3543,15 @@ L.SpectrumSpatial.Controls.legend = function(service, mapName, options){
         if(isActive) {
             this._map.on('click', this._getFeatureInfo, this);
             L.DomUtil.addClass(this._featureInfo, 'leaflet-ss-control-feature-activated');
+            L.DomUtil.addClass(this._map._container, 'leaflet-ss-cursor-crosshair');
+            this.fire('activated');
         }
         else {
             this._clearPopup();
             this._map.off('click', this._getFeatureInfo, this);
             L.DomUtil.removeClass(this._featureInfo, 'leaflet-ss-control-feature-activated');
+            L.DomUtil.removeClass(this._map._container, 'leaflet-ss-cursor-crosshair');
+            this.fire('deactivated');
         }
     },
 
@@ -3586,7 +3609,7 @@ L.SpectrumSpatial.Controls.legend = function(service, mapName, options){
 
         var queryCollector = {position: e.latlng, all: this._featureLayers.length, requested: [], hasFeatures: false};
         var point = e.layerPoint;
-        var crs = map.options.crs.code;
+        var crs = this._map.options.crs.code;
 
         if(this.options.useDefaultProjection) {
             crs = 'EPSG:4326';
@@ -3636,12 +3659,15 @@ L.SpectrumSpatial.Controls.legend = function(service, mapName, options){
 
         this._clearPopup();
 
-
         if(!(this.options.showIfEmpty || collector.hasFeatures)) {
             return;
         }
 
-        this._popup = L.popup()
+        this._showPopup(collector);
+    },
+
+    _showPopup: function(collector){
+        this._popup = L.popup(this.options.popupOptions)
             .setLatLng(collector.position)
             .setContent(this.getPopupHtmlContent(collector.requested))
             .openOn(this._map);
