@@ -2957,6 +2957,15 @@ L.Control.include(L.Evented.prototype);
         return this;
     },
 
+    hideLegendForLayer: function(layerId) {
+        var lo = this._getLayer(layerId);
+        if(!this.options.legendContainer) {
+            if(lo.legendContainer.hasChildNodes()) {
+                L.DomUtil.empty(lo.legendContainer);
+            }
+        }
+    },
+
     _addLayer: function(layer, name, overlay) {
         layer.on('add remove', this._onLayerChange, this);
 
@@ -3231,7 +3240,8 @@ L.Control.include(L.Evented.prototype);
         var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container, 'visibilityInput');
         var input, layer, hasLayer;
         var addedLayers = [],
-            removedLayers = [];
+            removedLayers = [],
+            activeLayers = [];
 
         this._handlingClick = true;
 
@@ -3245,6 +3255,8 @@ L.Control.include(L.Evented.prototype);
 
             } else if(!input.checked && hasLayer) {
                 removedLayers.push(layer);
+            } else if(hasLayer) {
+                activeLayers.push(layer);
             }
         }
 
@@ -3257,6 +3269,11 @@ L.Control.include(L.Evented.prototype);
         }
 
         this._refocusOnMap();
+        this._fireVisibilityChangedEvent({
+            removedLayers: removedLayers,
+            addedLayers: addedLayers,
+            activeLayers: activeLayers
+        });
         this._handlingClick = false;
     },
 
@@ -3276,6 +3293,10 @@ L.Control.include(L.Evented.prototype);
         }
 
         this._handlingClick = false;
+    },
+
+    _fireVisibilityChangedEvent: function(layers) {
+        this._map.fire('spectrum:visibility-changed', layers);
     },
 
     _expand: function() {
