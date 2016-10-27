@@ -2957,6 +2957,13 @@ L.Control.include(L.Evented.prototype);
         return this;
     },
 
+    hideLegendForLayer: function(layerId) {
+        var lo = this._getLayer(layerId);
+        if ((!this.options.legendContainer) && (lo.legendContainer.hasChildNodes())) {
+            L.DomUtil.empty(lo.legendContainer);
+        }
+    },
+
     _addLayer: function(layer, name, overlay) {
         layer.on('add remove', this._onLayerChange, this);
 
@@ -3177,19 +3184,14 @@ L.Control.include(L.Evented.prototype);
         var layerId = e.currentTarget.layerId;
         var lo = this._getLayer(layerId);
         var legend;
-        if(!this.options.legendContainer) {
-            if(lo.legendContainer.hasChildNodes()) {
-                L.DomUtil.empty(lo.legendContainer);
-            }
-            else {
-                legend = new L.SpectrumSpatial.Controls.Legend(lo.layer._service, lo.layer._mapName, this.options.legendOptions);
-                legend.addTo(this._map, this.options.legendContainer ? this.options.legendContainer : lo.legendContainer);
-            }
+
+        if ((!this.options.legendContainer) && (lo.legendContainer.hasChildNodes())) {
+            L.DomUtil.empty(lo.legendContainer);
+            return;
         }
-        else {
-            legend = new L.SpectrumSpatial.Controls.Legend(lo.layer._service, lo.layer._mapName, this.options.legendOptions);
-            legend.addTo(this._map, this.options.legendContainer ? this.options.legendContainer : lo.legendContainer);
-        }
+
+        legend = new L.SpectrumSpatial.Controls.Legend(lo.layer._service, lo.layer._mapName, this.options.legendOptions);
+        legend.addTo(this._map, this.options.legendContainer ? this.options.legendContainer : lo.legendContainer);
     },
 
     _onDownClick: function(e) {
@@ -3231,7 +3233,8 @@ L.Control.include(L.Evented.prototype);
         var inputs = L.SpectrumSpatial.Utils.getElementsByName(this._container, 'visibilityInput');
         var input, layer, hasLayer;
         var addedLayers = [],
-            removedLayers = [];
+            removedLayers = [],
+            activeLayers = [];
 
         this._handlingClick = true;
 
@@ -3245,6 +3248,8 @@ L.Control.include(L.Evented.prototype);
 
             } else if(!input.checked && hasLayer) {
                 removedLayers.push(layer);
+            } else if(hasLayer) {
+                activeLayers.push(layer);
             }
         }
 
@@ -3257,6 +3262,13 @@ L.Control.include(L.Evented.prototype);
         }
 
         this._refocusOnMap();
+
+        this.fire('visibilitychanged', {
+            removedLayers: removedLayers,
+            addedLayers: addedLayers,
+            activeLayers: activeLayers
+        });
+
         this._handlingClick = false;
     },
 
