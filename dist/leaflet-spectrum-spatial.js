@@ -2959,10 +2959,8 @@ L.Control.include(L.Evented.prototype);
 
     hideLegendForLayer: function(layerId) {
         var lo = this._getLayer(layerId);
-        if(!this.options.legendContainer) {
-            if(lo.legendContainer.hasChildNodes()) {
-                L.DomUtil.empty(lo.legendContainer);
-            }
+        if ((!this.options.legendContainer) && (lo.legendContainer.hasChildNodes())) {
+            L.DomUtil.empty(lo.legendContainer);
         }
     },
 
@@ -3186,19 +3184,14 @@ L.Control.include(L.Evented.prototype);
         var layerId = e.currentTarget.layerId;
         var lo = this._getLayer(layerId);
         var legend;
-        if(!this.options.legendContainer) {
-            if(lo.legendContainer.hasChildNodes()) {
-                L.DomUtil.empty(lo.legendContainer);
-            }
-            else {
-                legend = new L.SpectrumSpatial.Controls.Legend(lo.layer._service, lo.layer._mapName, this.options.legendOptions);
-                legend.addTo(this._map, this.options.legendContainer ? this.options.legendContainer : lo.legendContainer);
-            }
+
+        if ((!this.options.legendContainer) && (lo.legendContainer.hasChildNodes())) {
+            L.DomUtil.empty(lo.legendContainer);
+            return;
         }
-        else {
-            legend = new L.SpectrumSpatial.Controls.Legend(lo.layer._service, lo.layer._mapName, this.options.legendOptions);
-            legend.addTo(this._map, this.options.legendContainer ? this.options.legendContainer : lo.legendContainer);
-        }
+
+        legend = new L.SpectrumSpatial.Controls.Legend(lo.layer._service, lo.layer._mapName, this.options.legendOptions);
+        legend.addTo(this._map, this.options.legendContainer ? this.options.legendContainer : lo.legendContainer);
     },
 
     _onDownClick: function(e) {
@@ -3269,11 +3262,13 @@ L.Control.include(L.Evented.prototype);
         }
 
         this._refocusOnMap();
-        this._fireVisibilityChangedEvent({
+
+        this.fire('visibilitychanged', {
             removedLayers: removedLayers,
             addedLayers: addedLayers,
             activeLayers: activeLayers
         });
+
         this._handlingClick = false;
     },
 
@@ -3293,10 +3288,6 @@ L.Control.include(L.Evented.prototype);
         }
 
         this._handlingClick = false;
-    },
-
-    _fireVisibilityChangedEvent: function(layers) {
-        this._map.fire('spectrum:visibility-changed', layers);
     },
 
     _expand: function() {
