@@ -2670,13 +2670,13 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service, mapName, postData, 
     * @property {number} maxZoom  Maximum zoom level
     * @property {number} minZoom  Minimum zoom level
     * @property {string} errorTileUrl  Url of image to display when tile loading failed
-    * @property {number} zoomOffset  
-    * @property {number} maxNativeZoom  
-    * @property {boolean} tms  
-    * @property {boolean} zoomReverse  
-    * @property {boolean} detectRetina  
-    * @property {boolean} crossOrigin 
-    * @property {string} imageType tile image type 
+    * @property {number} zoomOffset
+    * @property {number} maxNativeZoom
+    * @property {boolean} tms
+    * @property {boolean} zoomReverse
+    * @property {boolean} detectRetina
+    * @property {boolean} crossOrigin
+    * @property {string} imageType tile image type
     */
 
     options: {
@@ -2684,7 +2684,7 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service, mapName, postData, 
         minZoom: 0,
         errorTileUrl: '',
         zoomOffset: 0,
-        maxNativeZoom: null, 
+        maxNativeZoom: null,
         tms: false,
         zoomReverse: false,
         detectRetina: false,
@@ -2726,16 +2726,16 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service, mapName, postData, 
 
     setService: function (service, noRedraw) {
         this._service = service;
-        
+
         if (!noRedraw) {
             this.redraw();
         }
         return this;
     },
-    
+
     setMapName: function (mapName, noRedraw) {
         this._mapName = mapName;
-        
+
         if (!noRedraw) {
             this.redraw();
         }
@@ -2755,7 +2755,7 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service, mapName, postData, 
         */
         tile.alt = '';
         tile.onerror = L.bind(this._tileOnError, this, done, tile);
-        tile.onload = L.bind(this._tileOnLoad, this, done, tile);   
+        tile.onload = L.bind(this._tileOnLoad, this, done, tile);
         if (this._service.needAuthorization()){
             this._service.getTile(this._mapName,
                                   this._getZoomForUrl()+1,
@@ -2766,15 +2766,15 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service, mapName, postData, 
                                   this.options.imageType);
         }
         else{
-                   
+
             tile.src = this.getTileUrl(coords);
         }
-        
+
 
 
         return tile;
     },
-    
+
     _postLoad:function(response, error){
         var uInt8Array = new Uint8Array(response);
         var i = uInt8Array.length;
@@ -2784,7 +2784,7 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service, mapName, postData, 
           binaryString[i] = String.fromCharCode(uInt8Array[i]);
         }
         var data = binaryString.join('');
-    
+
         var base64 = window.btoa(data);
         this.image.src ='data:image/png;base64,'+base64;
     },
@@ -2841,25 +2841,29 @@ L.SpectrumSpatial.Layers.mapServiceLayer = function(service, mapName, postData, 
     },
 
     // stops loading all tiles in the background layer
-    _abortLoading: function () {
-        var i, tile;
-        for (i in this._tiles) {
-            tile = this._tiles[i].el;
+	_abortLoading: function () {
+		var i, tile;
+		for (i in this._tiles) {
+			if (this._tiles[i].coords.z !== this._tileZoom) {
+				tile = this._tiles[i].el;
 
-            tile.onload = L.Util.falseFn;
-            tile.onerror = L.Util.falseFn;
+				tile.onload = L.Util.falseFn;
+				tile.onerror = L.Util.falseFn;
 
-            if (!tile.complete) {
-                tile.src = L.Util.emptyImageUrl;
-                L.DomUtil.remove(tile);
-            }
-        }
-    }
+				if (!tile.complete) {
+					tile.src = L.Util.emptyImageUrl;
+					L.DomUtil.remove(tile);
+					delete this._tiles[i];
+				}
+			}
+		}
+	}
 });
 
 L.SpectrumSpatial.Layers.tileServiceLayer = function(service,mapName,options){
   return new L.SpectrumSpatial.Layers.TileServiceLayer(service,mapName,options);
-};;/**
+};
+;/**
  * Extending basic L.Control with L.Evented
  */
 
