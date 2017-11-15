@@ -1,6 +1,6 @@
-/** 
+/**
 * @class Spectrum Spatial Routing Service wrapper
-* @augments L.SpectrumSpatial.Services.Service 
+* @augments L.SpectrumSpatial.Services.Service
 * @constructs L.SpectrumSpatial.Services.RoutingService
 * @param {string} url Url of service
 * @param {Services.Service.Options} options Additional options of service
@@ -8,12 +8,12 @@
 L.SpectrumSpatial.Services.RoutingService = L.SpectrumSpatial.Services.Service.extend(
 /** @lends L.SpectrumSpatial.Services.RoutingService.prototype */
 {
-	
+
 	/**
     * GetRoute function's options
     * @typedef {Object} L.SpectrumSpatial.Services.RoutingService.GetRouteOptions
-    * @property {string} [intermediatePoints] String representation of intermediate point's list. For example: -74.2,40.8,-73,42,epsg:4326 
-    * @property {boolean} [oip] A processing parameter that indicates if the intermediate points should be optimized 
+    * @property {string} [intermediatePoints] String representation of intermediate point's list. For example: -74.2,40.8,-73,42,epsg:4326
+    * @property {boolean} [oip] A processing parameter that indicates if the intermediate points should be optimized
     * @property {string} [destinationSrs] The coordinate system to return the route and resulting geometries
     * @property {string} [optimizeBy='time'] The type of optimizing to use for the route. Valid values are time or distance
     * @property {boolean} [returnDistance=true] The route directions include the distance traveled
@@ -27,7 +27,7 @@ L.SpectrumSpatial.Services.RoutingService = L.SpectrumSpatial.Services.Service.e
     * @property {boolean} [majorRoads=false] Whether to include all roads in the calculation or just major roads
     * @property {string} [historicTrafficTimeBucket='None'] Specifies whether the routing calculation uses the historic traffic speeds
     */
-	
+
     /**
     * The GetRoute service returns routing information for a set of two distinct points or multiple points.
     * @param {Object} startPoint The start location of the route. Example: { x : 1, y : 2 }
@@ -37,17 +37,17 @@ L.SpectrumSpatial.Services.RoutingService = L.SpectrumSpatial.Services.Service.e
     * @param {Object} context Context for callback
     * @param {L.SpectrumSpatial.Services.RoutingService.GetRouteOptions} [options] GetRoute options
     */
-    getRoute : function(startPoint, endPoint, srs, callback, context, options){  
+    getRoute : function(startPoint, endPoint, srs, callback, context, options){
         var operation = new L.SpectrumSpatial.Services.Operation('databases/'+ this._getDbSource(options) +'.json', { paramsSeparator: '&', queryStartCharacter:'?'});
         operation.options.getParams.q = 'route';
-        
+
         operation.options.getParams.startPoint = startPoint.x + ',' + startPoint.y + ',' + srs;
         operation.options.getParams.endPoint = endPoint.x + ',' + endPoint.y + ',' + srs;
-        
+
         L.SpectrumSpatial.Utils.merge(operation.options.getParams,options);
         this.startRequest(operation, callback, context);
     },
-    
+
     /**
     * GetTravelBoundary function's options
     * @typedef {Object} L.SpectrumSpatial.Services.RoutingService.GetTravelBoundaryOptions
@@ -62,7 +62,7 @@ L.SpectrumSpatial.Services.RoutingService = L.SpectrumSpatial.Services.Service.e
     * @property {string} [bandingStyle='Donut'] The style of banding to be used in the result
     * @property {string} [historicTrafficTimeBucket='None'] Specifies whether the routing calculation uses the historic traffic speeds
     */
-    
+
     /**
     * GetTravelBoundary determines a drive or walk time or distance boundary from a location.
     * @param {Object} point The start location from where to calculate the travel boundary. Example: { x : 1, y : 2 }
@@ -72,17 +72,57 @@ L.SpectrumSpatial.Services.RoutingService = L.SpectrumSpatial.Services.Service.e
     * @param {Object} context Context for callback
     * @param {L.SpectrumSpatial.Services.RoutingService.GetTravelBoundaryOptions} options GetTravelBoundary options
     */
-    getTravelBoundary : function(point, srs, costs, callback, context, options){  
+    getTravelBoundary : function(point, srs, costs, callback, context, options){
+        var operation = new L.SpectrumSpatial.Services.Operation(
+            'GetTravelBoundary/results.json',
+            {
+                paramsSeparator: '&',
+                queryStartCharacter:'?',
+                trueValue: 'Y',
+                falseValue: 'N'
+            });
+        options = options || {};
+        operation.options.getParams = {
+            'Data.Latitude' : point.y,
+            'Data.Longitude': point.x,
+            'Data.TravelBoundaryCost': costs.replace(/,/g, ';'),
+            'Data.TravelBoundaryCostUnits': options.costUnit || 'Miles',
+            'Option.DataSetResourceName': this._getDbSource(options),
+            'Option.CoordinateSystem' : srs,
+            'Option.CoordinateFormat': 'Decimal',
+            'Option.HistoricTrafficTimeBucket': options.historicTrafficTimeBucket || 'None',
+            'Option.MaximumOffRoadDistance': options.maxOffroadDistance || 300,
+            'Option.MajorRoads' : options.majorRoads || false,
+            'Option.SimplificationFactor': options.simplificationFactor || 0.5,
+            'Option.BandingStyle': options.bandingStyle || 'Donut',
+            'Option.ReturnHoles' : options.returnHoles || false,
+            'Option.ReturnIslands': options.returnIslands || false
+        };
+
+        this.startRequest(operation, callback, context);
+    },
+
+    /**
+    * @deprecated
+    * GetTravelBoundary determines a drive or walk time or distance boundary from a location.
+    * @param {Object} point The start location from where to calculate the travel boundary. Example: { x : 1, y : 2 }
+    * @param {string} srs Reference system
+    * @param {string} costs The cost distance or time, in the cost units specified. You can also specify multiple costs by specifying the values as a comma delimited string
+    * @param {Request.Callback} callback Callback of the function
+    * @param {Object} context Context for callback
+    * @param {L.SpectrumSpatial.Services.RoutingService.GetTravelBoundaryOptions} options GetTravelBoundary options
+    */
+    getTravelBoundaryOld : function(point, srs, costs, callback, context, options){
         var operation = new L.SpectrumSpatial.Services.Operation('databases/'+ this._getDbSource(options)  +'.json', { paramsSeparator: '&', queryStartCharacter:'?'});
         operation.options.getParams.q = 'travelBoundary';
-        
+
         operation.options.getParams.point = point.x + ',' + point.y + ',' + srs;
         operation.options.getParams.costs = costs;
 
         L.SpectrumSpatial.Utils.merge(operation.options.getParams,options);
         this.startRequest(operation, callback, context);
     },
-    
+
     _getDbSource: function(options){
 	    if (options && options.dbsource){
 		    return options.dbsource;
@@ -91,7 +131,7 @@ L.SpectrumSpatial.Services.RoutingService = L.SpectrumSpatial.Services.Service.e
 		    return this.options.dbsource;
 	    }
     }
-       
+
 });
 
 L.SpectrumSpatial.Services.routingService = function(url,options){
