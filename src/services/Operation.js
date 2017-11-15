@@ -1,6 +1,6 @@
 L.SpectrumSpatial.Services.Operation = L.Class.extend(
 /** @lends L.SpectrumSpatial.Services.Operation.prototype */
-{ 
+{
 
     /**
     * Operation's options class
@@ -10,7 +10,7 @@ L.SpectrumSpatial.Services.Operation = L.Class.extend(
     * @property {Object} postParams Params for post request
     * @property {boolean} forcePost Is true if opertaion should use post request
     * @property {string} paramsSeparator Separator for get params in url
-    * @property {string} queryStartCharacter Character from which query begins 
+    * @property {string} queryStartCharacter Character from which query begins
     * @property {string} postType Type of post data. Default is 'application/json'
     * @property {string} responseType Type of response data. Used for post response with image (only for XHR2)
     */
@@ -20,13 +20,15 @@ L.SpectrumSpatial.Services.Operation = L.Class.extend(
         forcePost :false,
         paramsSeparator: ';',
         queryStartCharacter:';',
+        trueValue: 'true',
+        falseValue: 'false',
         postType : 'application/json',
         responseType:null
     },
 
     /**
     * @class Service operation class
-    * @augments {L.Class} 
+    * @augments {L.Class}
     * @constructs L.SpectrumSpatial.Services.Operation
     * @param {string} name Name of operation
     * @param {L.SpectrumSpatial.Services.Operation.Options} options Additional options of operation
@@ -38,30 +40,29 @@ L.SpectrumSpatial.Services.Operation = L.Class.extend(
         options.name=name;
         L.setOptions(this, options);
     },
-  
+
     /**
     * Builds query for url by name and getParams of operation
     * @returns {string}
     */
-    getUrlQuery: function(){     
+    getUrlQuery: function(){
         var keyValueArray = [];
-        var params =  this.options.getParams;   
+        var params =  this.options.getParams;
         for (var key in params){
             if(params.hasOwnProperty(key)){
-                var param = params[key];      
-                keyValueArray.push(key + '=' + encodeURIComponent(param));
+                var param = params[key];
+                keyValueArray.push(key + '=' + this._parseValue(param));
             }
         }
         var query = this.options.name;
-        
+
         if (keyValueArray.length>0){
             query+=this.options.queryStartCharacter + keyValueArray.join(this.options.paramsSeparator);
         }
-        
+
         return query;
     },
 
-  
     /**
     * Creates string representation of postParams
     * @returns {string}
@@ -69,7 +70,7 @@ L.SpectrumSpatial.Services.Operation = L.Class.extend(
     getPostData: function(){
         return JSON.stringify(this.options.postParams);
     },
-    
+
     /**
     * Returns type of post data
     * @returns {string}
@@ -77,7 +78,7 @@ L.SpectrumSpatial.Services.Operation = L.Class.extend(
     getPostType: function(){
         return this.options.postType;
     },
-    
+
     /**
     * Returns type of response type (for xhr 2)
     * @returns {string}
@@ -85,15 +86,25 @@ L.SpectrumSpatial.Services.Operation = L.Class.extend(
     getResponseType: function(){
         return this.options.responseType;
     },
-    
+
     /**
     * Check if operation should use only post request
     * @returns {boolean}
     */
     isPostOperation:function(){
         return (Object.keys(this.options.postParams).length!==0) | this.options.forcePost;
+    },
+
+    _parseValue: function(value){
+        if (value === true){
+            return this.options.trueValue;
+        }
+        if (value === false){
+            return this.options.falseValue;
+        }
+        return encodeURIComponent(value);
     }
-    
+
 });
 
 L.SpectrumSpatial.Services.operation = function(name,options){

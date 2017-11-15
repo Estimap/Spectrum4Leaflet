@@ -13,7 +13,7 @@
  * @namespace
  */
 L.SpectrumSpatial = {
-  Version: '0.4.0',
+  Version: '0.4.6',
 
   /**
    * Spectrum's services
