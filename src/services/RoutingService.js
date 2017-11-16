@@ -134,6 +134,74 @@ L.SpectrumSpatial.Services.RoutingService = L.SpectrumSpatial.Services.Service.e
 
 });
 
+L.SpectrumSpatial.Services.RoutingService.convertNewTravelBoundaryToOld = function(newTravelBoundary){
+
+    var coordinatesFromIsoPoly = function(IsoPoly){
+        var coordinates = [];
+
+        for(var j in IsoPoly.Polygon){
+            var polyCoord = [];
+            var poly = IsoPoly.Polygon[j];
+
+            if (poly.Exterior && poly.Exterior.LineString){
+
+                for(var k in poly.Exterior.LineString){
+                    var lineCoords = [];
+                    var lineString = poly.Exterior.LineString[k];
+
+                    for(var l in lineString.Pos){
+                        var point = lineString.Pos[l];
+                        lineCoords.push([point.X, point.Y]);
+                    }
+                    polyCoord.push(lineCoords);
+                }
+            }
+
+
+            if (poly.Interior && poly.Interior.LineString){
+
+                for(var k in poly.Interior.LineString){
+                    var lineCoords = [];
+                    var lineString = poly.Exterior.LineString[k];
+
+                    for(var l in lineString.Pos){
+                        var point = lineString.Pos[l];
+                        lineCoords.push([point.X, point.Y]);
+                    }
+                    polyCoord.push(lineCoords);
+                }
+            }
+
+            coordinates.push(polyCoord);
+        }
+
+        return coordinates;
+    };
+
+
+    var old = {
+        travelBoundary:{
+            costs:[]
+        }
+    };
+
+    var data = newTravelBoundary.output_port;
+
+    for (var i in data){
+        var newTb = {
+            cost: data[i].cost,
+            costUnit: data[i].costUnits,
+            geometry: {
+                type:'MultiPolygon',
+                coordinates:coordinatesFromIsoPoly(data[i].IsoPolygonResponse)
+            }
+        };
+
+        old.travelBoundary.costs.push(newTb);
+    }
+    return old;
+};
+
 L.SpectrumSpatial.Services.routingService = function(url,options){
   return new L.SpectrumSpatial.Services.RoutingService(url,options);
 };
