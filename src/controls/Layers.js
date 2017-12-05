@@ -324,7 +324,12 @@ L.SpectrumSpatial.Controls.Layers = L.Control.Layers.extend({
             return;
         }
 
-        legend = new L.SpectrumSpatial.Controls.Legend(lo.layer._service, lo.layer._mapName, this.options.legendOptions);
+        var legendOptions = this.options.legendOptions;
+        if (lo.layer._postData){
+            legendOptions.postData = lo.layer._postData;
+        }
+
+        legend = new L.SpectrumSpatial.Controls.Legend(lo.layer._service, lo.layer._mapName, legendOptions);
         legend.addTo(this._map, this.options.legendContainer ? this.options.legendContainer : lo.legendContainer);
     },
 

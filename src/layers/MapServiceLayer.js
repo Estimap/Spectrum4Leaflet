@@ -92,6 +92,16 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
 
     },
 
+    setPostData: function(postData){
+        this._postData = postData;
+        this._update();
+        return this;
+    },
+
+    getPostData: function(){
+        return this._postData;
+    },
+
     setService: function(service) {
         this._service = service;
         this._update();
@@ -295,7 +305,7 @@ L.SpectrumSpatial.Layers.MapServiceLayer = L.Layer.extend({
             var singleParam = params[i];
             singleParam.requestCount = this._requestCounter.count;
 
-            if((this._postData) | (this._service.needAuthorization())) {
+            if((this._postData) || (this._service.needAuthorization())) {
                 this._service.renderMap(
                     singleParam.params,
                     this._postLoad, {
