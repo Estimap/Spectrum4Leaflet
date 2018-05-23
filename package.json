@@ -21,6 +21,7 @@
     "type": "git",
     "url": "git://github.com/Estimap/Spectrum4Leaflet.git"
   },
+  "main": "dist/leaflet-spectrum-spatial.min.js",
   "keywords": [
     "gis",
     "mapinfo",
