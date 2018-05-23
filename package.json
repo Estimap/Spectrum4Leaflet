@@ -1,6 +1,6 @@
 {
   "name": "leaflet-spectrum-spatial",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "description": "Leaflet plugin for Spectrum Spatial server",
   "author": "Sergey Voyteshonok <info@svoyt.com>",
   "license": "Apache-2.0",
